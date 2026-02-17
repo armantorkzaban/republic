@@ -372,6 +372,19 @@ img {
   padding: 160px 0 120px;
 }
 
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__grid {
+  position: absolute;
+  inset: 0;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
+}
+
 .hero__container {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -2063,6 +2076,47 @@ img {
   border-radius: 50%;
   background: var(--success, #0EBB90);
   flex-shrink: 0;
+}
+
+/* ── Civic Compass use-case tag cloud ── */
+.compass-use-cases {
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid var(--border-color);
+}
+
+.compass-use-cases__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.compass-use-cases__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.compass-use-cases__tags span {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 100px;
+  background: rgba(91, 157, 245, 0.07);
+  border: 1px solid rgba(91, 157, 245, 0.18);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  cursor: default;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.compass-use-cases__tags span:hover {
+  background: rgba(91, 157, 245, 0.15);
+  border-color: rgba(91, 157, 245, 0.4);
+  color: var(--accent-primary);
 }
 
 @media (max-width: 768px) {

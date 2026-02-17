@@ -43,7 +43,7 @@
   <!-- Hero Section -->
   <section class="hero" id="home">
     <div class="hero__bg">
-      <div class="hero__grid"></div>
+      <div id="pattern-overlay" class="hero__grid" style="opacity: 0.15; z-index: 1;"></div>
       <div class="hero__glow hero__glow--1"></div>
       <div class="hero__glow hero__glow--2"></div>
     </div>
@@ -572,6 +572,22 @@
           </ul>
         </div>
       </div>
+
+      <div class="compass-use-cases" data-animate>
+        <p class="compass-use-cases__label">What the Compass Enables</p>
+        <div class="compass-use-cases__tags">
+          <span>Rewarded mediatory contribution for perfect civic match</span>
+          <span>Find your civic soulmate</span>
+          <span>Coalition geometry — see who overlaps with you</span>
+          <span>8-dimensional voter identity</span>
+          <span>Your politics has a shape, not a side</span>
+          <span>Anonymously discover policy consensus zones</span>
+          <span>Polytope proximity matching</span>
+          <span>Score your representative's shape alignment</span>
+          <span>Civic matchmaking for deliberation groups</span>
+          <span>Form alliances around shared dimensions</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -977,6 +993,8 @@
   <script src="rankedpairs.js"></script>
   <script src="compass.js"></script>
   <script src="clusters.js"></script>
+  <script src="patterns.js"></script>
+  <script src="render-pattern.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
