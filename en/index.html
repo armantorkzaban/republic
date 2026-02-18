@@ -578,25 +578,7 @@
       <div class="compass-split" data-animate>
         <div class="compass-visual-wrap" style="position:relative;overflow:hidden;min-height:420px;">
 
-          <!-- Slide 0: Iran dots animation -->
-          <div class="cc-slide cc-slide--active" style="position:absolute;inset:0;transition:opacity 0.5s;">
-            <canvas id="compass-canvas" style="width:100%;height:100%;display:block;"></canvas>
-          </div>
-
-          <!-- Slide 1: Civic compass profiles -->
-          <div class="cc-slide" style="position:absolute;inset:0;transition:opacity 0.5s;opacity:0;pointer-events:none;">
-            <div class="compass-visual" style="width:100%;height:100%;"></div>
-          </div>
-
-          <!-- Prev / Next arrows -->
-          <button class="cc-prev" aria-label="Previous" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.65);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;">&#8249;</button>
-          <button class="cc-next" aria-label="Next"     style="position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.65);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;">&#8250;</button>
-
-          <!-- Dot indicators -->
-          <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;">
-            <button class="cc-dot" data-idx="0" style="width:8px;height:8px;border-radius:50%;border:none;background:rgba(14,187,144,1);padding:0;cursor:pointer;"></button>
-            <button class="cc-dot" data-idx="1" style="width:8px;height:8px;border-radius:50%;border:none;background:rgba(255,255,255,0.25);padding:0;cursor:pointer;"></button>
-          </div>
+          <div class="compass-visual" style="width:100%;height:100%;position:absolute;inset:0;"></div>
 
         </div>
         <div class="compass-text">
@@ -1036,44 +1018,6 @@
   <script src="../patterns.js"></script>
   <script src="../render-pattern.js"></script>
   <script src="../script.js"></script>
-  <script>
-  document.addEventListener('DOMContentLoaded', function(){
-    var wrap = document.querySelector('.compass-visual-wrap');
-    if (!wrap) return;
-    var slides = wrap.querySelectorAll('.cc-slide');
-    var dots   = wrap.querySelectorAll('.cc-dot');
-    if (!slides.length) return;
-    var n = slides.length, cur = 0, timer = null;
 
-    function show(i) {
-      i = ((i % n) + n) % n;
-      slides[cur].style.opacity = '0';
-      slides[cur].style.pointerEvents = 'none';
-      if (dots[cur]) dots[cur].style.background = 'rgba(255,255,255,0.25)';
-      cur = i;
-      slides[cur].style.opacity = '1';
-      slides[cur].style.pointerEvents = '';
-      if (dots[cur]) dots[cur].style.background = 'rgba(14,187,144,1)';
-    }
-
-    function startTimer() {
-      clearInterval(timer);
-      timer = setInterval(function(){ show(cur + 1); }, 5000);
-    }
-
-    var prev = wrap.querySelector('.cc-prev');
-    var next = wrap.querySelector('.cc-next');
-    if (prev) prev.addEventListener('click', function(){ show(cur - 1); startTimer(); });
-    if (next) next.addEventListener('click', function(){ show(cur + 1); startTimer(); });
-    dots.forEach(function(d, i){
-      d.addEventListener('click', function(){ show(i); startTimer(); });
-    });
-
-    wrap.addEventListener('mouseenter', function(){ clearInterval(timer); });
-    wrap.addEventListener('mouseleave', startTimer);
-
-    startTimer();
-  });
-  </script>
 </body>
 </html>
