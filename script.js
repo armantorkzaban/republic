@@ -2,6 +2,12 @@
    Republic — Interactive Scripts
    ======================================== */
 
+/* Apply stored theme immediately — before any DOMContentLoaded listener fires */
+(function(){
+  var t = localStorage.getItem('republic-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   // ——— Navigation Scroll Effect ———
   const nav = document.getElementById('nav');
@@ -29,10 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ——— Theme Toggle (Light / Dark) ———
   const themeToggle = document.getElementById('themeToggle');
-  const storedTheme = localStorage.getItem('republic-theme');
-  if (storedTheme) {
-    document.documentElement.setAttribute('data-theme', storedTheme);
-  }
 
   themeToggle.addEventListener('click', (e) => {
     e.preventDefault();
