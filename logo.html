@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Republic / جمهور — Logo</title>
+  <style>
+    @font-face {
+      font-family: 'Nian';
+      src: url('fonts/Nian Light.ttf') format('truetype');
+      font-weight: 300;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nian';
+      src: url('fonts/Nian.ttf') format('truetype');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nian';
+      src: url('fonts/Nian SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nian';
+      src: url('fonts/Nian Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nian';
+      src: url('fonts/Nian-Black.ttf') format('truetype');
+      font-weight: 900;
+      font-display: swap;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    /* ── Theme toggle ── */
+    body.dark {
+      background: #111111;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    body.light {
+      background: #F5F7FA;
+      color: rgba(0, 0, 0, 0.87);
+    }
+
+    .theme-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+    .theme-btn:hover { opacity: 1; }
+
+    /* ── Layout ── */
+    .showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 80px;
+      padding: 60px 24px;
+    }
+
+    .variant-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 20px;
+    }
+
+    /* ═══════════════════════════════════
+       LOGO — Core Component
+       ═══════════════════════════════════ */
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      user-select: none;
+    }
+
+    /* The light circle */
+    .logo__circle {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo__circle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5B9DF5, #38BDF8);
+      opacity: 0.15;
+      transition: opacity 0.4s ease;
+    }
+
+    .logo__circle::after {
+      content: '';
+      position: absolute;
+      width: 56%;
+      height: 56%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5B9DF5, #38BDF8);
+      box-shadow:
+        0 0 30px rgba(91, 157, 245, 0.4),
+        0 0 60px rgba(56, 189, 248, 0.2);
+      transition: box-shadow 0.4s ease;
+    }
+
+    .logo:hover .logo__circle::before { opacity: 0.25; }
+    .logo:hover .logo__circle::after {
+      box-shadow:
+        0 0 40px rgba(91, 157, 245, 0.6),
+        0 0 80px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Light theme circle adjustments */
+    body.light .logo__circle::before {
+      background: linear-gradient(135deg, #3B82F6, #0EA5E9);
+      opacity: 0.1;
+    }
+    body.light .logo__circle::after {
+      background: linear-gradient(135deg, #3B82F6, #0EA5E9);
+      box-shadow:
+        0 0 30px rgba(59, 130, 246, 0.3),
+        0 0 60px rgba(14, 165, 233, 0.15);
+    }
+
+    /* ── Text ── */
+    .logo__text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .logo__name-en {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+
+    .logo__name-fa {
+      font-family: 'Nian', 'Vazirmatn', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      direction: rtl;
+      letter-spacing: 2px;
+    }
+
+    .logo__verb {
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-top: 6px;
+    }
+
+    .logo__verb-fa {
+      font-family: 'Nian', 'Vazirmatn', sans-serif;
+      font-size: 13px;
+      direction: rtl;
+      opacity: 0.5;
+    }
+
+    /* ── Slash divider between names ── */
+    .logo__slash {
+      opacity: 0.25;
+      margin: 0 4px;
+      font-weight: 300;
+    }
+
+    /* ═══════════════════════════════════
+       VARIANT: Horizontal / Inline
+       ═══════════════════════════════════ */
+
+    .logo--inline {
+      flex-direction: row;
+      gap: 20px;
+    }
+
+    .logo--inline .logo__text {
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .logo--inline .logo__names {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .logo--inline .logo__name-en {
+      font-size: 22px;
+      letter-spacing: 5px;
+    }
+
+    .logo--inline .logo__name-fa {
+      font-size: 24px;
+    }
+
+    .logo--inline .logo__verbs {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .logo--inline .logo__circle {
+      width: 48px;
+      height: 48px;
+    }
+
+    /* ═══════════════════════════════════
+       VARIANT: Compact (icon + wordmark)
+       ═══════════════════════════════════ */
+
+    .logo--compact {
+      flex-direction: row;
+      gap: 12px;
+    }
+
+    .logo--compact .logo__circle {
+      width: 36px;
+      height: 36px;
+    }
+
+    .logo--compact .logo__names {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .logo--compact .logo__name-en {
+      font-size: 18px;
+      letter-spacing: 4px;
+    }
+
+    .logo--compact .logo__name-fa {
+      font-size: 20px;
+    }
+
+    .logo--compact .logo__text {
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    /* ═══════════════════════════════════
+       VARIANT: Circle only (icon mark)
+       ═══════════════════════════════════ */
+
+    .logo--icon .logo__circle {
+      width: 100px;
+      height: 100px;
+    }
+
+    /* ═══════════════════════════════════
+       VARIANT: Stacked bilingual
+       ═══════════════════════════════════ */
+
+    .logo--stacked .logo__names-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .logo--stacked .logo__name-en {
+      font-size: 36px;
+      letter-spacing: 10px;
+    }
+
+    .logo--stacked .logo__name-fa {
+      font-size: 34px;
+    }
+
+    .logo--stacked .logo__circle {
+      width: 100px;
+      height: 100px;
+    }
+
+    .logo--stacked .logo__verbs-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════
+       Divider
+       ═══════════════════════════════════ */
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.1;
+    }
+
+    /* ═══════════════════════════════════
+       Animated glow pulse
+       ═══════════════════════════════════ */
+
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.12; transform: scale(1); }
+      50% { opacity: 0.22; transform: scale(1.08); }
+    }
+
+    .logo__circle--animated::before {
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+
+    /* ═══════════════════════════════════
+       Responsive
+       ═══════════════════════════════════ */
+
+    @media (max-width: 640px) {
+      .logo--stacked .logo__name-en { font-size: 26px; letter-spacing: 6px; }
+      .logo--stacked .logo__name-fa { font-size: 26px; }
+      .logo--stacked .logo__circle { width: 72px; height: 72px; }
+      .logo--inline { flex-direction: column; align-items: center; }
+      .logo--inline .logo__text { align-items: center; }
+    }
+  </style>
+</head>
+<body class="dark">
+
+  <button class="theme-btn" onclick="document.body.classList.toggle('dark'); document.body.classList.toggle('light');">
+    ◐ Toggle Theme
+  </button>
+
+  <div class="showcase">
+
+    <!-- 1. FARSI ONLY: جمهور + دایره -->
+    <div>
+      <p class="variant-label">فارسی</p>
+      <div class="logo logo--stacked">
+        <div class="logo__circle logo__circle--animated"></div>
+        <span class="logo__name-fa" style="font-size: 34px;">جمهور</span>
+        <span class="logo__verb-fa">جمهور یک فعل است</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 2. ENGLISH ONLY: Republic + circle -->
+    <div>
+      <p class="variant-label">English</p>
+      <div class="logo logo--stacked">
+        <div class="logo__circle logo__circle--animated"></div>
+        <span class="logo__name-en" style="font-size: 36px; letter-spacing: 10px;">Republic</span>
+        <span class="logo__verb">Republic is a verb</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
