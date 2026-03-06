@@ -101,57 +101,21 @@
       user-select: none;
     }
 
-    /* The light circle */
-    .logo__circle {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* The light dot (shining lamp) */
+    .logo__dot {
+      font-size: 80px;
+      line-height: 1;
+      color: #3B82F6; /* accent-primary */
+      filter: drop-shadow(0 0 12px #3B82F6);
+      text-shadow: 0 0 28px #3B82F6, 0 0 56px #3B82F6;
+      transition: all 0.4s ease;
+      margin-bottom: 24px;
     }
 
-    .logo__circle::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #5B9DF5, #38BDF8);
-      opacity: 0.15;
-      transition: opacity 0.4s ease;
-    }
-
-    .logo__circle::after {
-      content: '';
-      position: absolute;
-      width: 56%;
-      height: 56%;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #5B9DF5, #38BDF8);
-      box-shadow:
-        0 0 30px rgba(91, 157, 245, 0.4),
-        0 0 60px rgba(56, 189, 248, 0.2);
-      transition: box-shadow 0.4s ease;
-    }
-
-    .logo:hover .logo__circle::before { opacity: 0.25; }
-    .logo:hover .logo__circle::after {
-      box-shadow:
-        0 0 40px rgba(91, 157, 245, 0.6),
-        0 0 80px rgba(56, 189, 248, 0.3);
-    }
-
-    /* Light theme circle adjustments */
-    body.light .logo__circle::before {
-      background: linear-gradient(135deg, #3B82F6, #0EA5E9);
-      opacity: 0.1;
-    }
-    body.light .logo__circle::after {
-      background: linear-gradient(135deg, #3B82F6, #0EA5E9);
-      box-shadow:
-        0 0 30px rgba(59, 130, 246, 0.3),
-        0 0 60px rgba(14, 165, 233, 0.15);
+    body.light .logo__dot {
+      color: #F59E0B;
+      filter: drop-shadow(0 0 12px #F59E0B);
+      text-shadow: 0 0 28px rgba(245, 158, 11, 0.5), 0 0 56px rgba(245, 158, 11, 0.3);
     }
 
     /* ── Text ── */
@@ -234,10 +198,7 @@
       align-items: center;
     }
 
-    .logo--inline .logo__circle {
-      width: 48px;
-      height: 48px;
-    }
+    .logo--inline .logo__dot { font-size: 48px; margin-bottom: 0px; margin-right: 18px; }
 
     /* ═══════════════════════════════════
        VARIANT: Compact (icon + wordmark)
@@ -248,10 +209,7 @@
       gap: 12px;
     }
 
-    .logo--compact .logo__circle {
-      width: 36px;
-      height: 36px;
-    }
+    .logo--compact .logo__dot { font-size: 36px; margin-bottom: 0px; }
 
     .logo--compact .logo__names {
       display: flex;
@@ -277,10 +235,7 @@
        VARIANT: Circle only (icon mark)
        ═══════════════════════════════════ */
 
-    .logo--icon .logo__circle {
-      width: 100px;
-      height: 100px;
-    }
+    .logo--icon .logo__dot { font-size: 100px; }
 
     /* ═══════════════════════════════════
        VARIANT: Stacked bilingual
@@ -302,10 +257,7 @@
       font-size: 34px;
     }
 
-    .logo--stacked .logo__circle {
-      width: 100px;
-      height: 100px;
-    }
+    .logo--stacked .logo__dot { font-size: 100px; margin-bottom: 0px; }
 
     .logo--stacked .logo__verbs-stack {
       display: flex;
@@ -335,9 +287,7 @@
       50% { opacity: 0.22; transform: scale(1.08); }
     }
 
-    .logo__circle--animated::before {
-      animation: glow-pulse 3s ease-in-out infinite;
-    }
+    
 
     /* ═══════════════════════════════════
        Responsive
@@ -346,7 +296,7 @@
     @media (max-width: 640px) {
       .logo--stacked .logo__name-en { font-size: 26px; letter-spacing: 6px; }
       .logo--stacked .logo__name-fa { font-size: 26px; }
-      .logo--stacked .logo__circle { width: 72px; height: 72px; }
+      .logo--stacked .logo__dot { font-size: 72px; }
       .logo--inline { flex-direction: column; align-items: center; }
       .logo--inline .logo__text { align-items: center; }
     }
@@ -362,11 +312,11 @@
 
     <!-- 1. FARSI ONLY: جمهور + دایره -->
     <div>
-      <p class="variant-label">فارسی</p>
+      <p class="variant-label"></p>
       <div class="logo logo--stacked">
-        <div class="logo__circle logo__circle--animated"></div>
+        <div class="logo__dot ">●</div>
         <span class="logo__name-fa" style="font-size: 34px;">جمهور</span>
-        <span class="logo__verb-fa">جمهور یک فعل است</span>
+        <span class="logo__verb-fa">جمهور خیره‌کنندست</span>
       </div>
     </div>
 
@@ -374,9 +324,9 @@
 
     <!-- 2. ENGLISH ONLY: Republic + circle -->
     <div>
-      <p class="variant-label">English</p>
+      <p class="variant-label"></p>
       <div class="logo logo--stacked">
-        <div class="logo__circle logo__circle--animated"></div>
+        <div class="logo__dot ">●</div>
         <span class="logo__name-en" style="font-size: 36px; letter-spacing: 10px;">Republic</span>
         <span class="logo__verb">Republic is a verb</span>
       </div>
