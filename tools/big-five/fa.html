@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>آزمون شخصیت پنج‌عاملی — جمهور</title>
+  <meta name="description" content="پروفایل شخصیتی خود را در پنج بُعد اصلی کشف کنید: گشودگی، وظیفه‌شناسی، برون‌گرایی، توافق‌پذیری و روان‌رنجوری. رایگان و محرمانه — هیچ داده‌ای ارسال نمی‌شود." />
+  <link rel="stylesheet" href="../../fa/styles.css" />
+  <style>
+    /* ── Theme Variables (matched to Jomhoor.org) ── */
+    :root {
+      --bg-primary: #111111;
+      --bg-secondary: #171717;
+      --bg-card: #292929;
+      --bg-card-hover: #3D3D3D;
+      --text-primary: rgba(255, 255, 255, 0.9);
+      --text-secondary: rgba(255, 255, 255, 0.56);
+      --text-muted: rgba(255, 255, 255, 0.44);
+      --accent-primary: #5B9DF5;
+      --accent-secondary: #38BDF8;
+      --accent-gradient: linear-gradient(87.63deg, #5B9DF5 -1.41%, #38BDF8 113.73%);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --component-primary: rgba(255, 255, 255, 0.05);
+      --component-hovered: rgba(255, 255, 255, 0.1);
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --color-O: #F59E0B;
+      --color-C: #10B981;
+      --color-E: #6366F1;
+      --color-A: #EC4899;
+      --color-N: #EF4444;
+    }
+    [data-theme="light"] {
+      --bg-primary: #F5F7FA;
+      --bg-secondary: #EBEEF2;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F0F2F5;
+      --text-primary: rgba(0, 0, 0, 0.87);
+      --text-secondary: rgba(0, 0, 0, 0.6);
+      --text-muted: rgba(0, 0, 0, 0.44);
+      --accent-primary: #3B82F6;
+      --accent-secondary: #0EA5E9;
+      --accent-gradient: linear-gradient(87.63deg, #3B82F6 -1.41%, #0EA5E9 113.73%);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --component-primary: rgba(0, 0, 0, 0.04);
+      --component-hovered: rgba(0, 0, 0, 0.07);
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Vazirmatn', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.8;
+      min-height: 100vh;
+      direction: rtl;
+    }
+    a { color: var(--accent-secondary); text-decoration: none; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(20px);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar__right { display: flex; align-items: center; gap: 12px; }
+    .topbar__back {
+      color: var(--text-secondary); font-size: 0.875rem;
+      display: flex; align-items: center; gap: 6px;
+      transition: color var(--transition);
+    }
+    .topbar__back:hover { color: var(--text-primary); }
+    .topbar__title { font-weight: 600; font-size: 1rem; }
+    .topbar__actions { display: flex; align-items: center; gap: 12px; }
+    .topbar__lang {
+      font-size: 0.8rem; color: var(--text-secondary);
+      padding: 4px 10px; border: 1px solid var(--border-color);
+      border-radius: 6px; transition: all var(--transition);
+    }
+    .topbar__lang:hover { color: var(--text-primary); border-color: var(--component-hovered); }
+    .topbar__theme {
+      background: none; border: none; cursor: pointer;
+      color: var(--accent-primary); font-size: 1.2rem;
+      transition: all 0.4s ease;
+      filter: drop-shadow(0 0 6px var(--accent-primary));
+    }
+    .topbar__theme:hover { transform: scale(1.2); }
+
+    /* ── Layout ── */
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Intro ── */
+    .intro {
+      text-align: center; padding: 64px 0 48px;
+    }
+    .intro__badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 0.8rem; color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .intro__badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-primary);
+      box-shadow: 0 0 8px var(--accent-primary);
+    }
+    .intro h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700; letter-spacing: -0.01em;
+      line-height: 1.4; margin-bottom: 16px;
+    }
+    .intro p {
+      color: var(--text-secondary); font-size: 1.05rem;
+      max-width: 560px; margin: 0 auto 32px;
+    }
+    .intro__traits {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+      margin-bottom: 32px;
+    }
+    .intro__trait {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 6px 14px;
+      font-size: 0.82rem; color: var(--text-secondary);
+    }
+    .intro__trait-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .btn-start {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-gradient);
+      color: #fff; border: none; border-radius: 100px;
+      padding: 14px 32px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all var(--transition);
+      font-family: inherit;
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(91, 157, 245, 0.3); }
+
+    /* ── Progress ── */
+    .progress {
+      position: sticky; top: 52px; z-index: 90;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: none;
+    }
+    .progress.active { display: block; }
+    .progress__inner { max-width: 720px; margin: 0 auto; }
+    .progress__text {
+      font-size: 0.8rem; color: var(--text-muted);
+      margin-bottom: 6px; display: flex; justify-content: space-between;
+    }
+    .progress__bar {
+      height: 4px; background: var(--component-primary);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress__fill {
+      height: 100%; border-radius: 4px;
+      background: var(--accent-gradient);
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* ── Questions ── */
+    .questions { padding: 32px 0 80px; display: none; }
+    .questions.active { display: block; }
+    .question-group { margin-bottom: 48px; }
+    .question-group__header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .question-group__dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .question-group__title {
+      font-size: 0.95rem; font-weight: 600;
+      color: var(--text-primary);
+    }
+    .question-group__subtitle {
+      font-size: 0.78rem; color: var(--text-muted); margin-right: auto;
+    }
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .question-card:hover { border-color: var(--component-hovered); }
+    .question-card.answered { border-color: rgba(91, 157, 245, 0.15); }
+    .question-card__text {
+      font-size: 0.95rem; margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+    .question-card__number {
+      color: var(--text-muted); font-size: 0.8rem; margin-left: 6px;
+    }
+    .likert {
+      display: flex; gap: 0; justify-content: space-between;
+      direction: ltr; /* Scale always left-to-right: disagree → agree */
+    }
+    .likert__labels {
+      display: flex; justify-content: space-between;
+      margin-top: 6px; direction: ltr;
+    }
+    .likert__label {
+      font-size: 0.7rem; color: var(--text-muted);
+    }
+    .likert__option {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+    }
+    .likert__radio {
+      appearance: none; -webkit-appearance: none;
+      width: 100%; height: 40px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .likert__option:first-child .likert__radio {
+      border-radius: 8px 0 0 8px;
+    }
+    .likert__option:last-child .likert__radio {
+      border-radius: 0 8px 8px 0;
+    }
+    .likert__radio:hover { background: var(--component-hovered); }
+    .likert__radio:checked {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+    .likert__val {
+      font-size: 0.7rem; color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .likert__option:has(.likert__radio:checked) .likert__val {
+      color: var(--accent-primary); font-weight: 600;
+    }
+
+    /* ── Submit ── */
+    .submit-area {
+      text-align: center; padding: 24px 0 64px;
+      display: none;
+    }
+    .submit-area.active { display: block; }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-gradient);
+      color: #fff; border: none; border-radius: 100px;
+      padding: 14px 40px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all var(--transition);
+      font-family: inherit;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(91, 157, 245, 0.3); }
+    .btn-submit:disabled {
+      opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none;
+    }
+    .submit-area__hint {
+      font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;
+    }
+
+    /* ── Results ── */
+    .results { padding: 48px 0 80px; display: none; text-align: center; }
+    .results.active { display: block; }
+    .results h2 {
+      font-size: 1.75rem; font-weight: 700; margin-bottom: 8px;
+    }
+    .results__subtitle {
+      color: var(--text-secondary); margin-bottom: 40px; font-size: 0.95rem;
+    }
+    .radar-wrap {
+      display: flex; justify-content: center; margin-bottom: 48px;
+    }
+    .radar-wrap canvas {
+      max-width: 400px; width: 100%; height: auto;
+    }
+    .trait-results {
+      display: grid; gap: 16px; text-align: right;
+    }
+    .trait-result {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+    }
+    .trait-result__header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .trait-result__dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .trait-result__name {
+      font-weight: 600; font-size: 0.95rem;
+    }
+    .trait-result__score {
+      margin-right: auto; font-weight: 700; font-size: 1.1rem;
+      color: var(--accent-primary);
+    }
+    .trait-result__bar {
+      height: 6px; background: var(--component-primary);
+      border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+      direction: ltr;
+    }
+    .trait-result__fill {
+      height: 100%; border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+    .trait-result__desc {
+      font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;
+    }
+    .trait-result__level {
+      display: inline-block; font-size: 0.75rem; font-weight: 600;
+      padding: 2px 10px; border-radius: 100px;
+      margin-right: 8px;
+    }
+    .results__footer {
+      margin-top: 48px; padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+    .results__privacy {
+      font-size: 0.8rem; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-retake {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 100px;
+      padding: 10px 24px; font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition);
+      font-family: inherit; margin-top: 16px;
+    }
+    .btn-retake:hover { background: var(--component-hovered); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center; padding: 32px 24px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .intro { padding: 40px 0 32px; }
+      .intro h1 { font-size: 1.5rem; }
+      .question-card { padding: 16px 18px; }
+      .likert__radio { height: 36px; }
+      .question-group__subtitle { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar__right">
+      <a href="../../fa/index.html" class="topbar__back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        جمهور
+      </a>
+      <span class="topbar__title">آزمون شخصیت پنج‌عاملی</span>
+    </div>
+    <div class="topbar__actions">
+      <a href="index.html" class="topbar__lang">EN</a>
+      <button class="topbar__theme" id="themeToggle" aria-label="تغییر حالت روشن/تاریک">●</button>
+    </div>
+  </header>
+
+  <!-- Progress bar -->
+  <div class="progress" id="progress">
+    <div class="progress__inner">
+      <div class="progress__text">
+        <span id="progressLabel">۰ از ۵۰ پاسخ داده شده</span>
+        <span id="progressPct">٪۰</span>
+      </div>
+      <div class="progress__bar">
+        <div class="progress__fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro screen -->
+  <section class="intro" id="introScreen">
+    <div class="container">
+      <div class="intro__badge">
+        <span class="intro__badge-dot"></span>
+        ابزار قطب‌نمای مدنی
+      </div>
+      <h1>آزمون شخصیت پنج‌عاملی بزرگ</h1>
+      <p>
+        پروفایل شخصیتی خود را در پنج بُعد اصلی شخصیت انسان کشف کنید.
+        ۵۰ سؤال، حدود ۵ تا ۱۰ دقیقه. کاملاً محرمانه — هیچ داده‌ای از مرورگر شما خارج نمی‌شود.
+      </p>
+      <div class="intro__traits">
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-O)"></span>گشودگی به تجربه</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-C)"></span>وظیفه‌شناسی</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-E)"></span>برون‌گرایی</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-A)"></span>توافق‌پذیری</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-N)"></span>روان‌رنجوری</span>
+      </div>
+      <button class="btn-start" id="btnStart">
+        شروع آزمون
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 16px;">
+        بر اساس پرسشنامه ۵۰ سؤالی <a href="https://ipip.ori.org/" target="_blank" rel="noopener">IPIP</a> (مالکیت عمومی).
+      </p>
+    </div>
+  </section>
+
+  <!-- Questions screen -->
+  <section class="questions" id="questionsScreen">
+    <div class="container" id="questionsList"></div>
+    <div class="submit-area" id="submitArea">
+      <button class="btn-submit" id="btnSubmit" disabled>
+        مشاهده نتایج
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="submit-area__hint" id="submitHint">برای مشاهده نتایج به همه ۵۰ سؤال پاسخ دهید</p>
+    </div>
+  </section>
+
+  <!-- Results screen -->
+  <section class="results" id="resultsScreen">
+    <div class="container">
+      <h2>پروفایل شخصیتی شما</h2>
+      <p class="results__subtitle">نمرات شما در پنج بُعد اصلی شخصیت:</p>
+      <div class="radar-wrap">
+        <canvas id="radarCanvas" width="400" height="400"></canvas>
+      </div>
+      <div class="trait-results" id="traitResults"></div>
+      <div class="results__footer">
+        <p class="results__privacy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          پاسخ‌های شما کاملاً در مرورگرتان پردازش شد. هیچ اطلاعاتی به هیچ سروری ارسال نشد.
+        </p>
+        <button class="btn-retake" id="btnRetake">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 100-6.36L1 10"/></svg>
+          آزمون دوباره
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a href="../../fa/index.html">جمهور</a> · آزمون شخصیت پنج‌عاملی · ابزار مدنی متن‌باز
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═══════════════════════════════════════════
+     IPIP 50-Item Big Five — Persian Translation
+     Each: [trait, persian_text, reversed]
+     Based on validated Persian IPIP translations
+     (NEO-PI-R Persian adaptations, Joshanloo & Afshari 2011,
+      Khosravi et al. 2012)
+     ═══════════════════════════════════════════ */
+  const ITEMS = [
+    // ── برون‌گرایی (Extraversion) — ۱۰ سؤال ──
+    ['E', 'من جان مهمانی هستم.', false],
+    ['E', 'زیاد حرف نمی‌زنم.', true],
+    ['E', 'در جمع احساس راحتی می‌کنم.', false],
+    ['E', 'ترجیح می‌دهم در حاشیه بمانم.', true],
+    ['E', 'مکالمه را شروع می‌کنم.', false],
+    ['E', 'حرف زیادی برای گفتن ندارم.', true],
+    ['E', 'در مهمانی‌ها با آدم‌های مختلف صحبت می‌کنم.', false],
+    ['E', 'دوست ندارم توجه دیگران را جلب کنم.', true],
+    ['E', 'از مرکز توجه بودن اذیت نمی‌شوم.', false],
+    ['E', 'در جمع غریبه‌ها ساکت هستم.', true],
+    // ── توافق‌پذیری (Agreeableness) — ۱۰ سؤال ──
+    ['A', 'نگرانی کمی برای دیگران دارم.', true],
+    ['A', 'به آدم‌ها علاقه‌مندم.', false],
+    ['A', 'به دیگران توهین می‌کنم.', true],
+    ['A', 'با احساسات دیگران همدردی می‌کنم.', false],
+    ['A', 'به مشکلات دیگران علاقه‌ای ندارم.', true],
+    ['A', 'دل نازکی دارم.', false],
+    ['A', 'واقعاً به دیگران علاقه‌ای ندارم.', true],
+    ['A', 'برای دیگران وقت می‌گذارم.', false],
+    ['A', 'احساسات دیگران را درک می‌کنم.', false],
+    ['A', 'باعث می‌شوم دیگران احساس راحتی کنند.', false],
+    // ── وظیفه‌شناسی (Conscientiousness) — ۱۰ سؤال ──
+    ['C', 'همیشه آماده هستم.', false],
+    ['C', 'وسایلم را همه‌جا رها می‌کنم.', true],
+    ['C', 'به جزئیات توجه می‌کنم.', false],
+    ['C', 'کارها را خراب می‌کنم.', true],
+    ['C', 'کارهای خانه را فوراً انجام می‌دهم.', false],
+    ['C', 'اغلب فراموش می‌کنم وسایل را سر جایشان بگذارم.', true],
+    ['C', 'نظم را دوست دارم.', false],
+    ['C', 'از زیر مسئولیت‌هایم شانه خالی می‌کنم.', true],
+    ['C', 'طبق برنامه عمل می‌کنم.', false],
+    ['C', 'در کارم دقیق و سخت‌گیر هستم.', false],
+    // ── روان‌رنجوری (Neuroticism) — ۱۰ سؤال ──
+    ['N', 'به‌راحتی استرس می‌گیرم.', false],
+    ['N', 'بیشتر اوقات آرام و ریلکس هستم.', true],
+    ['N', 'نگران چیزهای مختلف می‌شوم.', false],
+    ['N', 'به‌ندرت احساس غمگینی می‌کنم.', true],
+    ['N', 'به‌راحتی آشفته می‌شوم.', false],
+    ['N', 'به‌راحتی ناراحت می‌شوم.', false],
+    ['N', 'حال و هوایم زیاد عوض می‌شود.', false],
+    ['N', 'نوسانات خلقی زیادی دارم.', false],
+    ['N', 'به‌راحتی عصبانی می‌شوم.', false],
+    ['N', 'اغلب احساس غمگینی می‌کنم.', false],
+    // ── گشودگی به تجربه (Openness) — ۱۰ سؤال ──
+    ['O', 'دایره لغاتم گسترده است.', false],
+    ['O', 'در فهم مفاهیم انتزاعی مشکل دارم.', true],
+    ['O', 'تخیل قوی دارم.', false],
+    ['O', 'به ایده‌های انتزاعی علاقه‌ای ندارم.', true],
+    ['O', 'ایده‌های عالی دارم.', false],
+    ['O', 'قوه تخیل خوبی ندارم.', true],
+    ['O', 'مطالب را سریع درک می‌کنم.', false],
+    ['O', 'از کلمات دشوار استفاده می‌کنم.', false],
+    ['O', 'وقتم را صرف تأمل و تفکر می‌کنم.', false],
+    ['O', 'سرشار از ایده هستم.', false],
+  ];
+
+  const TRAITS = {
+    O: { name: 'گشودگی به تجربه', nameEn: 'Openness', color: 'var(--color-O)', hex: '#F59E0B',
+         desc: 'گشودگی بازتاب تخیل، کنجکاوی و تمایل به کاوش ایده‌ها، هنر و تجربه‌های جدید است. نمره بالا: خلاق و ماجراجو. نمره پایین: عمل‌گرا و روتین‌مدار.' },
+    C: { name: 'وظیفه‌شناسی', nameEn: 'Conscientiousness', color: 'var(--color-C)', hex: '#10B981',
+         desc: 'وظیفه‌شناسی بازتاب سازمان‌دهی، قابل‌اتکا بودن و انضباط شخصی است. نمره بالا: روش‌مند و هدف‌مدار. نمره پایین: انعطاف‌پذیر و خودانگیخته.' },
+    E: { name: 'برون‌گرایی', nameEn: 'Extraversion', color: 'var(--color-E)', hex: '#6366F1',
+         desc: 'برون‌گرایی بازتاب اجتماعی بودن، قاطعیت و انرژی مثبت است. نمره بالا: در جمع پر انرژی. نمره پایین: ترجیح تنهایی و محیط‌های آرام.' },
+    A: { name: 'توافق‌پذیری', nameEn: 'Agreeableness', color: 'var(--color-A)', hex: '#EC4899',
+         desc: 'توافق‌پذیری بازتاب همدلی، همکاری و اعتماد است. نمره بالا: مهربان و کمک‌رسان. نمره پایین: رقابتی و شکاک.' },
+    N: { name: 'روان‌رنجوری', nameEn: 'Neuroticism', color: 'var(--color-N)', hex: '#EF4444',
+         desc: 'روان‌رنجوری بازتاب بی‌ثباتی عاطفی و آمادگی برای استرس است. نمره بالا: اضطراب و نوسان خلقی بیشتر. نمره پایین: آرام و از نظر عاطفی مقاوم.' },
+  };
+
+  const TRAIT_ORDER = ['O', 'C', 'E', 'A', 'N'];
+  const TOTAL_QUESTIONS = ITEMS.length;
+
+  // ── Shuffle ──
+  const shuffled = ITEMS.map((item, i) => ({ item, idx: i }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  // ── Persian numerals ──
+  function toPersianNum(n) {
+    const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return String(n).replace(/\d/g, d => fa[d]);
+  }
+
+  // ── Theme toggle ──
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('jomhoor-theme');
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next === 'dark' ? '' : next);
+    if (next === 'dark') document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('jomhoor-theme', next);
+  });
+
+  // ── DOM refs ──
+  const introScreen = document.getElementById('introScreen');
+  const questionsScreen = document.getElementById('questionsScreen');
+  const resultsScreen = document.getElementById('resultsScreen');
+  const progressBar = document.getElementById('progress');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressPct = document.getElementById('progressPct');
+  const questionsList = document.getElementById('questionsList');
+  const submitArea = document.getElementById('submitArea');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const submitHint = document.getElementById('submitHint');
+
+  // ── Build questions UI ──
+  const groupedByTrait = {};
+  TRAIT_ORDER.forEach(t => { groupedByTrait[t] = []; });
+  shuffled.forEach(({ item, idx }) => {
+    groupedByTrait[item[0]].push({ item, originalIdx: idx });
+  });
+
+  let globalNum = 0;
+  TRAIT_ORDER.forEach(traitKey => {
+    const trait = TRAITS[traitKey];
+    const group = document.createElement('div');
+    group.className = 'question-group';
+    group.innerHTML = `
+      <div class="question-group__header">
+        <span class="question-group__dot" style="background: ${trait.color}"></span>
+        <span class="question-group__title">${trait.name}</span>
+        <span class="question-group__subtitle">۱۰ سؤال</span>
+      </div>
+    `;
+
+    groupedByTrait[traitKey].forEach(({ item, originalIdx }) => {
+      globalNum++;
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.dataset.idx = originalIdx;
+      card.innerHTML = `
+        <div class="question-card__text">
+          <span class="question-card__number">${toPersianNum(globalNum)}.</span>
+          ${escapeHtml(item[1])}
+        </div>
+        <div class="likert">
+          ${[1,2,3,4,5].map(v => `
+            <label class="likert__option">
+              <input type="radio" class="likert__radio" name="q${originalIdx}" value="${v}" />
+              <span class="likert__val">${['کم','نه','—','آره','کامل'][v-1]}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="likert__labels">
+          <span class="likert__label">کاملاً مخالفم</span>
+          <span class="likert__label">کاملاً موافقم</span>
+        </div>
+      `;
+      group.appendChild(card);
+    });
+
+    questionsList.appendChild(group);
+  });
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ── Track answers ──
+  const answers = new Array(TOTAL_QUESTIONS).fill(null);
+
+  questionsList.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('likert__radio')) return;
+    const card = e.target.closest('.question-card');
+    const idx = parseInt(card.dataset.idx, 10);
+    answers[idx] = parseInt(e.target.value, 10);
+    card.classList.add('answered');
+    updateProgress();
+  });
+
+  function updateProgress() {
+    const answered = answers.filter(a => a !== null).length;
+    const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = `${toPersianNum(answered)} از ${toPersianNum(TOTAL_QUESTIONS)} پاسخ داده شده`;
+    progressPct.textContent = `٪${toPersianNum(pct)}`;
+
+    if (answered === TOTAL_QUESTIONS) {
+      btnSubmit.disabled = false;
+      submitHint.textContent = 'همه سؤالات پاسخ داده شد!';
+    } else {
+      const rem = TOTAL_QUESTIONS - answered;
+      btnSubmit.disabled = true;
+      submitHint.textContent = `${toPersianNum(rem)} سؤال باقی‌مانده`;
+    }
+  }
+
+  // ── Screen transitions ──
+  document.getElementById('btnStart').addEventListener('click', () => {
+    introScreen.style.display = 'none';
+    questionsScreen.classList.add('active');
+    progressBar.classList.add('active');
+    submitArea.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  btnSubmit.addEventListener('click', () => {
+    if (answers.some(a => a === null)) return;
+    const scores = calculateScores();
+    questionsScreen.classList.remove('active');
+    progressBar.classList.remove('active');
+    submitArea.classList.remove('active');
+    resultsScreen.classList.add('active');
+    renderResults(scores);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('btnRetake').addEventListener('click', () => {
+    answers.fill(null);
+    document.querySelectorAll('.likert__radio').forEach(r => r.checked = false);
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('answered'));
+    resultsScreen.classList.remove('active');
+    introScreen.style.display = '';
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ── Scoring ──
+  function calculateScores() {
+    const sums = { O: 0, C: 0, E: 0, A: 0, N: 0 };
+    ITEMS.forEach((item, i) => {
+      const [trait, , reversed] = item;
+      const raw = answers[i];
+      sums[trait] += reversed ? (6 - raw) : raw;
+    });
+    const scores = {};
+    TRAIT_ORDER.forEach(t => {
+      scores[t] = Math.round(((sums[t] - 10) / 40) * 100);
+    });
+    return scores;
+  }
+
+  // ── Render results ──
+  function renderResults(scores) {
+    drawRadar(scores);
+    const container = document.getElementById('traitResults');
+    container.innerHTML = '';
+    TRAIT_ORDER.forEach(t => {
+      const score = scores[t];
+      const trait = TRAITS[t];
+      const level = score >= 70 ? 'بالا' : score >= 40 ? 'متوسط' : 'پایین';
+      const levelColor = score >= 70 ? '#10B981' : score >= 40 ? '#F59E0B' : '#6366F1';
+      const el = document.createElement('div');
+      el.className = 'trait-result';
+      el.innerHTML = `
+        <div class="trait-result__header">
+          <span class="trait-result__dot" style="background: ${trait.color}"></span>
+          <span class="trait-result__name">${trait.name}</span>
+          <span class="trait-result__level" style="background: ${levelColor}20; color: ${levelColor}">${level}</span>
+          <span class="trait-result__score">٪${toPersianNum(score)}</span>
+        </div>
+        <div class="trait-result__bar">
+          <div class="trait-result__fill" style="width: 0%; background: ${trait.color}"></div>
+        </div>
+        <p class="trait-result__desc">${trait.desc}</p>
+      `;
+      container.appendChild(el);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.querySelector('.trait-result__fill').style.width = score + '%';
+        });
+      });
+    });
+  }
+
+  // ── Radar chart ──
+  function drawRadar(scores) {
+    const canvas = document.getElementById('radarCanvas');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 400;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, size, size);
+
+    const cx = size / 2;
+    const cy = size / 2;
+    const maxR = 140;
+    const n = TRAIT_ORDER.length;
+    const angleStep = (2 * Math.PI) / n;
+    const startAngle = -Math.PI / 2;
+
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const gridColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
+    const textColor = isLight ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.7)';
+
+    // Grid rings
+    [0.2, 0.4, 0.6, 0.8, 1.0].forEach(frac => {
+      ctx.beginPath();
+      for (let i = 0; i <= n; i++) {
+        const angle = startAngle + i * angleStep;
+        const x = cx + Math.cos(angle) * maxR * frac;
+        const y = cy + Math.sin(angle) * maxR * frac;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Axes
+    TRAIT_ORDER.forEach((_, i) => {
+      const angle = startAngle + i * angleStep;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Data polygon
+    ctx.beginPath();
+    TRAIT_ORDER.forEach((t, i) => {
+      const angle = startAngle + i * angleStep;
+      const r = (scores[t] / 100) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = isLight ? 'rgba(59, 130, 246, 0.15)' : 'rgba(91, 157, 245, 0.15)';
+    ctx.fill();
+    ctx.strokeStyle = isLight ? '#3B82F6' : '#5B9DF5';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Points and labels
+    TRAIT_ORDER.forEach((t, i) => {
+      const angle = startAngle + i * angleStep;
+      const r = (scores[t] / 100) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = TRAITS[t].hex;
+      ctx.fill();
+      ctx.strokeStyle = isLight ? '#fff' : '#111';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      const lx = cx + Math.cos(angle) * (maxR + 28);
+      const ly = cy + Math.sin(angle) * (maxR + 28);
+      ctx.font = '600 12px Vazirmatn, Inter, sans-serif';
+      ctx.fillStyle = textColor;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(TRAITS[t].name, lx, ly);
+
+      ctx.font = '700 11px Inter, sans-serif';
+      ctx.fillStyle = TRAITS[t].hex;
+      ctx.fillText('٪' + toPersianNum(scores[t]), lx, ly + 18);
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

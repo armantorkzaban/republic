@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Big Five Personality Test — Jomhoor</title>
+  <meta name="description" content="Discover your personality profile across the Big Five dimensions: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism. Free, private, no data collected." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Theme Variables (matched to Jomhoor.org) ── */
+    :root {
+      --bg-primary: #111111;
+      --bg-secondary: #171717;
+      --bg-card: #292929;
+      --bg-card-hover: #3D3D3D;
+      --text-primary: rgba(255, 255, 255, 0.9);
+      --text-secondary: rgba(255, 255, 255, 0.56);
+      --text-muted: rgba(255, 255, 255, 0.44);
+      --accent-primary: #5B9DF5;
+      --accent-secondary: #38BDF8;
+      --accent-gradient: linear-gradient(87.63deg, #5B9DF5 -1.41%, #38BDF8 113.73%);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --component-primary: rgba(255, 255, 255, 0.05);
+      --component-hovered: rgba(255, 255, 255, 0.1);
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      /* Trait colors */
+      --color-O: #F59E0B;
+      --color-C: #10B981;
+      --color-E: #6366F1;
+      --color-A: #EC4899;
+      --color-N: #EF4444;
+    }
+    [data-theme="light"] {
+      --bg-primary: #F5F7FA;
+      --bg-secondary: #EBEEF2;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F0F2F5;
+      --text-primary: rgba(0, 0, 0, 0.87);
+      --text-secondary: rgba(0, 0, 0, 0.6);
+      --text-muted: rgba(0, 0, 0, 0.44);
+      --accent-primary: #3B82F6;
+      --accent-secondary: #0EA5E9;
+      --accent-gradient: linear-gradient(87.63deg, #3B82F6 -1.41%, #0EA5E9 113.73%);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --component-primary: rgba(0, 0, 0, 0.04);
+      --component-hovered: rgba(0, 0, 0, 0.07);
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--accent-secondary); text-decoration: none; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(20px);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar__left { display: flex; align-items: center; gap: 12px; }
+    .topbar__back {
+      color: var(--text-secondary); font-size: 0.875rem;
+      display: flex; align-items: center; gap: 6px;
+      transition: color var(--transition);
+    }
+    .topbar__back:hover { color: var(--text-primary); }
+    .topbar__title { font-weight: 600; font-size: 1rem; }
+    .topbar__theme {
+      background: none; border: none; cursor: pointer;
+      color: var(--accent-primary); font-size: 1.2rem;
+      transition: all 0.4s ease;
+      filter: drop-shadow(0 0 6px var(--accent-primary));
+    }
+    .topbar__theme:hover { transform: scale(1.2); }
+
+    /* ── Layout ── */
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Intro ── */
+    .intro {
+      text-align: center; padding: 64px 0 48px;
+    }
+    .intro__badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 0.8rem; color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .intro__badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-primary);
+      box-shadow: 0 0 8px var(--accent-primary);
+    }
+    .intro h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700; letter-spacing: -0.03em;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .intro p {
+      color: var(--text-secondary); font-size: 1.05rem;
+      max-width: 560px; margin: 0 auto 32px;
+    }
+    .intro__traits {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+      margin-bottom: 32px;
+    }
+    .intro__trait {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 6px 14px;
+      font-size: 0.82rem; color: var(--text-secondary);
+    }
+    .intro__trait-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .btn-start {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-gradient);
+      color: #fff; border: none; border-radius: 100px;
+      padding: 14px 32px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all var(--transition);
+      font-family: inherit;
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(91, 157, 245, 0.3); }
+
+    /* ── Progress ── */
+    .progress {
+      position: sticky; top: 52px; z-index: 90;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: none;
+    }
+    .progress.active { display: block; }
+    .progress__inner { max-width: 720px; margin: 0 auto; }
+    .progress__text {
+      font-size: 0.8rem; color: var(--text-muted);
+      margin-bottom: 6px; display: flex; justify-content: space-between;
+    }
+    .progress__bar {
+      height: 4px; background: var(--component-primary);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress__fill {
+      height: 100%; border-radius: 4px;
+      background: var(--accent-gradient);
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* ── Questions ── */
+    .questions { padding: 32px 0 80px; display: none; }
+    .questions.active { display: block; }
+    .question-group {
+      margin-bottom: 48px;
+    }
+    .question-group__header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .question-group__dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .question-group__title {
+      font-size: 0.95rem; font-weight: 600;
+      color: var(--text-primary);
+    }
+    .question-group__subtitle {
+      font-size: 0.78rem; color: var(--text-muted); margin-left: auto;
+    }
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .question-card:hover { border-color: var(--component-hovered); }
+    .question-card.answered { border-color: rgba(91, 157, 245, 0.15); }
+    .question-card__text {
+      font-size: 0.95rem; margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+    .question-card__number {
+      color: var(--text-muted); font-size: 0.8rem; margin-right: 6px;
+    }
+    .likert {
+      display: flex; gap: 0; justify-content: space-between;
+    }
+    .likert__labels {
+      display: flex; justify-content: space-between;
+      margin-top: 6px;
+    }
+    .likert__label {
+      font-size: 0.7rem; color: var(--text-muted);
+    }
+    .likert__option {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+    }
+    .likert__radio {
+      appearance: none; -webkit-appearance: none;
+      width: 100%; height: 40px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .likert__option:first-child .likert__radio {
+      border-radius: 8px 0 0 8px;
+    }
+    .likert__option:last-child .likert__radio {
+      border-radius: 0 8px 8px 0;
+    }
+    .likert__radio:hover {
+      background: var(--component-hovered);
+    }
+    .likert__radio:checked {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+    .likert__val {
+      font-size: 0.7rem; color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .likert__option:has(.likert__radio:checked) .likert__val {
+      color: var(--accent-primary); font-weight: 600;
+    }
+
+    /* ── Submit ── */
+    .submit-area {
+      text-align: center; padding: 24px 0 64px;
+      display: none;
+    }
+    .submit-area.active { display: block; }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-gradient);
+      color: #fff; border: none; border-radius: 100px;
+      padding: 14px 40px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all var(--transition);
+      font-family: inherit;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(91, 157, 245, 0.3); }
+    .btn-submit:disabled {
+      opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none;
+    }
+    .submit-area__hint {
+      font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;
+    }
+
+    /* ── Results ── */
+    .results { padding: 48px 0 80px; display: none; text-align: center; }
+    .results.active { display: block; }
+    .results h2 {
+      font-size: 1.75rem; font-weight: 700; margin-bottom: 8px;
+    }
+    .results__subtitle {
+      color: var(--text-secondary); margin-bottom: 40px; font-size: 0.95rem;
+    }
+    .radar-wrap {
+      display: flex; justify-content: center; margin-bottom: 48px;
+    }
+    .radar-wrap canvas {
+      max-width: 400px; width: 100%; height: auto;
+    }
+    .trait-results {
+      display: grid; gap: 16px; text-align: left;
+    }
+    .trait-result {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+    }
+    .trait-result__header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .trait-result__dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .trait-result__name {
+      font-weight: 600; font-size: 0.95rem;
+    }
+    .trait-result__score {
+      margin-left: auto; font-weight: 700; font-size: 1.1rem;
+      color: var(--accent-primary);
+    }
+    .trait-result__bar {
+      height: 6px; background: var(--component-primary);
+      border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+    }
+    .trait-result__fill {
+      height: 100%; border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+    .trait-result__desc {
+      font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+    }
+    .trait-result__level {
+      display: inline-block; font-size: 0.75rem; font-weight: 600;
+      padding: 2px 10px; border-radius: 100px;
+      margin-left: 8px;
+    }
+    .results__footer {
+      margin-top: 48px; padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+    .results__privacy {
+      font-size: 0.8rem; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-retake {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--component-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 100px;
+      padding: 10px 24px; font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition);
+      font-family: inherit; margin-top: 16px;
+    }
+    .btn-retake:hover { background: var(--component-hovered); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center; padding: 32px 24px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .intro { padding: 40px 0 32px; }
+      .intro h1 { font-size: 1.5rem; }
+      .question-card { padding: 16px 18px; }
+      .likert__radio { height: 36px; }
+      .question-group__subtitle { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <a href="../../en/index.html" class="topbar__back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Jomhoor.org
+      </a>
+      <span class="topbar__title">Big Five Personality Test</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="fa.html" style="font-size:0.8rem;color:var(--text-secondary);padding:4px 10px;border:1px solid var(--border-color);border-radius:6px;transition:all var(--transition);">FA</a>
+      <button class="topbar__theme" id="themeToggle" aria-label="Toggle light/dark mode">●</button>
+    </div>
+  </header>
+
+  <!-- Progress bar -->
+  <div class="progress" id="progress">
+    <div class="progress__inner">
+      <div class="progress__text">
+        <span id="progressLabel">0 of 50 answered</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress__bar">
+        <div class="progress__fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro screen -->
+  <section class="intro" id="introScreen">
+    <div class="container">
+      <div class="intro__badge">
+        <span class="intro__badge-dot"></span>
+        Civic Compass Tool
+      </div>
+      <h1>Big Five Personality Test</h1>
+      <p>
+        Discover your personality profile across the five fundamental dimensions of human personality. 
+        50 questions, takes about 5–10 minutes. Completely private — no data leaves your browser.
+      </p>
+      <div class="intro__traits">
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-O)"></span>Openness</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-C)"></span>Conscientiousness</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-E)"></span>Extraversion</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-A)"></span>Agreeableness</span>
+        <span class="intro__trait"><span class="intro__trait-dot" style="background: var(--color-N)"></span>Neuroticism</span>
+      </div>
+      <button class="btn-start" id="btnStart">
+        Begin Test
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 16px;">
+        Based on the <a href="https://ipip.ori.org/" target="_blank" rel="noopener">IPIP</a> 50-item inventory (public domain).
+      </p>
+    </div>
+  </section>
+
+  <!-- Questions screen -->
+  <section class="questions" id="questionsScreen">
+    <div class="container" id="questionsList"></div>
+    <div class="submit-area" id="submitArea">
+      <button class="btn-submit" id="btnSubmit" disabled>
+        See My Results
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="submit-area__hint" id="submitHint">Answer all 50 questions to see your results</p>
+    </div>
+  </section>
+
+  <!-- Results screen -->
+  <section class="results" id="resultsScreen">
+    <div class="container">
+      <h2>Your Personality Profile</h2>
+      <p class="results__subtitle">Here's how you scored across the Big Five dimensions.</p>
+      <div class="radar-wrap">
+        <canvas id="radarCanvas" width="400" height="400"></canvas>
+      </div>
+      <div class="trait-results" id="traitResults"></div>
+      <div class="results__footer">
+        <p class="results__privacy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Your answers were processed entirely in your browser. Nothing was sent to any server.
+        </p>
+        <button class="btn-retake" id="btnRetake">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 100-6.36L1 10"/></svg>
+          Retake Test
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a href="../../en/index.html">Jomhoor.org</a> · Big Five Personality Test · Open-source civic tool
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═══════════════════════════════════════════
+     IPIP 50-Item Big Five Inventory
+     Each item: [trait, text, reversed]
+     Traits: O=Openness, C=Conscientiousness,
+             E=Extraversion, A=Agreeableness, N=Neuroticism
+     ═══════════════════════════════════════════ */
+  const ITEMS = [
+    // ── Extraversion (10) ──
+    ['E', 'I am the life of the party.', false],
+    ['E', 'I don\'t talk a lot.', true],
+    ['E', 'I feel comfortable around people.', false],
+    ['E', 'I keep in the background.', true],
+    ['E', 'I start conversations.', false],
+    ['E', 'I have little to say.', true],
+    ['E', 'I talk to a lot of different people at parties.', false],
+    ['E', 'I don\'t like to draw attention to myself.', true],
+    ['E', 'I don\'t mind being the center of attention.', false],
+    ['E', 'I am quiet around strangers.', true],
+    // ── Agreeableness (10) ──
+    ['A', 'I feel little concern for others.', true],
+    ['A', 'I am interested in people.', false],
+    ['A', 'I insult people.', true],
+    ['A', 'I sympathize with others\' feelings.', false],
+    ['A', 'I am not interested in other people\'s problems.', true],
+    ['A', 'I have a soft heart.', false],
+    ['A', 'I am not really interested in others.', true],
+    ['A', 'I take time out for others.', false],
+    ['A', 'I feel others\' emotions.', false],
+    ['A', 'I make people feel at ease.', false],
+    // ── Conscientiousness (10) ──
+    ['C', 'I am always prepared.', false],
+    ['C', 'I leave my belongings around.', true],
+    ['C', 'I pay attention to details.', false],
+    ['C', 'I make a mess of things.', true],
+    ['C', 'I get chores done right away.', false],
+    ['C', 'I often forget to put things back in their proper place.', true],
+    ['C', 'I like order.', false],
+    ['C', 'I shirk my duties.', true],
+    ['C', 'I follow a schedule.', false],
+    ['C', 'I am exacting in my work.', false],
+    // ── Neuroticism (10) ──
+    ['N', 'I get stressed out easily.', false],
+    ['N', 'I am relaxed most of the time.', true],
+    ['N', 'I worry about things.', false],
+    ['N', 'I seldom feel blue.', true],
+    ['N', 'I am easily disturbed.', false],
+    ['N', 'I get upset easily.', false],
+    ['N', 'I change my mood a lot.', false],
+    ['N', 'I have frequent mood swings.', false],
+    ['N', 'I get irritated easily.', false],
+    ['N', 'I often feel blue.', false],
+    // ── Openness (10) ──
+    ['O', 'I have a rich vocabulary.', false],
+    ['O', 'I have difficulty understanding abstract ideas.', true],
+    ['O', 'I have a vivid imagination.', false],
+    ['O', 'I am not interested in abstract ideas.', true],
+    ['O', 'I have excellent ideas.', false],
+    ['O', 'I do not have a good imagination.', true],
+    ['O', 'I am quick to understand things.', false],
+    ['O', 'I use difficult words.', false],
+    ['O', 'I spend time reflecting on things.', false],
+    ['O', 'I am full of ideas.', false],
+  ];
+
+  const TRAITS = {
+    O: { name: 'Openness', color: 'var(--color-O)', hex: '#F59E0B',
+         desc: 'Openness reflects imagination, curiosity, and willingness to explore new ideas, art, and experiences. High scorers are creative and adventurous; low scorers prefer routine and the concrete.' },
+    C: { name: 'Conscientiousness', color: 'var(--color-C)', hex: '#10B981',
+         desc: 'Conscientiousness reflects organization, dependability, and self-discipline. High scorers are methodical and goal-oriented; low scorers are more flexible and spontaneous.' },
+    E: { name: 'Extraversion', color: 'var(--color-E)', hex: '#6366F1',
+         desc: 'Extraversion reflects sociability, assertiveness, and positive energy. High scorers thrive in social settings; low scorers prefer solitude and quieter environments.' },
+    A: { name: 'Agreeableness', color: 'var(--color-A)', hex: '#EC4899',
+         desc: 'Agreeableness reflects compassion, cooperativeness, and trust. High scorers are empathetic and helpful; low scorers are more competitive and skeptical.' },
+    N: { name: 'Neuroticism', color: 'var(--color-N)', hex: '#EF4444',
+         desc: 'Neuroticism reflects emotional instability and proneness to stress. High scorers experience more anxiety and mood swings; low scorers are calm and emotionally resilient.' },
+  };
+
+  const TRAIT_ORDER = ['O', 'C', 'E', 'A', 'N'];
+  const TOTAL_QUESTIONS = ITEMS.length;
+
+  // ── Shuffle items deterministically per session ──
+  const shuffled = ITEMS.map((item, i) => ({ item, idx: i }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  // ── Theme toggle ──
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('jomhoor-theme');
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next === 'dark' ? '' : next);
+    if (next === 'dark') document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('jomhoor-theme', next);
+  });
+
+  // ── DOM refs ──
+  const introScreen = document.getElementById('introScreen');
+  const questionsScreen = document.getElementById('questionsScreen');
+  const resultsScreen = document.getElementById('resultsScreen');
+  const progressBar = document.getElementById('progress');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressPct = document.getElementById('progressPct');
+  const questionsList = document.getElementById('questionsList');
+  const submitArea = document.getElementById('submitArea');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const submitHint = document.getElementById('submitHint');
+
+  // ── Build questions UI ──
+  // Group by trait in display order
+  const groupedByTrait = {};
+  TRAIT_ORDER.forEach(t => { groupedByTrait[t] = []; });
+  shuffled.forEach(({ item, idx }) => {
+    groupedByTrait[item[0]].push({ item, originalIdx: idx });
+  });
+
+  let globalNum = 0;
+  TRAIT_ORDER.forEach(traitKey => {
+    const trait = TRAITS[traitKey];
+    const group = document.createElement('div');
+    group.className = 'question-group';
+    group.innerHTML = `
+      <div class="question-group__header">
+        <span class="question-group__dot" style="background: ${trait.color}"></span>
+        <span class="question-group__title">${trait.name}</span>
+        <span class="question-group__subtitle">10 questions</span>
+      </div>
+    `;
+
+    groupedByTrait[traitKey].forEach(({ item, originalIdx }) => {
+      globalNum++;
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.dataset.idx = originalIdx;
+      card.innerHTML = `
+        <div class="question-card__text">
+          <span class="question-card__number">${globalNum}.</span>
+          ${escapeHtml(item[1])}
+        </div>
+        <div class="likert">
+          ${[1,2,3,4,5].map(v => `
+            <label class="likert__option">
+              <input type="radio" class="likert__radio" name="q${originalIdx}" value="${v}" />
+              <span class="likert__val">${['SD','D','N','A','SA'][v-1]}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="likert__labels">
+          <span class="likert__label">Strongly Disagree</span>
+          <span class="likert__label">Strongly Agree</span>
+        </div>
+      `;
+      group.appendChild(card);
+    });
+
+    questionsList.appendChild(group);
+  });
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ── Track answers ──
+  const answers = new Array(TOTAL_QUESTIONS).fill(null);
+
+  questionsList.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('likert__radio')) return;
+    const card = e.target.closest('.question-card');
+    const idx = parseInt(card.dataset.idx, 10);
+    answers[idx] = parseInt(e.target.value, 10);
+    card.classList.add('answered');
+    updateProgress();
+  });
+
+  function updateProgress() {
+    const answered = answers.filter(a => a !== null).length;
+    const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = `${answered} of ${TOTAL_QUESTIONS} answered`;
+    progressPct.textContent = pct + '%';
+
+    if (answered === TOTAL_QUESTIONS) {
+      btnSubmit.disabled = false;
+      submitHint.textContent = 'All questions answered!';
+    } else {
+      btnSubmit.disabled = true;
+      submitHint.textContent = `${TOTAL_QUESTIONS - answered} question${TOTAL_QUESTIONS - answered === 1 ? '' : 's'} remaining`;
+    }
+  }
+
+  // ── Screen transitions ──
+  document.getElementById('btnStart').addEventListener('click', () => {
+    introScreen.style.display = 'none';
+    questionsScreen.classList.add('active');
+    progressBar.classList.add('active');
+    submitArea.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  btnSubmit.addEventListener('click', () => {
+    if (answers.some(a => a === null)) return;
+    const scores = calculateScores();
+    questionsScreen.classList.remove('active');
+    progressBar.classList.remove('active');
+    submitArea.classList.remove('active');
+    resultsScreen.classList.add('active');
+    renderResults(scores);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('btnRetake').addEventListener('click', () => {
+    answers.fill(null);
+    document.querySelectorAll('.likert__radio').forEach(r => r.checked = false);
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('answered'));
+    resultsScreen.classList.remove('active');
+    introScreen.style.display = '';
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ── Scoring ──
+  function calculateScores() {
+    const sums = { O: 0, C: 0, E: 0, A: 0, N: 0 };
+    ITEMS.forEach((item, i) => {
+      const [trait, , reversed] = item;
+      const raw = answers[i];
+      sums[trait] += reversed ? (6 - raw) : raw;
+    });
+    // Normalize to 0–100 scale (min=10, max=50 per trait)
+    const scores = {};
+    TRAIT_ORDER.forEach(t => {
+      scores[t] = Math.round(((sums[t] - 10) / 40) * 100);
+    });
+    return scores;
+  }
+
+  // ── Render results ──
+  function renderResults(scores) {
+    drawRadar(scores);
+    const container = document.getElementById('traitResults');
+    container.innerHTML = '';
+    TRAIT_ORDER.forEach(t => {
+      const score = scores[t];
+      const trait = TRAITS[t];
+      const level = score >= 70 ? 'High' : score >= 40 ? 'Moderate' : 'Low';
+      const levelColor = score >= 70 ? '#10B981' : score >= 40 ? '#F59E0B' : '#6366F1';
+      const el = document.createElement('div');
+      el.className = 'trait-result';
+      el.innerHTML = `
+        <div class="trait-result__header">
+          <span class="trait-result__dot" style="background: ${trait.color}"></span>
+          <span class="trait-result__name">${trait.name}</span>
+          <span class="trait-result__level" style="background: ${levelColor}20; color: ${levelColor}">${level}</span>
+          <span class="trait-result__score">${score}%</span>
+        </div>
+        <div class="trait-result__bar">
+          <div class="trait-result__fill" style="width: 0%; background: ${trait.color}"></div>
+        </div>
+        <p class="trait-result__desc">${trait.desc}</p>
+      `;
+      container.appendChild(el);
+      // Animate bar
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.querySelector('.trait-result__fill').style.width = score + '%';
+        });
+      });
+    });
+  }
+
+  // ── Radar chart (canvas) ──
+  function drawRadar(scores) {
+    const canvas = document.getElementById('radarCanvas');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 400;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, size, size);
+
+    const cx = size / 2;
+    const cy = size / 2;
+    const maxR = 150;
+    const n = TRAIT_ORDER.length;
+    const angleStep = (2 * Math.PI) / n;
+    const startAngle = -Math.PI / 2; // Start from top
+
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const gridColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
+    const textColor = isLight ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.7)';
+
+    // Draw grid rings
+    [0.2, 0.4, 0.6, 0.8, 1.0].forEach(frac => {
+      ctx.beginPath();
+      for (let i = 0; i <= n; i++) {
+        const angle = startAngle + i * angleStep;
+        const x = cx + Math.cos(angle) * maxR * frac;
+        const y = cy + Math.sin(angle) * maxR * frac;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Draw axes
+    TRAIT_ORDER.forEach((_, i) => {
+      const angle = startAngle + i * angleStep;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Draw data polygon
+    ctx.beginPath();
+    TRAIT_ORDER.forEach((t, i) => {
+      const angle = startAngle + i * angleStep;
+      const r = (scores[t] / 100) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = isLight ? 'rgba(59, 130, 246, 0.15)' : 'rgba(91, 157, 245, 0.15)';
+    ctx.fill();
+    ctx.strokeStyle = isLight ? '#3B82F6' : '#5B9DF5';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw data points and labels
+    TRAIT_ORDER.forEach((t, i) => {
+      const angle = startAngle + i * angleStep;
+      const r = (scores[t] / 100) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+
+      // Point
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = TRAITS[t].hex;
+      ctx.fill();
+      ctx.strokeStyle = isLight ? '#fff' : '#111';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Label
+      const lx = cx + Math.cos(angle) * (maxR + 24);
+      const ly = cy + Math.sin(angle) * (maxR + 24);
+      ctx.font = '600 13px Inter, sans-serif';
+      ctx.fillStyle = textColor;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(TRAITS[t].name, lx, ly);
+
+      // Score value
+      ctx.font = '700 11px Inter, sans-serif';
+      ctx.fillStyle = TRAITS[t].hex;
+      ctx.fillText(scores[t] + '%', lx, ly + 16);
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
