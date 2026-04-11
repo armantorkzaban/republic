@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <!-- Inner glow: text-shadow 0 0 14px -->
+    <radialGradient id="glow-inner" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Outer glow: text-shadow 0 0 28px -->
+    <radialGradient id="glow-outer" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#F59E0B" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Outer glow (28px equivalent — ~2.3x the body radius) -->
+  <circle cx="150" cy="150" r="150" fill="url(#glow-outer)"/>
+
+  <!-- Inner glow (14px equivalent) -->
+  <circle cx="150" cy="150" r="95" fill="url(#glow-inner)"/>
+
+  <!-- Sun body (flat #F59E0B — exact match to CSS) -->
+  <circle cx="150" cy="150" r="42" fill="#F59E0B"/>
+</svg>
