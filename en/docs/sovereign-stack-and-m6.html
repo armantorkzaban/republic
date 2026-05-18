@@ -84,29 +84,50 @@
       <p>This is the structural one. Every vote that ever happens on Jomhoor is gated by an identity registration that was admitted by <code>Registration2</code>. Who is allowed to register, and against which CSCAs, is decided by whoever admins that contract. Right now, that is not us. For a platform whose mission is <em>sovereign civic infrastructure for Iran</em>, that is the wrong topology.</p>
 
       <h2>What M6 changes</h2>
-      <pre><code>                        ┌────────────────────────────────┐
-                        │       Rarimo L2 (chain)        │
-                        │  • chain id 7368               │
-                        │  • RMO gas token               │
-                        │  • Rarimo-operated validators  │
-                        │  • Anchored to Ethereum        │
-                        │  ── STAYS THE SAME ──          │
-                        └────────────────────────────────┘
-                                       │
-            ┌──────────────────────────┴──────────────────────────┐
-            │                                                     │
-            ▼                                                     ▼
-   ┌────────────────────┐                                ┌────────────────────┐
-   │ Rarimo's contracts │                                │ Jomhoor's contracts│
-   │ Registration2      │      ──── M6 migration ──→     │ Registration2      │
-   │ StateKeeper        │                                │ StateKeeper        │
-   │ RegistrationSMT    │                                │ RegistrationSMT    │
-   │ CertificatesSMT    │                                │ CertificatesSMT    │
-   │ Dispatchers        │                                │ Dispatchers        │
-   │ Verifiers          │                                │ Verifiers          │
-   │  Governed by       │                                │  Governed by       │
-   │  Rarimo            │                                │  Jomhoor multisig  │
-   └────────────────────┘                                └────────────────────┘</code></pre>
+      <div class="doc-diagram doc-diagram--split">
+        <div class="doc-diagram__card doc-diagram__top">
+          <h3>Rarimo L2 <span class="muted">(chain)</span></h3>
+          <ul>
+            <li>chain id 7368</li>
+            <li><code>RMO</code> gas token</li>
+            <li>Rarimo-operated validators</li>
+            <li>Anchored to Ethereum</li>
+            <li>Stays the same</li>
+          </ul>
+        </div>
+        <div class="doc-diagram__fork">
+          <div class="doc-diagram__fork-line"></div>
+          <div class="doc-diagram__fork-arrow">↓</div>
+          <div class="doc-diagram__fork-line"></div>
+        </div>
+        <div class="doc-diagram__branches">
+          <div class="doc-diagram__card">
+            <h3>Rarimo's contracts</h3>
+            <ul>
+              <li><code>Registration2</code></li>
+              <li><code>StateKeeper</code></li>
+              <li><code>RegistrationSMT</code></li>
+              <li><code>CertificatesSMT</code></li>
+              <li>Dispatchers</li>
+              <li>Verifiers</li>
+              <li>Governed by Rarimo</li>
+            </ul>
+          </div>
+          <div class="doc-diagram__card">
+            <h3>Jomhoor's contracts</h3>
+            <span class="doc-diagram__eyebrow">M6 migration</span>
+            <ul>
+              <li><code>Registration2</code></li>
+              <li><code>StateKeeper</code></li>
+              <li><code>RegistrationSMT</code></li>
+              <li><code>CertificatesSMT</code></li>
+              <li>Dispatchers</li>
+              <li>Verifiers</li>
+              <li>Governed by Jomhoor multisig</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <p>Same chain. Same gas token. Same ZK circuit family (<code>passport-zk-circuits</code>, open source, Rarimo's). Same block explorer (<code>scan.rarimo.com</code>). New contract addresses, new admin keys, new ICAO root.</p>
 
       <h2>What M6 does, concretely</h2>
@@ -241,6 +262,6 @@
     </div>
   </footer>
 
-  <script src="../../js/script.js"></script>
+  <script src="../../js/script.js?v=20260518"></script>
 </body>
 </html>

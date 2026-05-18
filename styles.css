@@ -2859,6 +2859,178 @@ code {
   padding: 0;
   font-size: inherit;
 }
+.prose pre.ascii-diagram {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+  white-space: pre;
+  font-variant-ligatures: none;
+}
+.prose pre.ascii-diagram code {
+  display: block;
+  direction: inherit;
+  unicode-bidi: inherit;
+  white-space: inherit;
+  font-variant-ligatures: none;
+}
+.prose .doc-diagram {
+  margin: 0 0 28px;
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+.prose .doc-diagram code {
+  white-space: nowrap;
+}
+.prose .doc-diagram__card {
+  padding: 18px 20px;
+  background: var(--component-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+}
+.prose .doc-diagram__card h3 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+}
+.prose .doc-diagram__card p,
+.prose .doc-diagram__card ul,
+.prose .doc-diagram__card li {
+  margin-bottom: 0;
+}
+.prose .doc-diagram__card ul {
+  padding-inline-start: 20px;
+}
+.prose .doc-diagram__connector {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 10px 0;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.prose .doc-diagram__connector-arrow {
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--accent-primary);
+}
+.prose .doc-diagram--stack {
+  display: grid;
+  gap: 0;
+}
+.prose .doc-diagram--stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+.prose .doc-diagram__stage {
+  display: grid;
+  gap: 12px;
+  justify-items: stretch;
+}
+.prose .doc-diagram__stage-arrow {
+  align-self: center;
+  justify-self: center;
+  font-size: 1.75rem;
+  color: var(--accent-primary);
+}
+.prose .doc-diagram__eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.prose .doc-diagram--split {
+  display: grid;
+  gap: 18px;
+}
+.prose .doc-diagram--split .doc-diagram__top {
+  max-width: 480px;
+  justify-self: center;
+}
+.prose .doc-diagram--split .doc-diagram__branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.prose .doc-diagram--split .doc-diagram__fork {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  color: var(--accent-primary);
+}
+.prose .doc-diagram--split .doc-diagram__fork-line {
+  height: 1px;
+  background: var(--accent-primary);
+  opacity: 0.7;
+}
+.prose .doc-diagram--split .doc-diagram__fork-arrow {
+  padding: 0 10px;
+  font-size: 1.9rem;
+  line-height: 1;
+}
+.prose .doc-diagram--gates {
+  display: grid;
+  gap: 20px;
+}
+.prose .doc-diagram--gates .doc-diagram__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+.prose .doc-diagram__terminal {
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.prose .doc-diagram__flow-arrow {
+  color: var(--accent-primary);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.prose .doc-diagram--gates .doc-diagram__outcomes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.prose .doc-diagram__outcome {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.prose .doc-diagram__outcome p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+@media (max-width: 900px) {
+  .prose .doc-diagram--stages,
+  .prose .doc-diagram--split .doc-diagram__branches,
+  .prose .doc-diagram--gates .doc-diagram__outcomes {
+    grid-template-columns: 1fr;
+  }
+  .prose .doc-diagram--gates .doc-diagram__row {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+  .prose .doc-diagram__stage-arrow,
+  .prose .doc-diagram__flow-arrow,
+  .prose .doc-diagram__terminal {
+    justify-self: center;
+  }
+  .prose .doc-diagram--split .doc-diagram__fork {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    justify-items: center;
+  }
+  .prose .doc-diagram--split .doc-diagram__fork-line {
+    width: 1px;
+    height: 28px;
+  }
+}
 .prose blockquote {
   margin: 0 0 20px;
   padding: 16px 22px;

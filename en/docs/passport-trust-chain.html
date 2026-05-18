@@ -46,36 +46,51 @@
       <p>Reading the chip requires the <strong>MRZ</strong> (machine-readable zone, printed on page 2 of a passport / front of an INID) to derive the session keys (via BAC or PACE). That is why our app asks the user to first scan the page with their camera before tapping the chip.</p>
 
       <h2>The certificate chain — top to bottom</h2>
-      <pre><code>                 ┌─────────────────────────────────────────────────────┐
-                 │  ICAO PKD (Public Key Directory)                    │
-                 │  • Maintained by the International Civil Aviation   │
-                 │    Organization, a UN specialized agency.           │
-                 │  • Contains the public keys of every country's CSCA │
-                 │  • We snapshot it into a Merkle tree (~857 certs)   │
-                 └────────────────────┬────────────────────────────────┘
-                                      │ root hash committed on-chain
-                                      ▼
-                 ┌─────────────────────────────────────────────────────┐
-                 │  CSCA — Country Signing Certificate Authority       │
-                 │  • One or more per country (Iran ~3, Germany 17)    │
-                 │  • Long-lived (~10 years), kept in HSM by issuer    │
-                 │  • Signs the DS certs                               │
-                 └────────────────────┬────────────────────────────────┘
-                                      │ signs
-                                      ▼
-                 ┌─────────────────────────────────────────────────────┐
-                 │  DS — Document Signer certificate                   │
-                 │  • Rotated every few months                         │
-                 │  • One DS cert signs THOUSANDS of passports         │
-                 │  • Hash registered in our CertificatesSMT once      │
-                 └────────────────────┬────────────────────────────────┘
-                                      │ signs SOD
-                                      ▼
-                 ┌─────────────────────────────────────────────────────┐
-                 │  SOD — Security Object inside the chip              │
-                 │  • Contains DG hashes; signed by DS                 │
-                 │  • This is what the ZK circuit ultimately verifies  │
-                 └─────────────────────────────────────────────────────┘</code></pre>
+      <div class="doc-diagram doc-diagram--stack">
+        <div class="doc-diagram__card">
+          <h3>ICAO PKD <span class="muted">(Public Key Directory)</span></h3>
+          <ul>
+            <li>Maintained by the International Civil Aviation Organization, a UN specialized agency.</li>
+            <li>Contains the public keys of every country's CSCA.</li>
+            <li>We snapshot it into a <code>Merkle</code> tree. (~857 certs)</li>
+          </ul>
+        </div>
+        <div class="doc-diagram__connector">
+          <div>root hash committed on-chain</div>
+          <div class="doc-diagram__connector-arrow">↓</div>
+        </div>
+        <div class="doc-diagram__card">
+          <h3>CSCA <span class="muted">— Country Signing Certificate Authority</span></h3>
+          <ul>
+            <li>One or more per country (Iran ~3, Germany 17)</li>
+            <li>Long-lived (~10 years), kept in HSM by issuer</li>
+            <li>Signs the DS certs</li>
+          </ul>
+        </div>
+        <div class="doc-diagram__connector">
+          <div>signs</div>
+          <div class="doc-diagram__connector-arrow">↓</div>
+        </div>
+        <div class="doc-diagram__card">
+          <h3>DS <span class="muted">— <code>Document Signer</code> certificate</span></h3>
+          <ul>
+            <li>Rotated every few months</li>
+            <li>One DS cert signs thousands of passports</li>
+            <li>Hash registered in our <code>CertificatesSMT</code> once</li>
+          </ul>
+        </div>
+        <div class="doc-diagram__connector">
+          <div>signs <code>SOD</code></div>
+          <div class="doc-diagram__connector-arrow">↓</div>
+        </div>
+        <div class="doc-diagram__card">
+          <h3>SOD <span class="muted">— <code>Security Object</code> inside the chip</span></h3>
+          <ul>
+            <li>Contains DG hashes; signed by DS</li>
+            <li>This is what the ZK circuit ultimately verifies</li>
+          </ul>
+        </div>
+      </div>
 
       <p>For Iran specifically, the issuer is <strong>National Organization for Civil Registration</strong>; CSCAs are operated by the state, DS certificates rotate, and both passports and INIDs participate in the same ICAO PKI scheme.</p>
       <p>For INIDs specifically, the chip is built and software-managed by <strong>Matiran Co.</strong> The chip exposes two certificates (signing + authentication), uses PACE-CAM rather than BAC, and proves it is not a clone via a challenge-response with a private key held inside the chip's secure element. There is no DG15 file, but the anti-clone property is preserved by the auth-certificate mechanism.</p>
@@ -223,6 +238,6 @@
     </div>
   </footer>
 
-  <script src="../../js/script.js"></script>
+  <script src="../../js/script.js?v=20260518"></script>
 </body>
 </html>

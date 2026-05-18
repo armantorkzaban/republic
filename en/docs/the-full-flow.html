@@ -37,10 +37,28 @@
       <p>If you only read one explainer, read this one second (after <a href="blockchain-and-rarimo-l2.html">#01</a>).</p>
 
       <h2>The three phases</h2>
-      <pre><code>   ┌───────────────────┐    ┌───────────────────┐    ┌───────────────────┐
-   │ 1. Registration   │    │ 2. Wallet sign-in │    │ 3. Voting         │
-   │ (one-time)        │ →  │ (per session)     │ →  │ (per proposal)    │
-   └───────────────────┘    └───────────────────┘    └───────────────────┘</code></pre>
+      <div class="doc-diagram doc-diagram--stages">
+        <div class="doc-diagram__stage">
+          <div class="doc-diagram__card">
+            <h3>1. Registration</h3>
+            <p>one-time</p>
+          </div>
+        </div>
+        <div class="doc-diagram__stage">
+          <div class="doc-diagram__stage-arrow">→</div>
+          <div class="doc-diagram__card">
+            <h3>2. Wallet sign-in</h3>
+            <p>per session</p>
+          </div>
+        </div>
+        <div class="doc-diagram__stage">
+          <div class="doc-diagram__stage-arrow">→</div>
+          <div class="doc-diagram__card">
+            <h3>3. Voting</h3>
+            <p>per proposal</p>
+          </div>
+        </div>
+      </div>
       <p>Registration is heavy: NFC scan, ZK proof, on-chain write. Done <strong>once per document</strong>. Wallet sign-in is local: PIN / biometric, no chain interaction. Voting is medium-weight: a smaller "query" ZK proof and one on-chain transaction per ballot.</p>
 
       <h2>Phase 1: Registration</h2>
@@ -218,6 +236,6 @@
     </div>
   </footer>
 
-  <script src="../../js/script.js"></script>
+  <script src="../../js/script.js?v=20260518"></script>
 </body>
 </html>
