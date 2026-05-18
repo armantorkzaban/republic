@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is a zero-knowledge proof? — Jomhoor Docs</title>
+  <meta name="description" content="What a ZK proof actually proves, what it doesn't, and how Jomhoor uses one to let a passport holder vote without revealing identity." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/zero-knowledge-proofs.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 02</p>
+      <h1>What is a zero-knowledge proof?</h1>
+
+      <h2>The everyday version</h2>
+      <p>A <strong>zero-knowledge proof</strong> (ZK proof) is a way to convince someone that a statement is true <strong>without revealing why</strong>.</p>
+      <p>Some real-world analogies:</p>
+      <ul>
+        <li><strong>Bartender check.</strong> You prove you are over 18 without showing your name, address, or birth date. You don't even show the date that proves it — just the fact that <em>some</em> valid date exists and you know it.</li>
+        <li><strong>Sealed envelope.</strong> You hand the bouncer a sealed envelope. A neutral machine on the door reads the envelope, lights up green if it contains a valid 18+ ID, and then shreds the envelope. The bouncer only sees the green light.</li>
+        <li><strong>Locked diary.</strong> You prove to a friend that page 47 of your diary contains the word "Tehran" without letting them read any other page — or even page 47.</li>
+      </ul>
+      <p>A ZK proof is the cryptographic version of that envelope: a small piece of math, typically a few hundred bytes, that a verifier can check in milliseconds and that reveals <strong>only</strong> the truth of the claim, nothing else.</p>
+
+      <h2>What Jomhoor uses ZK proofs for</h2>
+      <p>We use ZK proofs to let a user prove three claims at once, on-chain, without revealing identity:</p>
+      <ol>
+        <li><strong>"I hold a genuine Iranian travel document or national ID."</strong> Proven against the document's cryptographic signature and the official ICAO certificate tree.</li>
+        <li><strong>"I have not registered or voted before for this event."</strong> Proven via a unique, deterministic value called a <strong>nullifier</strong> — derived from the document and the event, but unlinkable to identity.</li>
+        <li><strong>"My document has not expired and I meet age / citizenship criteria."</strong> Proven against birth-date and expiry fields inside the document, without disclosing the actual values.</li>
+      </ol>
+      <p>The on-chain record is just: <em>some valid Iranian citizen, eligible for this vote, has voted "yes" on proposal #42</em>. Nothing more.</p>
+
+      <h2>The three properties every ZK proof must have</h2>
+      <p>When cryptographers talk about ZK proofs, they always mean a system with three properties. The user-facing meaning of each is what matters:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Property</th><th>Plain English</th><th>Why it matters to Jomhoor</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Completeness</strong></td><td>If the statement is true, an honest user <em>can always</em> produce a valid proof.</td><td>A real Iranian passport holder is never falsely rejected by the smart contract.</td></tr>
+          <tr><td><strong>Soundness</strong></td><td>If the statement is false, a cheater <strong>cannot</strong> produce a valid proof — except with vanishingly small probability (typically 1 in 2¹²⁸).</td><td>An attacker cannot register a fake identity by guessing or by computing a "lucky" proof.</td></tr>
+          <tr><td><strong>Zero-knowledge</strong></td><td>The proof reveals <strong>nothing beyond the truth of the statement</strong> — not the inputs, not the intermediate values, not any side information.</td><td>The chain never learns passport number, name, date of birth, or which person any given vote belongs to.</td></tr>
+        </tbody>
+      </table></div>
+      <p>These three together are what makes ZK proofs different from a signature, a hash, or an attestation. A signature proves "I have the key"; a ZK proof proves "I know inputs that satisfy a specific computation" — and <em>only</em> that.</p>
+
+      <h2>How "soundness" actually works</h2>
+      <p>The 1-in-2¹²⁸ number is not a guess. It comes from how the proof is built:</p>
+      <ol>
+        <li>The computation we want to verify (e.g. "passport signature is valid AND nullifier was derived correctly AND document is not expired") is compiled into a giant arithmetic circuit — millions of additions and multiplications over a prime field.</li>
+        <li>The prover commits to <strong>every intermediate value</strong> of that computation using <strong>elliptic-curve points</strong>.</li>
+        <li>The verifier issues a <em>random challenge</em> derived deterministically from those commitments.</li>
+        <li>The prover must respond with values that satisfy a single algebraic identity tying the commitments and the challenge together.</li>
+      </ol>
+      <p>A cheater would have to forge values that satisfy that identity by chance. The identity lives over a field with ~2²⁵⁴ elements, so the cheating probability collapses to roughly 1 in 2¹²⁸ even for the strongest known attacks. For context: 2¹²⁸ is more than the number of atoms in a billion human bodies. It is treated as "impossible" by every banking and government cryptography standard.</p>
+
+      <h2>What "zero-knowledge" actually means</h2>
+      <p>Zero-knowledge does <strong>not</strong> mean "the data is encrypted somewhere on the chain." It means <strong>the data was never put into the proof to begin with.</strong></p>
+      <p>Compare:</p>
+      <ul>
+        <li><strong>Encryption.</strong> "The message exists but is locked. Someone with the key can read it later."</li>
+        <li><strong>Zero-knowledge.</strong> "The message was used to compute a proof, then deleted. The proof is mathematically incapable of revealing the message — there is no key, because there is nothing to unlock."</li>
+      </ul>
+      <p>For Jomhoor, this means:</p>
+      <ul>
+        <li>Your passport number is <strong>on your phone only</strong>. It enters the proof generator, is consumed by it, and is then discarded.</li>
+        <li>The 256-byte proof your phone uploads contains no recoverable trace of it.</li>
+        <li>Even if every smart contract, every relayer log, and the entire Rarimo L2 history were exfiltrated forever, no one could recover your passport number from them.</li>
+      </ul>
+      <p>The only way an attacker learns your passport number is by getting it from <strong>your physical device</strong> — same threat surface as your photos or your WhatsApp messages, and unrelated to anything we publish on-chain.</p>
+
+      <h2>"The shape of the circuit" — what that phrase means</h2>
+      <p>Throughout these explainers we say things like <em>"the circuit's shape determines what can and cannot be proved."</em> Concretely, the circuit is a fixed program that says:</p>
+      <pre><code>Given private inputs (passport bytes, signature, secrets) and
+public inputs (event ID, current date, ICAO root):
+  1. Hash the data groups (DG1, DG2, ...) and verify SOD signature.
+  2. Verify the Document Signer certificate against the ICAO Merkle root.
+  3. Derive the nullifier = poseidon(secret, event_id).
+  4. Check that birth_date + 18 years ≤ current_date.
+  5. Output: nullifier, citizenship, current_date, ICAO root.</code></pre>
+      <p>Every Jomhoor user's phone runs <strong>the same circuit</strong> for a given document class. Only the inputs differ. This is what lets one smart contract verify millions of users' proofs with one verification key.</p>
+      <p>Different document classes (Iranian passport RSA-2048-SHA256, Iranian passport RSA-3072-SHA1, INID RSA-2048, future ECDSA passports) use <strong>different circuits</strong>, because the signature math differs. That is why our SSO service keeps a <strong>circuit registry</strong> rather than a single hardcoded verifier.</p>
+
+      <h2>What ZK proofs do <strong>not</strong> do</h2>
+      <p>It is just as important to be honest about what this technology cannot solve.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>ZK proves</th><th>ZK does NOT prove</th></tr></thead>
+        <tbody>
+          <tr><td>"I hold a document that the Iranian Civil Registry signed."</td><td>"The Iranian Civil Registry only signs real people."</td></tr>
+          <tr><td>"Some valid input satisfies this circuit."</td><td>"The input came from a live, consenting human."</td></tr>
+          <tr><td>"I have not voted on event X before."</td><td>"I am the same human across two events." (Different nullifier per event by design.)</td></tr>
+          <tr><td>"My birth date is before 2008."</td><td>"I am not lying about my opinions."</td></tr>
+        </tbody>
+      </table></div>
+      <p>The biggest honest limit: a <strong>ZK proof inherits the trust of whoever signed the document.</strong> If the issuer's signing key is compromised — by a state actor or otherwise — fake-but-valid documents can be minted and will pass the proof system perfectly. This is true of every passport-ZK system in the world, including ours. See <a href="passport-trust-chain.html">the passport trust chain</a> for the full attack surface and our mitigations.</p>
+
+      <h2>Why this is still worth doing</h2>
+      <p>Even with that honest limit, ZK identity beats every alternative on the deployable spectrum:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Approach</th><th>Reveals identity?</th><th>Resists sybil?</th><th>Censorship resistant?</th><th>Cost per check</th></tr></thead>
+        <tbody>
+          <tr><td>Government login (e.g. Sana / Shahkar)</td><td>Yes — everything</td><td>Yes</td><td>No — server can block any user</td><td>Server cost</td></tr>
+          <tr><td>Username + password</td><td>No, but no identity guarantees</td><td>No</td><td>Depends on host</td><td>Server cost</td></tr>
+          <tr><td>Plain digital signature with passport</td><td>Yes — full document</td><td>Yes</td><td>Depends on host</td><td>Server cost</td></tr>
+          <tr><td><strong>ZK proof from passport / INID</strong></td><td><strong>No</strong></td><td><strong>Yes (via nullifier)</strong></td><td><strong>Yes (on-chain)</strong></td><td><strong>~$0.001</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p>The combination of <em>no identity disclosure</em>, <em>one-person-one-vote enforcement</em>, and <em>no central server able to delete users</em> is what makes ZK proofs the right primitive for civic-scale democratic infrastructure under hostile conditions.</p>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Circuit</strong></td><td>The fixed arithmetic program that defines what is being proved.</td></tr>
+          <tr><td><strong>Witness</strong></td><td>The full set of intermediate values the prover computes while running the circuit on their inputs. Stays on-device.</td></tr>
+          <tr><td><strong>Proof</strong></td><td>The 256-byte (Groth16) cryptographic object that gets uploaded.</td></tr>
+          <tr><td><strong>Public signals</strong></td><td>The small set of circuit outputs (nullifier, root, date, etc.) that the verifier sees. Never includes raw document data.</td></tr>
+          <tr><td><strong>Nullifier</strong></td><td>A deterministic, identity-blinding value used to prevent double-voting. Same person + same event = same nullifier; same person + different event = different nullifier.</td></tr>
+          <tr><td><strong>Verification key</strong></td><td>A small file the smart contract holds, used to check proofs from a specific circuit. One per circuit.</td></tr>
+          <tr><td><strong>Soundness error</strong></td><td>The mathematical probability a cheater succeeds (~2⁻¹²⁸ in our setup — treated as zero in practice).</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Next</h2>
+      <p>Up next: <a href="passport-trust-chain.html">the passport trust chain</a> — how we get to the assumption that "the document a user scans is real," and exactly where that assumption stops being true.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="./">← All docs</a>
+      <a href="passport-trust-chain.html">Next: passport trust chain →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>

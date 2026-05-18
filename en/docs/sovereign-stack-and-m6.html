@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sovereign stack and M6 — Jomhoor Docs</title>
+  <meta name="description" content="What our M6 sovereignty milestone changes — owning identity contracts on Rarimo L2 — and what it deliberately leaves alone." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/sovereign-stack-and-m6.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 06</p>
+      <h1>The Sovereign Identity Stack on Rarimo L2 (M6)</h1>
+
+      <p>This explainer answers two questions that look similar but are very different:</p>
+      <ol>
+        <li><em>"Are you running your own blockchain?"</em> — <strong>No.</strong></li>
+        <li><em>"Are you running your own identity contracts?"</em> — <strong>Yes, that's what M6 is about.</strong></li>
+      </ol>
+      <p>Most people in the space conflate these. This file separates them carefully, because the strategic point of M6 is exactly the gap between them.</p>
+
+      <h2>"Chain" vs. "contracts" — the distinction that powers M6</h2>
+      <p>A blockchain has two parts:</p>
+      <ul>
+        <li><strong>The chain itself.</strong> The shared notebook, plus the validators who keep appending pages to it, plus the consensus protocol they follow. Rarimo L2 is the chain we use (chain id 7368, RMO gas token, anchored to Ethereum). See <a href="blockchain-and-rarimo-l2.html">blockchain and Rarimo L2</a>.</li>
+        <li><strong>The smart contracts deployed onto it.</strong> These are programs at specific addresses. The chain doesn't care who deployed them; it just runs them.</li>
+      </ul>
+      <p>Today, Jomhoor uses <strong>both</strong> Rarimo's chain and Rarimo's deployed identity contracts. After M6, Jomhoor still uses Rarimo's chain — but the contracts are ours.</p>
+
+      <h2>What Rarimo's contracts currently do for us</h2>
+      <p>Rarimo has deployed, on Rarimo L2 mainnet, a complete identity stack:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Contract</th><th>What it holds</th><th>Today</th></tr></thead>
+        <tbody>
+          <tr><td><code>Registration2</code></td><td>Entry point for new identity registrations</td><td>Rarimo's</td></tr>
+          <tr><td><code>StateKeeper</code></td><td>Keeps the ICAO root + admin permissions</td><td>Rarimo's</td></tr>
+          <tr><td><code>RegistrationSMT</code></td><td>Sparse Merkle tree of identity commitments</td><td>Rarimo's</td></tr>
+          <tr><td><code>CertificatesSMT</code></td><td>Sparse Merkle tree of DS certificate hashes</td><td>Rarimo's</td></tr>
+          <tr><td>Dispatchers (~25)</td><td>Per-algorithm certificate decoders (RSA-2048, etc.)</td><td>Rarimo's</td></tr>
+          <tr><td>ZK verifier contracts</td><td>One per circuit, called from <code>Registration2</code></td><td>Rarimo's</td></tr>
+        </tbody>
+      </table></div>
+      <p>Each of those is governed by Rarimo. They decide:</p>
+      <ul>
+        <li>Which CSCAs go into the ICAO root.</li>
+        <li>When the ICAO root is updated.</li>
+        <li>Which signature algorithms get dispatchers.</li>
+        <li>Who can call admin functions on the SMTs.</li>
+        <li>When and how to upgrade the contracts.</li>
+      </ul>
+      <p>For our test phase this is fine. For a sovereign Iranian civic platform, it is not.</p>
+
+      <h2>Why Rarimo's contracts don't work for us long-term</h2>
+      <p>Three concrete reasons, in increasing order of severity:</p>
+
+      <h3>1. We can't change the ICAO root they ship</h3>
+      <p>The on-chain ICAO Merkle root that Rarimo's <code>StateKeeper</code> checks against is set by Rarimo's admin keys. The CSCA bundle itself (<code>master_000316.pem</code>, ICAO PKD master list version 316, ~857 certs) is the same upstream ICAO snapshot that Rarimo's own reference wallet ships — we inherited it from their codebase. What we can't change is which root is committed on-chain, when it's rotated, or which CSCAs get added or revoked. That decision lives with whoever holds Rarimo's admin keys.</p>
+
+      <h3>2. Iranian passport Variant B is blocked</h3>
+      <p>Iran issues passports under at least three signature variants. Variant B (RSA-3072, SHA-1, exponent 33259) requires a dispatcher (<code>C_RSA_3072_33259</code>) that does <strong>not exist</strong> on Rarimo mainnet, and Rarimo's existing 3072-bit dispatcher has a <code>keyByteLength=512</code> bug that breaks key extraction. Until that's fixed by Rarimo — on Rarimo's timeline — those passports cannot register. That is a meaningful fraction of older Iranian travel documents.</p>
+
+      <h3>3. The trust root for our voting system is governed by someone else</h3>
+      <p>This is the structural one. Every vote that ever happens on Jomhoor is gated by an identity registration that was admitted by <code>Registration2</code>. Who is allowed to register, and against which CSCAs, is decided by whoever admins that contract. Right now, that is not us. For a platform whose mission is <em>sovereign civic infrastructure for Iran</em>, that is the wrong topology.</p>
+
+      <h2>What M6 changes</h2>
+      <pre><code>                        ┌────────────────────────────────┐
+                        │       Rarimo L2 (chain)        │
+                        │  • chain id 7368               │
+                        │  • RMO gas token               │
+                        │  • Rarimo-operated validators  │
+                        │  • Anchored to Ethereum        │
+                        │  ── STAYS THE SAME ──          │
+                        └────────────────────────────────┘
+                                       │
+            ┌──────────────────────────┴──────────────────────────┐
+            │                                                     │
+            ▼                                                     ▼
+   ┌────────────────────┐                                ┌────────────────────┐
+   │ Rarimo's contracts │                                │ Jomhoor's contracts│
+   │ Registration2      │      ──── M6 migration ──→     │ Registration2      │
+   │ StateKeeper        │                                │ StateKeeper        │
+   │ RegistrationSMT    │                                │ RegistrationSMT    │
+   │ CertificatesSMT    │                                │ CertificatesSMT    │
+   │ Dispatchers        │                                │ Dispatchers        │
+   │ Verifiers          │                                │ Verifiers          │
+   │  Governed by       │                                │  Governed by       │
+   │  Rarimo            │                                │  Jomhoor multisig  │
+   └────────────────────┘                                └────────────────────┘</code></pre>
+      <p>Same chain. Same gas token. Same ZK circuit family (<code>passport-zk-circuits</code>, open source, Rarimo's). Same block explorer (<code>scan.rarimo.com</code>). New contract addresses, new admin keys, new ICAO root.</p>
+
+      <h2>What M6 does, concretely</h2>
+      <ol>
+        <li><strong>Deploy our copies</strong> of <code>Registration2</code>, <code>StateKeeper</code>, <code>RegistrationSMT</code>, <code>CertificatesSMT</code>, and the full Iranian-passport dispatcher set to Rarimo L2 mainnet (chain id 7368).</li>
+        <li><strong>Seed our StateKeeper</strong> with the ICAO root computed from <code>master_000316.pem</code> (ICAO PKD master list v316, 857 CSCAs) — the same upstream bundle Rarimo's reference wallet ships, but now committed under <em>our</em> admin keys, so we control rotations.</li>
+        <li><strong>Deploy missing dispatchers</strong>, including <code>C_RSA_3072_33259</code> for Variant B, built on the same dispatcher framework but with the <code>keyByteLength</code> bug fixed.</li>
+        <li><strong>Repoint our infrastructure</strong>:
+          <ul>
+            <li>relayer configs (<code>platform/configs/registration-relayer.yaml</code>, <code>proof-verification-relayer.yaml</code>),</li>
+            <li>wallet <code>.env.production</code>,</li>
+            <li><code>sso-svc</code>'s <code>zkp.registration_smt_address</code>,</li>
+            <li>voting contracts (<code>NoirIDVoting</code>, <code>ProposalsState</code>) — already ours.</li>
+          </ul>
+        </li>
+        <li><strong>Re-registration UX</strong>: existing users registered against Rarimo's <code>Registration2</code> are NOT in our <code>RegistrationSMT</code>. They must re-scan their document once. We hide this behind a friendly "we upgraded our identity layer — please re-register" screen.</li>
+        <li><strong>Governance progression</strong>:
+          <ul>
+            <li>Phase A: single EOA admin during test deployment.</li>
+            <li>Phase B: migrate to a Gnosis Safe multisig on Rarimo L2 (≥3 signers, 2-of-3 for routine ops, 3-of-3 for ICAO-root and contract upgrades) <strong>before</strong> any non-test relying party goes live.</li>
+            <li>Phase C (long-term): explore on-chain governance via DeXe or similar.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2>What M6 does <strong>not</strong> do</h2>
+      <p>This list matters because the language around "sovereignty" tends to overclaim.</p>
+      <ul>
+        <li><strong>Does not leave Rarimo L2.</strong> Chain id stays 7368. Gas token stays RMO. Validators stay Rarimo's. If Rarimo's validator network halts, we halt with them. Validator-set sovereignty is a separate, much larger workstream (own L2 rollup, or migrate to a different host chain).</li>
+        <li><strong>Does not replace the ZK circuits.</strong> We continue to use <code>passport-zk-circuits</code> (Rarimo's open-source repository) and the same Noir / Circom proving stack.</li>
+        <li><strong>Does not break interoperability with the ICAO PKD.</strong> Our trust still bottoms out at ICAO-published CSCAs. We just curate the snapshot ourselves.</li>
+        <li><strong>Does not give us better cryptography.</strong> The circuits and the verification math are identical. M6 changes <em>who admins the trust root</em>, not <em>how trust is computed</em>.</li>
+        <li><strong>Does not solve the issuer-trust limit</strong> named in <a href="passport-trust-chain.html">passport trust chain</a>. A compromised CSCA still produces signatures our system accepts as valid. M6 lets us <em>respond faster</em> (we can drop a compromised CSCA from our tree without asking Rarimo), but does not prevent the attack.</li>
+      </ul>
+
+      <h2>Migration story — operational realities</h2>
+      <p>We chose May 2026 as the moment to do this because the migration cost grows monotonically with user count. Concretely:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Phase</th><th>Registered users (rough)</th><th>Migration friction</th></tr></thead>
+        <tbody>
+          <tr><td>Today (pre-M6)</td><td>Hundreds of test users</td><td>Trivial — re-scan once</td></tr>
+          <tr><td>Post-M6, pre-public-launch</td><td>Low thousands</td><td>Modest — UX banner + re-register</td></tr>
+          <tr><td>If we delayed until 100k+ users</td><td>Tens of thousands</td><td>Expensive — drop-off risk</td></tr>
+          <tr><td>If we delayed until public launch</td><td>All users</td><td>Catastrophic — credibility loss</td></tr>
+        </tbody>
+      </table></div>
+      <p>M6 happens before public launch because every month after public launch makes this strictly worse.</p>
+
+      <h2>What about interoperability with FreedomTool?</h2>
+      <p>We are intentionally losing this. Today, an identity registered through Rarimo's FreedomTool flow can vote on our proposals because we share <code>Registration2</code>. After M6, that one-way bridge closes.</p>
+      <p>The reasons we accept this:</p>
+      <ol>
+        <li><strong>FreedomTool users are not our users.</strong> They never went through Jomhoor's onboarding, never agreed to our terms, never opened the wallet.</li>
+        <li><strong>Their trust root is Rarimo's curated ICAO tree.</strong> We can't audit which CSCAs they accepted.</li>
+        <li><strong>It is a privacy concern.</strong> Cross-platform identity sharing without user consent is exactly what "Sign in with Jomhoor" exists to avoid.</li>
+      </ol>
+      <p>Future interop, if we want it, will be via explicit cross-registration proofs, not by sharing a contract.</p>
+
+      <h2>Governance — the part most people skip past</h2>
+      <p>A multisig is only as safe as the people holding the keys. Our plan for the key set:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Who</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Founder signer</td><td>Jomhoor founders</td><td>Operational continuity</td></tr>
+          <tr><td>Technical signer</td><td>Lead engineer</td><td>Daily ops, dispatcher updates</td></tr>
+          <tr><td>Independent signer</td><td>Civic-tech NGO or auditor</td><td>Limits founder unilateral control</td></tr>
+          <tr><td>Optional 4th signer</td><td>Iranian diaspora legal counsel</td><td>Adds jurisdictional separation</td></tr>
+        </tbody>
+      </table></div>
+      <p>Threshold scheme:</p>
+      <ul>
+        <li><strong>2-of-3 (or 2-of-4)</strong> for routine ops: relayer wallet top-ups, dispatcher additions, non-breaking upgrades.</li>
+        <li><strong>3-of-3 (or 3-of-4)</strong> for: ICAO root changes, contract upgrades, admin key rotation.</li>
+      </ul>
+      <p>We commit to publishing the multisig address and signer set before public launch. Transparency on governance is part of the credibility we promise.</p>
+
+      <h2>Why this is the <em>right</em> amount of sovereignty</h2>
+      <p>We could go further:</p>
+      <ul>
+        <li>Run our own validator set (a separate L2 rollup, Cosmos zone, etc.).</li>
+        <li>Anchor to a different L1 (Ethereum directly, Polygon, Base, Arbitrum).</li>
+        <li>Build our own proof system from scratch.</li>
+      </ul>
+      <p>We don't do these because <strong>the marginal sovereignty gain is small and the operational cost is huge.</strong> The credible threats we face — coordinated disinformation, state-level capture, censorship — are not solved by owning the validator set. They are solved by:</p>
+      <ul>
+        <li>owning our trust root (M6),</li>
+        <li>owning our admin keys (multisig),</li>
+        <li>owning our content gate (normative compliance — see <a href="two-gates-identity-and-speech.html">two gates: identity and speech</a>),</li>
+        <li>being transparent about what we don't own and what we can't solve (<a href="passport-trust-chain.html">passport trust chain</a>).</li>
+      </ul>
+      <p>M6 is the right point on that curve.</p>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rarimo L2</strong></td><td>The Ethereum-anchored L2 we run on. Chain id 7368.</td></tr>
+          <tr><td><strong>Registration2</strong></td><td>Smart contract entry point for new identity registrations.</td></tr>
+          <tr><td><strong>StateKeeper</strong></td><td>Smart contract holding the ICAO root and admin permissions.</td></tr>
+          <tr><td><strong>RegistrationSMT</strong></td><td>On-chain Sparse Merkle Tree of identity commitments.</td></tr>
+          <tr><td><strong>CertificatesSMT</strong></td><td>On-chain Sparse Merkle Tree of DS certificate hashes.</td></tr>
+          <tr><td><strong>Dispatcher</strong></td><td>Per-algorithm contract that decodes specific certificate types (e.g., <code>C_RSA_2048</code>).</td></tr>
+          <tr><td><strong>ICAO root</strong></td><td>Merkle root over the snapshotted CSCAs we accept.</td></tr>
+          <tr><td><strong>EOA</strong></td><td>Externally-Owned Account — a single-key wallet (deprecated as our admin model).</td></tr>
+          <tr><td><strong>Gnosis Safe</strong></td><td>Standard multisig wallet contract on EVM chains.</td></tr>
+          <tr><td><strong>Validator-set sovereignty</strong></td><td>Owning the consensus layer, not just contracts. We do not do this.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Next</h2>
+      <p><a href="two-gates-identity-and-speech.html">Two gates: identity and speech</a> — the second chokepoint: normative compliance against the 11 UN human-rights conventions, and why identity proofs alone don't stop platform capture.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="the-full-flow.html">← Previous: the full flow</a>
+      <a href="two-gates-identity-and-speech.html">Next: two gates →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>

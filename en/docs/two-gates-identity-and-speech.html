@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Gates: Identity and Speech — Jomhoor Docs</title>
+  <meta name="description" content="Why Jomhoor has two gates — ZK identity against sybils, normative compliance against platform capture — and who governs each." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/two-gates-identity-and-speech.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 07</p>
+      <h1>Two Gates: Identity and Speech</h1>
+
+      <p>Most platforms have one gate: <em>who can post?</em> They answer it with email verification, phone-number checks, or CAPTCHA. Jomhoor has two gates, because the threats are different at each layer.</p>
+
+      <blockquote>
+        <p><strong>The threat we are defending against is not bad words. The threat is a coordinated faction — regime-aligned or otherwise — using legitimately-onboarded identities to flood the platform with content that incites violence, denies genocides, dehumanizes minorities, or normalizes torture.</strong></p>
+      </blockquote>
+
+      <p>A single gate cannot stop both <em>sybils</em> (fake people) and <em>capture</em> (real people, wrong intent). We need two.</p>
+
+      <h2>The two chokepoints</h2>
+
+      <div class="doc-diagram doc-diagram--gates">
+        <div class="doc-diagram__row">
+          <div class="doc-diagram__terminal">USER</div>
+          <div class="doc-diagram__card">
+            <h3>Identity gate</h3>
+            <ul>
+              <li>ZK passport proof</li>
+              <li>INID proof</li>
+              <li><code>nullifier</code></li>
+            </ul>
+          </div>
+          <div class="doc-diagram__flow-arrow">OK →</div>
+          <div class="doc-diagram__card">
+            <h3>Speech gate</h3>
+            <ul>
+              <li>Normative compliance</li>
+              <li>Content check</li>
+            </ul>
+          </div>
+          <div class="doc-diagram__terminal">OK → PUBLISHED</div>
+        </div>
+        <div class="doc-diagram__outcomes">
+          <div class="doc-diagram__outcome">
+            <div class="doc-diagram__connector-arrow">↓</div>
+            <p>Rejects sybils<br />one person = one identity</p>
+          </div>
+          <div class="doc-diagram__outcome">
+            <div class="doc-diagram__connector-arrow">↓</div>
+            <p>Rejects capture<br />no content that violates the 11 UN conventions</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Gate</th><th>Stops</th><th>Does not stop</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Identity</strong> (ZK + nullifier)</td><td>Bots, sybils, multi-accounts, foreign interference at scale</td><td>A real Iranian citizen posting harmful content</td></tr>
+          <tr><td><strong>Speech</strong> (normative compliance)</td><td>Content that incites violence, denies genocide, dehumanizes groups</td><td>Lawful political speech we disagree with</td></tr>
+        </tbody>
+      </table></div>
+
+      <p>Both gates are necessary. Neither is sufficient. If we had only the identity gate, a coordinated faction with real passports could capture the platform. If we had only the speech gate, bots could drown it before any compliance check matters.</p>
+
+      <h2>Gate 1 — Identity (recap)</h2>
+      <p>Covered in detail in explainers 04 and 05. In one sentence: each user proves, in zero-knowledge, that they hold an Iranian biometric passport or INID issued by Iran's government, and the on-chain nullifier guarantees the same document cannot register twice.</p>
+
+      <p>What it gives us:</p>
+      <ul>
+        <li>One real document per registration.</li>
+        <li>Strong resistance to bot-farms, low-cost sybils, and foreign-state influence campaigns that don't have access to Iranian passport stock.</li>
+        <li>A stable, anonymous identity (<code>pairwise subject</code> per relying party) for voting and SSO.</li>
+      </ul>
+
+      <p>What it does <strong>not</strong> give us:</p>
+      <ul>
+        <li>It does not check who the person <em>is</em>, in the sense of values or intent. An IRGC member with a valid passport gets through this gate exactly as easily as a student opposition activist with a valid passport. That is the point of zero-knowledge — we don't know which is which — but it means the gate cannot defend against captured-but-legitimate identities.</li>
+      </ul>
+
+      <p>This is where the second gate comes in.</p>
+
+      <h2>Gate 2 — Normative compliance</h2>
+      <p>We commit, structurally, to one constraint on what gets published through Jomhoor: content must not violate the <strong>11 UN human-rights conventions</strong> that Iran is party to or that codify <em>jus cogens</em> (peremptory norms):</p>
+
+      <ol>
+        <li>Universal Declaration of Human Rights (UDHR)</li>
+        <li>International Covenant on Civil and Political Rights (ICCPR)</li>
+        <li>International Covenant on Economic, Social and Cultural Rights (ICESCR)</li>
+        <li>Convention on the Prevention and Punishment of the Crime of Genocide</li>
+        <li>Convention against Torture (CAT)</li>
+        <li>International Convention on the Elimination of All Forms of Racial Discrimination (ICERD)</li>
+        <li>Convention on the Rights of the Child (CRC)</li>
+        <li>Convention on the Elimination of All Forms of Discrimination against Women (CEDAW)</li>
+        <li>Convention on the Rights of Persons with Disabilities (CRPD)</li>
+        <li>International Convention for the Protection of All Persons from Enforced Disappearance (CED)</li>
+        <li>Rome Statute of the International Criminal Court (war crimes, crimes against humanity, genocide)</li>
+      </ol>
+
+      <p>These are not Jomhoor's house values. They are the <em>minimum</em> legal-moral floor the international community has agreed on — and crucially, the floor that the current Iranian regime systematically violates. By gating speech against these conventions, we ensure that anyone trying to use Jomhoor to <em>continue</em> those violations is blocked at the platform layer.</p>
+
+      <h3>How the check runs, mechanically</h3>
+      <ul>
+        <li><strong>Model.</strong> A large language model with semantic reasoning. We use Claude 3.5 Sonnet via AWS Bedrock (post-MVP); the MVP uses a smaller open model with the same prompt.</li>
+        <li><strong>Language.</strong> Persian-native prompts and rubric. The conventions are loaded in Persian translation; the model sees both the user's content and the relevant convention articles in the same language.</li>
+        <li><strong>Hook point.</strong> Pre-publish, in the Agora API. The check runs after the user has signed the post (so the identity gate has already passed) and before the post is stored or fanned out. If it fails, the user sees a reason and can revise.</li>
+        <li><strong>Not a toxicity classifier.</strong> Toxicity classifiers flag rudeness or slurs at the word level. Normative compliance is a <em>semantic reasoning task</em>: does this content advocate, justify, or normalize a violation of one of the 11 conventions? "Disagreement with government policy" is fine. "This ethnic group deserves what they got" is not. The distinction requires reasoning, not keyword matching.</li>
+      </ul>
+
+      <h2>Why this is structural defense against capture</h2>
+      <p>Here is the threat model we actually face:</p>
+      <p>A faction — let's say a regime-aligned organized group, but the same analysis applies to any coordinated bad actor — decides to onboard onto Jomhoor at scale. They have real Iranian passports (they're real Iranians). They pass the identity gate honestly. Once inside, they coordinate to:</p>
+      <ul>
+        <li>vote-brigade proposals,</li>
+        <li>flood the discussion with regime talking points,</li>
+        <li>normalize state violence in the comment thread,</li>
+        <li>intimidate dissenting voices,</li>
+        <li>post content that <em>would</em> be illegal under Iran's own constitutional human-rights commitments if those commitments were enforced.</li>
+      </ul>
+      <p>The identity gate cannot stop this. The nullifier just guarantees one vote per passport — it does not check what they vote <em>for</em>. The platform looks democratic by procedure and captured by outcome.</p>
+      <p>The speech gate stops the <strong>publishing leg</strong> of this attack. Coordinated votes still happen (and quadratic voting + transparent vote counts help expose them), but the <em>content layer</em> — the part that shapes what the platform feels like and what new users see — is constrained against content that violates the human-rights floor.</p>
+      <p>A regime-aligned faction can argue against the Mahsa protests on Jomhoor. They cannot use Jomhoor to argue that the protesters deserved to be killed. That is the difference.</p>
+
+      <h2>What this gate is <strong>not</strong></h2>
+      <p>We are very specific about what we are not doing, because the failure mode of any content gate is to over-claim and then either over-censor or under-deliver.</p>
+      <ul>
+        <li><strong>Not political moderation.</strong> We do not block content because we disagree with its politics. The rubric is the 11 conventions, not Jomhoor's editorial line.</li>
+        <li><strong>Not journalistic curation.</strong> We do not promote, rank, or recommend content. The check is pass/fail at publication time, not ranking.</li>
+        <li><strong>Not infallible.</strong> LLMs make mistakes in both directions. False positives (legitimate speech blocked) and false negatives (harmful speech allowed) will happen. We commit to:
+          <ul>
+            <li><strong>Transparent appeals:</strong> every block ships with the cited convention article and a one-click appeal path.</li>
+            <li><strong>Published statistics:</strong> monthly counts of blocks and appeals by convention, anonymized.</li>
+            <li><strong>Adversarial review:</strong> an external civic-tech / human-rights board samples decisions quarterly.</li>
+          </ul>
+        </li>
+        <li><strong>Not surveillance.</strong> The model sees the content and the user's pairwise subject (per relying party). It does not see the wallet address, the passport data, or any cross-platform identity. The inference runs ephemerally; we do not store the LLM's reasoning trace attached to user identity beyond the decision itself.</li>
+      </ul>
+
+      <h2>Known limits we have to own</h2>
+      <p>Honesty register. These are real and we don't pretend otherwise.</p>
+      <ol>
+        <li><strong>Language coverage.</strong> The model performs best in Persian and English. Kurdish, Azeri Turkish, Arabic dialects spoken in Iran are weaker. We are tracking this and routing low-confidence cases to human review.</li>
+        <li><strong>Model drift.</strong> LLM behavior changes when the underlying model is updated. We pin model versions and re-run a fixed evaluation suite on every change. Numbers will be published.</li>
+        <li><strong>Coordinated paraphrase attacks.</strong> A skilled adversary can try to evade semantic checks with euphemism. This is an arms race; we don't claim to have won it. The mitigation is the conjunction of the two gates — paraphrase-evading content from a sybil army is much easier to detect statistically than paraphrase-evading content from a few real users, because the volume gives it away.</li>
+        <li><strong>False positives have a cost.</strong> When we wrongly block a legitimate user, we erode trust. The appeal path matters as much as the block does.</li>
+        <li><strong>We are the operators, but not the arbiters.</strong> The technical layer — the ZK identity gate, the LLM speech check, the on-chain voting — is built and run by us. The <em>rubric</em> that governs what passes the speech gate, the <em>legal interpretation</em> of the 11 conventions, the <em>inclusion criteria</em> that decide which constituencies the identity gate must serve, and the <em>independent oversight</em> that audits both — none of these sit with us alone. See the next section.</li>
+      </ol>
+
+      <h2>Who actually governs the gates</h2>
+      <p>A platform where the technology team also writes the rubric, interprets the law, decides who counts, and grades its own homework is a captured platform by construction. To avoid that, the two gates are governed by a <strong>layered consortium of differentiated roles</strong>, not by Jomhoor alone:</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Function</th><th>What this role prevents</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Technology operator</strong> (us)</td><td>Builds and runs the wallet, the ZK circuits, the SSO service, the speech-check pipeline, the relayers and contracts.</td><td>— (this is the layer the other roles constrain.)</td></tr>
+          <tr><td><strong>Institutional steward</strong></td><td>A civically credible, non-partisan academic/civic anchor that holds the "common democratic field", curates convention-interpretation, and convenes deliberation.</td><td>The technology operator inventing the rubric in isolation; partisan capture of the speech gate.</td></tr>
+          <tr><td><strong>Legal council</strong></td><td>An independent legal body that audits the rubric against international and Iranian constitutional human-rights law and reviews edge-case decisions.</td><td>The technology operator misinterpreting the conventions, or applying them inconsistently across cases.</td></tr>
+          <tr><td><strong>Inclusive-onboarding network</strong></td><td>A decentralized coalition that brings marginalized constituencies — minority-language speakers, ethnic and religious minorities, women's-rights groups, regional diaspora — into the platform.</td><td>The identity gate quietly excluding Kurdish, Azeri Turkish, Arabic-Iranian, Baluchi speakers (mitigates limit #1, language coverage).</td></tr>
+          <tr><td><strong>Independent advisory board</strong></td><td>International and Iranian human-rights professionals who sample decisions quarterly, publish findings, and can require rubric revisions.</td><td>The other four roles colluding without external check; rubric drift over time.</td></tr>
+        </tbody>
+      </table></div>
+
+      <p>The key property is <strong>differentiation, not delegation</strong>. Each role is responsible for a specific function and accountable for it publicly. The technology operator cannot quietly rewrite the rubric. The steward cannot quietly ship a new circuit. The legal council cannot quietly add a country to the trust root. No single failure point can capture the platform.</p>
+
+      <p>This is the same structural principle as the two-gate design itself: <em>separate the chokepoints, give each a different defender, require all of them to agree</em>. Within the speech gate, that means the rubric, the law, the inclusion, and the oversight all live in different hands.</p>
+
+      <p>We commit to publishing:</p>
+      <ul>
+        <li>the composition of each role (which organizations hold each function),</li>
+        <li>the decision protocol between them (what requires unanimous review, what is operational discretion),</li>
+        <li>every change to the rubric, with attribution to the role that proposed it.</li>
+      </ul>
+
+      <p>Until the full consortium is in place, the technology operator publishes rubric changes unilaterally with a 14-day review window during which any party can object publicly.</p>
+
+      <h2>The press-kit-safe summary</h2>
+      <p>If you are quoting Jomhoor to a journalist, an NGO, a UN agency, or a funder, this is what is true:</p>
+      <ul>
+        <li><strong>Two gates, not one.</strong> Identity (zero-knowledge passport proofs) and speech (normative compliance against 11 UN human-rights conventions).</li>
+        <li><strong>The threat model is platform capture by legitimate-but-coordinated factions</strong>, not bots and not bad words.</li>
+        <li><strong>The speech gate is not political moderation.</strong> It is a floor, not a ceiling. The floor is the international human-rights consensus.</li>
+        <li><strong>Both gates are auditable.</strong> Identity proofs are on-chain. Speech decisions ship with cited articles and appeal paths; statistics are published.</li>
+        <li><strong>Both gates have limits we name openly.</strong> The identity gate cannot detect captured-but-legitimate identities. The speech gate makes classification errors and runs in stronger Persian than in minority languages. The combination is stronger than either alone.</li>
+        <li><strong>Neither gate is governed by Jomhoor alone.</strong> The technology operator builds and runs the system; an institutional steward curates the rubric; a legal council audits it against human-rights law; an inclusive-onboarding network ensures marginalized constituencies are not silently excluded; an independent advisory board reviews decisions and can require revisions. The differentiation of these roles is the point.</li>
+      </ul>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Identity gate</strong></td><td>The ZK passport / INID proof + on-chain nullifier. Enforces "one person, one identity."</td></tr>
+          <tr><td><strong>Speech gate</strong></td><td>The pre-publish normative compliance check against 11 UN conventions.</td></tr>
+          <tr><td><strong>Capture</strong></td><td>A coordinated group using legitimate identities to dominate a platform.</td></tr>
+          <tr><td><strong>Sybil</strong></td><td>A single actor pretending to be many distinct identities.</td></tr>
+          <tr><td><strong>Normative compliance</strong></td><td>Semantic check against codified human-rights norms — not toxicity, not politics.</td></tr>
+          <tr><td><strong>Pairwise subject</strong></td><td>The per-relying-party anonymous identifier used in SSO. The LLM sees this, not your wallet or passport.</td></tr>
+          <tr><td><strong>Jus cogens</strong></td><td>Peremptory norms of international law (e.g., prohibitions on genocide, torture) — non-derogable.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>End of series</h2>
+      <p>This is the last file in the explainers series. If you have read 01 through 07, you now know substantially more about how Jomhoor actually works than most people who have written about it.</p>
+      <p>If something in here is wrong, unclear, or oversold, please open an issue or PR against the source repository. Honesty about limits is the precondition for trust about strengths.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="./">← All docs</a>
+      <a href="../../fa/docs/two-gates-identity-and-speech.html">فارسی →</a>
+    </nav>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js?v=20260518"></script>
+</body>
+</html>

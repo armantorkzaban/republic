@@ -10,49 +10,57 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // ——— Navigation Scroll Effect ———
-  const nav = document.getElementById('nav');
+  const nav = document.getElementById('nav') || document.querySelector('.nav');
   let lastScroll = 0;
 
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.scrollY;
-    if (currentScroll > 50) {
-      nav.classList.add('nav--scrolled');
-    } else {
-      nav.classList.remove('nav--scrolled');
-    }
-    lastScroll = currentScroll;
-  }, { passive: true });
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      if (currentScroll > 50) {
+        nav.classList.add('nav--scrolled');
+      } else {
+        nav.classList.remove('nav--scrolled');
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
 
   // ——— Mobile Navigation Toggle ———
   const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
+  const navLinks = document.getElementById('navLinks') || nav?.querySelector('.nav__links');
 
-  navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('nav__toggle--open');
-    navLinks.classList.toggle('nav__links--open');
-    document.body.style.overflow = navLinks.classList.contains('nav__links--open') ? 'hidden' : '';
-  });
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('nav__toggle--open');
+      navLinks.classList.toggle('nav__links--open');
+      document.body.style.overflow = navLinks.classList.contains('nav__links--open') ? 'hidden' : '';
+    });
+  }
 
   // ——— Theme Toggle (Light / Dark) ———
   const themeToggle = document.getElementById('themeToggle');
 
-  themeToggle.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('republic-theme', next);
-  });
+  if (themeToggle) {
+    themeToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('republic-theme', next);
+    });
+  }
 
   // Close mobile nav on link click
-  navLinks.querySelectorAll('.nav__link').forEach(link => {
-    link.addEventListener('click', () => {
-      navToggle.classList.remove('nav__toggle--open');
-      navLinks.classList.remove('nav__links--open');
-      document.body.style.overflow = '';
+  if (navLinks) {
+    navLinks.querySelectorAll('.nav__link').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle?.classList.remove('nav__toggle--open');
+        navLinks.classList.remove('nav__links--open');
+        document.body.style.overflow = '';
+      });
     });
-  });
+  }
 
   // ——— Scroll Animations (Intersection Observer) ———
   const animatedElements = document.querySelectorAll('[data-animate]');
@@ -84,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
         e.preventDefault();
-        const navHeight = nav.offsetHeight;
+        const navHeight = nav ? nav.offsetHeight : 0;
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - navHeight - 20;
         window.scrollTo({
           top: targetPosition,
@@ -127,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const top = section.offsetTop;
       const height = section.offsetHeight;
       const id = section.getAttribute('id');
-      const link = nav.querySelector(`a[href="#${id}"]`);
+      const link = nav?.querySelector(`a[href="#${id}"]`);
 
       if (link) {
         if (scrollPos >= top && scrollPos < top + height) {

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On-chain verification — Jomhoor Docs</title>
+  <meta name="description" content="What the verifier contract does with a 256-byte proof, one pairing check, and why that matters." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/on-chain-verification.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 03</p>
+      <h1>On-chain verification: what 256 bytes and one pairing buy you</h1>
+
+      <h2>The puzzle</h2>
+      <p>The smart contract that accepts our votes lives on Rarimo L2. It must decide, within a single transaction, whether a user:</p>
+      <ul>
+        <li>holds a real Iranian passport or INID,</li>
+        <li>has not voted on this proposal before,</li>
+        <li>is old enough and a citizen of Iran,</li>
+      </ul>
+      <p>…all <strong>without ever seeing the document.</strong></p>
+      <p>The naïve approach — recompute the entire passport signature check inside the smart contract — is impossible. It would require running millions of arithmetic operations on-chain, costing hundreds of dollars per vote.</p>
+      <p>Instead, the contract does <strong>one tiny check</strong> that stands in for the whole computation. That tiny check is what makes ZK identity practical.</p>
+
+      <h2>What the user uploads</h2>
+      <p>The phone does the heavy work. It produces three things:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Object</th><th>Size</th><th>Where it comes from</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Proof</strong></td><td>~256 bytes</td><td>Output of the Groth16 prover after running the circuit on private inputs</td></tr>
+          <tr><td><strong>Public signals</strong></td><td>~24 numbers, ~768 bytes</td><td>The circuit's declared outputs: nullifier, ICAO root, event id, dates, citizenship, etc.</td></tr>
+          <tr><td><strong>Circuit ID</strong></td><td>a short string</td><td>Tells the contract which verification key to use (<code>passport_rsa_2048_sha256_e65537</code>, <code>inid_rsa_2048</code>, …)</td></tr>
+        </tbody>
+      </table></div>
+      <p>That is <strong>all</strong> the chain ever sees about the user. No name, no passport number, no signature. Just a proof + a fixed-size list of numbers + a label.</p>
+
+      <h2>What the contract does — in five lines</h2>
+      <pre><code>function verify(circuitID, proof, publicSignals) {
+    VerifyingKey vk = circuitRegistry[circuitID];     // lookup
+    require(publicSignals.icaoRoot == currentRoot);   // sanity check
+    require(!nullifierUsed[publicSignals.nullifier]); // anti-replay
+    require(groth16Verify(vk, proof, publicSignals)); // THE math step
+    nullifierUsed[publicSignals.nullifier] = true;
+}</code></pre>
+      <p>Everything is bookkeeping except the fourth line. That fourth line is the entire reason any of this works.</p>
+
+      <h2>The fourth line: what <code>groth16Verify</code> actually does</h2>
+      <p>A Groth16 proof consists of three elliptic-curve points:</p>
+      <ul>
+        <li><strong>A</strong> on curve G1 (~64 bytes)</li>
+        <li><strong>B</strong> on curve G2 (~128 bytes)</li>
+        <li><strong>C</strong> on curve G1 (~64 bytes)</li>
+      </ul>
+      <p>The verification key (committed once, per circuit) gives the contract:</p>
+      <ul>
+        <li>Two fixed points <strong>α</strong> and <strong>β</strong></li>
+        <li>One fixed point <strong>γ</strong></li>
+        <li>One fixed point <strong>δ</strong></li>
+        <li>One point per public signal, called <strong>IC</strong>₀, <strong>IC</strong>₁, …</li>
+      </ul>
+      <p>The contract computes a linear combination over the public signals:</p>
+      <pre><code>ICₚ = IC₀ + s₁·IC₁ + s₂·IC₂ + … + sₙ·ICₙ</code></pre>
+      <p>…and then checks a single equation involving a <strong>pairing</strong> — a special operation on elliptic-curve points written as <code>e(·, ·)</code>:</p>
+      <pre><code>e(A, B) == e(α, β) · e(ICₚ, γ) · e(C, δ)</code></pre>
+      <p>If this equation holds, the proof is valid. If it doesn't, it isn't. There is no middle ground, and no other thing to check.</p>
+      <p>That single equation is mathematically equivalent to verifying every multiplication and addition the prover claimed they did. The compression ratio is staggering: millions of constraints on the prover's side collapse into one pairing check on the verifier's side. This is the heart of "succinct" in <strong>zk-SNARK</strong>.</p>
+
+      <h2>Why the EVM can do this in milliseconds</h2>
+      <p>Ethereum-compatible chains include a special address — <strong>0x08</strong> — that performs the BN254 pairing operation in native code, not in interpreted EVM. This is called a <strong>precompiled contract</strong>. Calling it costs a fixed amount of gas (~120k for the pairing + ~6k per public signal). On Rarimo L2 at ~$0.001/transaction, that's well under a cent per verification.</p>
+      <p>Without the precompile, on-chain ZK verification would not be economically feasible. Rarimo L2, like Ethereum and every major L2, includes it. This is the same primitive that powers tornado-style mixers, Aztec rollups, and zk-EVM chains; we are reusing decades of cryptographic engineering, not inventing it.</p>
+
+      <h2>Asymmetry: prover vs. verifier</h2>
+      <p>The numbers below are typical for our registration circuit (~5M constraints):</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Step</th><th>Where it runs</th><th>Time</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Generate witness</td><td>Phone (native module)</td><td>~20–60 sec</td><td>Battery</td></tr>
+          <tr><td>Generate proof</td><td>Phone (<code>rapidsnark-wrp</code>)</td><td>~30–90 sec</td><td>Battery</td></tr>
+          <tr><td>Submit transaction</td><td>Relayer</td><td>~1 sec</td><td>~$0.001 RMO gas</td></tr>
+          <tr><td><strong>Verify on-chain</strong></td><td><strong>Smart contract</strong></td><td><strong>~3 ms</strong></td><td><strong>~120k gas</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p>This asymmetry is the whole point. The phone does work proportional to the circuit (millions of operations); the chain does <strong>constant-time</strong> work no matter how complex the circuit is. A 5-million-constraint passport check and a 5-billion-constraint check would both verify in roughly the same 3 ms.</p>
+
+      <h2>Why we need a circuit registry</h2>
+      <p>A single Groth16 verification key works for <strong>exactly one circuit</strong>. Different documents and signing algorithms need different circuits:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Document class</th><th>Circuit ID</th><th>Verification key</th></tr></thead>
+        <tbody>
+          <tr><td>Iranian biometric passport (RSA 2048, SHA-256, e=65537)</td><td><code>passport_rsa_2048_sha256_e65537</code></td><td><code>vk1.json</code></td></tr>
+          <tr><td>Iranian biometric passport (RSA 3072, SHA-1, e=58333)</td><td><code>passport_rsa_2048_sha1_e58333</code></td><td><code>vk2.json</code></td></tr>
+          <tr><td>Iranian National ID card</td><td><code>inid_rsa_2048</code></td><td><code>vk3.json</code></td></tr>
+          <tr><td>German passport (ECDSA brainpoolP384r1) — planned</td><td><code>passport_ecdsa_p384_sha384</code></td><td>(M7)</td></tr>
+        </tbody>
+      </table></div>
+      <p>Each circuit ID maps to a distinct verification key. Our <code>sso-svc</code> keeps a registry of these keys; the wallet tells the service which circuit it used, and the service picks the right key. Adding a new document class is a <strong>config change</strong>, not a code change.</p>
+
+      <h2>What public signals reveal — and don't</h2>
+      <p>The contract reads the public signals as fixed-position numbers. For the INID query circuit they are 23 values; for the passport circuit, 24. Concrete map for an INID registration:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Index</th><th>Meaning</th><th>Sensitive?</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Nullifier (specific to this event)</td><td>No — unlinkable to identity</td></tr>
+          <tr><td>5</td><td>Event ID (which proposal)</td><td>No — public anyway</td></tr>
+          <tr><td>6</td><td>Citizenship code (e.g. <code>IR</code>)</td><td>No — country-level only</td></tr>
+          <tr><td>8</td><td>Personal number hash (INID only)</td><td>No — hashed; no preimage on-chain</td></tr>
+          <tr><td>10</td><td>Identity creation timestamp</td><td>No — wall-clock</td></tr>
+          <tr><td>12</td><td>Selector (which assertions to publish)</td><td>No — published by design</td></tr>
+          <tr><td>13</td><td>Current date</td><td>No — wall-clock</td></tr>
+          <tr><td>21</td><td>Citizenship-check result (Iran? yes/no)</td><td>No — boolean</td></tr>
+          <tr><td>22</td><td>RegistrationSMT root</td><td>No — chain state</td></tr>
+        </tbody>
+      </table></div>
+      <p>There is no field for name, document number, photo hash, birth date, or expiry date. Those values participate in the proof but are <em>consumed by the circuit</em> — they never appear in the public signals or on-chain. See <a href="zero-knowledge-proofs.html">zero-knowledge proofs</a> for why this is a mathematical guarantee, not a policy.</p>
+
+      <h2>Nullifiers: how the contract enforces one-vote-per-person</h2>
+      <p>A nullifier is deterministic: same secret + same event_id always produces the same nullifier. But it is also <strong>one-way</strong>: given the nullifier, no one can recover the secret or link it to the user's identity.</p>
+      <p>The contract simply records every nullifier it has seen. A second proof from the same person on the same proposal would produce the same nullifier; the contract rejects it.</p>
+      <p>Across events, the same person produces <em>different</em> nullifiers — by design. That is what makes the system anonymous between events: nobody can link your vote on proposal #42 to your vote on proposal #43, even though both are valid.</p>
+
+      <h2>What can still go wrong on-chain</h2>
+      <p>Honest list:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Failure mode</th><th>What we do about it</th></tr></thead>
+        <tbody>
+          <tr><td>Wrong verification key loaded</td><td>Circuit-registry config is reviewed and pinned; tests verify each VK before deploy.</td></tr>
+          <tr><td><code>currentRoot</code> outdated (chain forks, snapshot drift)</td><td>We maintain the ICAO root in our StateKeeper; M6 makes us the sole admin. See <a href="sovereign-stack-and-m6.html">sovereign stack and M6</a>.</td></tr>
+          <tr><td>Replay attack</td><td>Nullifier mapping prevents it within an event.</td></tr>
+          <tr><td>Pairing precompile bug at chain level</td><td>Inherited Ethereum risk — has not happened to BN254 in production.</td></tr>
+          <tr><td>Smart contract upgrade with a back-door</td><td>Mitigated by moving to Gnosis Safe multisig before public launch.</td></tr>
+        </tbody>
+      </table></div>
+      <p>None of these is a <em>cryptographic</em> failure of the proof itself. They are all <strong>operational</strong> risks of running the contract, and they are addressable with process and governance — which is what M6 is about.</p>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Groth16</strong></td><td>A specific zk-SNARK proof system, 2016. Smallest verifier, widely adopted.</td></tr>
+          <tr><td><strong>BN254</strong></td><td>The elliptic curve our proofs live on. Pairing-friendly, EVM-precompiled.</td></tr>
+          <tr><td><strong>Precompile</strong></td><td>A native-code Ethereum operation at a reserved address (0x08 = pairing). Cheap, fast.</td></tr>
+          <tr><td><strong>Verifying key (VK)</strong></td><td>Small file (~few KB) that the contract uses to check proofs from one specific circuit.</td></tr>
+          <tr><td><strong>Public signals</strong></td><td>The circuit's declared outputs, visible on-chain. Never include raw document data.</td></tr>
+          <tr><td><strong>Pairing</strong></td><td>A bilinear function <code>e(P, Q)</code> on elliptic-curve points; the only "magic" operation in Groth16 verify.</td></tr>
+          <tr><td><strong>Witness</strong></td><td>Phone-side intermediate values; never uploaded.</td></tr>
+          <tr><td><strong>Nullifier</strong></td><td>Identity-blinding deterministic anti-replay value, per-event.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Next</h2>
+      <p><a href="passport-trust-chain.html">Passport trust chain</a> — where the data in the proof actually comes from, why we trust it, and <strong>what we can't protect against</strong> if the issuer's key is compromised.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="zero-knowledge-proofs.html">← Previous: zero-knowledge proofs</a>
+      <a href="passport-trust-chain.html">Next: passport trust chain →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>

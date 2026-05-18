@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The passport trust chain — Jomhoor Docs</title>
+  <meta name="description" content="How an e-passport / INID gets trusted on-chain — the ICAO PKI, what the ZK circuit checks, and exactly which attacks our system cannot stop." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/passport-trust-chain.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 04</p>
+      <h1>The passport trust chain (and where it can be broken)</h1>
+
+      <p>This is the most important file in this folder. Everything else in the platform sits on top of one assumption: <strong>that the document a user scans is real, and that "real" is something we can verify without trusting the user, the phone, or any single company.</strong></p>
+      <p>This file explains how we get to that assumption — and where it stops being true.</p>
+
+      <h2>What an e-passport / INID is, physically</h2>
+      <p>Modern biometric travel documents and Iran's national ID smart card contain a tiny computer (an "ICC", integrated-circuit chip) accessed over NFC. The chip stores:</p>
+      <ul>
+        <li>A set of <strong>Data Groups</strong> — DG1 (machine-readable zone), DG2 (face image), DG13 (personal data on INID), DG15 (active-authentication key on passports that have it), and others.</li>
+        <li>A <strong>Security Object Document (SOD)</strong> — a structure that hashes every data group and is <strong>signed</strong> by a <strong>Document Signer (DS)</strong> certificate.</li>
+        <li>For some cards, an <strong>authentication certificate</strong> with a private key, used in a challenge-response handshake to prove the chip is not a clone.</li>
+      </ul>
+      <p>Reading the chip requires the <strong>MRZ</strong> (machine-readable zone, printed on page 2 of a passport / front of an INID) to derive the session keys (via BAC or PACE). That is why our app asks the user to first scan the page with their camera before tapping the chip.</p>
+
+      <h2>The certificate chain — top to bottom</h2>
+      <pre><code>                 ┌─────────────────────────────────────────────────────┐
+                 │  ICAO PKD (Public Key Directory)                    │
+                 │  • Maintained by the International Civil Aviation   │
+                 │    Organization, a UN specialized agency.           │
+                 │  • Contains the public keys of every country's CSCA │
+                 │  • We snapshot it into a Merkle tree (~857 certs)   │
+                 └────────────────────┬────────────────────────────────┘
+                                      │ root hash committed on-chain
+                                      ▼
+                 ┌─────────────────────────────────────────────────────┐
+                 │  CSCA — Country Signing Certificate Authority       │
+                 │  • One or more per country (Iran ~3, Germany 17)    │
+                 │  • Long-lived (~10 years), kept in HSM by issuer    │
+                 │  • Signs the DS certs                               │
+                 └────────────────────┬────────────────────────────────┘
+                                      │ signs
+                                      ▼
+                 ┌─────────────────────────────────────────────────────┐
+                 │  DS — Document Signer certificate                   │
+                 │  • Rotated every few months                         │
+                 │  • One DS cert signs THOUSANDS of passports         │
+                 │  • Hash registered in our CertificatesSMT once      │
+                 └────────────────────┬────────────────────────────────┘
+                                      │ signs SOD
+                                      ▼
+                 ┌─────────────────────────────────────────────────────┐
+                 │  SOD — Security Object inside the chip              │
+                 │  • Contains DG hashes; signed by DS                 │
+                 │  • This is what the ZK circuit ultimately verifies  │
+                 └─────────────────────────────────────────────────────┘</code></pre>
+
+      <p>For Iran specifically, the issuer is <strong>National Organization for Civil Registration</strong>; CSCAs are operated by the state, DS certificates rotate, and both passports and INIDs participate in the same ICAO PKI scheme.</p>
+      <p>For INIDs specifically, the chip is built and software-managed by <strong>Matiran Co.</strong> The chip exposes two certificates (signing + authentication), uses PACE-CAM rather than BAC, and proves it is not a clone via a challenge-response with a private key held inside the chip's secure element. There is no DG15 file, but the anti-clone property is preserved by the auth-certificate mechanism.</p>
+
+      <h2>What the ZK circuit actually checks</h2>
+      <p>Inside the circuit (≈5 million constraints), the user's phone proves that all of the following hold simultaneously:</p>
+      <ol>
+        <li><strong>The SOD signature is valid</strong> under the DS certificate's public key.</li>
+        <li><strong>The DS certificate's signature is valid</strong> under some CSCA's public key.</li>
+        <li><strong>That CSCA is present in our committed ICAO Merkle tree</strong> at root <code>0x8aebf998...</code> (or whatever the contract has accepted).</li>
+        <li><strong>The MRZ data (DG1) hashes match the SOD entry</strong> for DG1.</li>
+        <li><strong>The birth date in DG1 makes the user old enough.</strong></li>
+        <li><strong>The expiry date in DG1 is in the future.</strong></li>
+        <li><strong>The nullifier was correctly derived</strong> from the user's secret + event ID.</li>
+      </ol>
+      <p>Only outputs (4 categories, no raw data) leave the proof: nullifier, ICAO root, citizenship code, dates.</p>
+
+      <h2>What a user <strong>cannot</strong> fake</h2>
+      <p>This is the strong-statement column. None of these attacks work against our system:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Attack the user tries</th><th>Why it fails</th></tr></thead>
+        <tbody>
+          <tr><td>Edit DG1 / DG2 / DG13 in the chip dump before scanning</td><td>SOD hash mismatch — circuit's hash check rejects.</td></tr>
+          <tr><td>Substitute their own SOD with handcrafted DG hashes</td><td>SOD signature fails under DS public key.</td></tr>
+          <tr><td>Forge a DS certificate</td><td>Not signed by any CSCA → step 2 of the circuit fails.</td></tr>
+          <tr><td>Submit a real document but lie about birth date</td><td>DG1 inputs to the circuit are bound to the SOD hashes — date is the real one.</td></tr>
+          <tr><td>Reuse another person's proof</td><td>Bound to a wallet/secret they don't control; nullifier mismatch on first attempt.</td></tr>
+          <tr><td>Vote twice on the same proposal</td><td>Same nullifier; contract refuses second vote.</td></tr>
+          <tr><td>Replay a vote across proposals</td><td>Different event ID → different nullifier; but the user is only "the same person" anonymously, by design.</td></tr>
+          <tr><td>Run a modified app that skips checks</td><td>The checks live in the <em>circuit</em>, not the app code. A modified app produces invalid proofs.</td></tr>
+          <tr><td>Patch the proof bytes in transit</td><td>Pairing equation breaks — verifier rejects.</td></tr>
+          <tr><td>Pay someone to register on their behalf</td><td>Possible socially, but no different from selling your real-world passport — not solvable by software.</td></tr>
+        </tbody>
+      </table></div>
+      <p>The cryptographic guarantee is strong: <strong>everything that ends up on-chain is something the issuer signed</strong>. Nothing the user could invent.</p>
+
+      <h2>What an attacker <strong>can</strong> do — the honest section</h2>
+      <p>This is the column we have to be honest about. Three real attacks remain, and two of them are shared by <strong>every</strong> passport-ZK system in the world.</p>
+
+      <h3>Attack 1: Government with CSCA private key mints fake identities</h3>
+      <p>The Iranian state (or anyone with access to a CSCA HSM) can:</p>
+      <ol>
+        <li>Sign a fresh DS certificate.</li>
+        <li>Use that DS to sign a fake SOD with arbitrary DG1 content (made-up name, made-up birth date, made-up citizenship).</li>
+        <li>Hand that fake document to a paid actor whose phone produces a perfectly valid ZK proof.</li>
+      </ol>
+      <p>The proof will pass our circuit and our contract because the math is sound: the document <strong>is</strong> signed by a real CSCA. The ICAO tree itself doesn't distinguish "real human" from "valid signature on a made-up record."</p>
+      <p><strong>This is a limit shared by every passport-ZK system.</strong> ZKPassport, Rarimo / FreedomTool, World ID's passport flow, and ours — all of us inherit this. The state is the root of trust, and if it cheats at the root, no downstream cryptography can detect it.</p>
+
+      <p>What we can do about it, ranked from cheap to expensive:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Mitigation</th><th>Status</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Time-locked ICAO snapshot</strong></td><td>Plan for M6</td><td>Pin a CSCA-tree root from a date before adversarial behaviour is suspected. New CSCAs added by the regime after that date are simply not in our tree.</td></tr>
+          <tr><td><strong>Multi-issuer cross-check</strong></td><td>Future</td><td>For high-stakes votes, require two distinct issuers (e.g., passport + INID, or Iranian + another country for diaspora). Both issuers would have to collude.</td></tr>
+          <tr><td><strong>Statistical anomaly detection</strong></td><td>Future</td><td>Track DS certificate issuance volume. Sudden spikes are a signal. Off-chain analysis, on-chain transparency.</td></tr>
+          <tr><td><strong>Public transparency log</strong></td><td>Plan</td><td>Every registered DS cert is on-chain. A coordinated bulk-mint becomes visible.</td></tr>
+          <tr><td><strong>On-device face match + liveness (Bionetta-style ZKML)</strong></td><td>M7 (planned)</td><td>Force the prover to bind registration to a live biometric. Fake documents would require real faces, which scales poorly for an adversary.</td></tr>
+        </tbody>
+      </table></div>
+      <p>We name this limit publicly because credibility requires it. Nobody else in the space is willing to put it this plainly; we will be.</p>
+
+      <h3>Attack 2: Coordinated faction of legitimate users</h3>
+      <p>A regime-aligned (or otherwise organized) group of real Iranian citizens with real passports / INIDs registers honestly and then floods the platform with content that:</p>
+      <ul>
+        <li>incites violence,</li>
+        <li>denies documented atrocities,</li>
+        <li>dehumanizes minorities,</li>
+        <li>normalizes torture or enforced disappearance.</li>
+      </ul>
+      <p>This is <strong>not</strong> a cryptographic problem. Identity proofs alone don't stop it, because everyone involved has a legitimate identity. This is exactly the attack the <strong>normative compliance</strong> layer is designed to resist — see <a href="two-gates-identity-and-speech.html">two gates: identity and speech</a>. We use an LLM that evaluates content against 11 UN human-rights conventions before publication. It is not a toxicity filter; it is a structural defense against capture.</p>
+
+      <h3>Attack 3: Compromised user device</h3>
+      <p>If an attacker has root on the user's phone — through malware, a custom flashed OS, or physical access — they can:</p>
+      <ul>
+        <li>read the wallet's private key,</li>
+        <li>generate proofs as the user,</li>
+        <li>vote as the user.</li>
+      </ul>
+      <p>This is the same threat model as banking apps, WhatsApp, or any other device-bound credential. Mitigations are platform-level:</p>
+      <ul>
+        <li>iOS App Attest / Android Play Integrity gate, mandatory in production</li>
+        <li>secure-storage (Keychain / Keystore) for the wallet key</li>
+        <li>biometric / PIN unlock before signing</li>
+        <li>session-bound nonces with short expiry</li>
+      </ul>
+      <p>We don't claim to solve this. We claim that any attacker willing to individually compromise devices cannot scale beyond a small number of users.</p>
+
+      <h2>What the platform does <strong>not</strong> protect against — explicit list</h2>
+      <p>This is the same content as the table above, restated as plain claims, so it appears verbatim in our public materials:</p>
+      <ol>
+        <li><strong>A state actor with the CSCA signing key can mint fake identities</strong> that our system cannot distinguish from real ones. We mitigate operationally; we don't eliminate.</li>
+        <li><strong>Real people voting with real documents according to coordinated instructions</strong> is something identity systems cannot solve. The normative compliance layer addresses content; vote choice itself is — and must be — free.</li>
+        <li><strong>A rooted or malware-infected user device</strong> is outside cryptographic scope. We rely on Apple's / Google's attestation, not on our own crypto.</li>
+        <li><strong>An attacker with physical access to the user's unlocked phone</strong> can act as that user during that session.</li>
+      </ol>
+
+      <h2>How the trust chain comes together with M6</h2>
+      <p>Today, the ICAO tree, the CertificatesSMT, the RegistrationSMT, and the dispatchers that decode certificate types are all deployed by Rarimo. We use their contracts. That is fine for now, but it means <strong>someone else admins our trust roots.</strong></p>
+      <p>After M6, we deploy our own Registration2, our own StateKeeper, our own SMTs, and our own dispatchers — still on Rarimo L2 — with our own ICAO snapshot. This gives us:</p>
+      <ul>
+        <li>the ability to <strong>pin</strong> the CSCA tree at a date we choose,</li>
+        <li>the ability to <strong>add or remove</strong> CSCAs based on our own diligence,</li>
+        <li>independence from Rarimo's governance decisions on dispatcher registry,</li>
+        <li>a clean security boundary: Jomhoor is the sole admin of Jomhoor's trust.</li>
+      </ul>
+      <p>We keep the chain (Rarimo L2). We replace the contracts.</p>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>MRZ</strong></td><td>Machine-readable zone — the OCR-friendly text on a passport / ID. Used to derive NFC session keys.</td></tr>
+          <tr><td><strong>BAC / PACE</strong></td><td>Two protocols for establishing an encrypted session with the chip. PACE is newer; PACE-CAM is the INID variant.</td></tr>
+          <tr><td><strong>SOD</strong></td><td>Security Object Document — signed hash list of all data groups in the chip.</td></tr>
+          <tr><td><strong>DG1, DG2, DG13, DG15</strong></td><td>Specific data files inside the chip. DG1 = MRZ data, DG2 = face image, DG13 = INID personal info, DG15 = active-authentication public key.</td></tr>
+          <tr><td><strong>CSCA</strong></td><td>Country Signing Certificate Authority — top of a country's e-passport PKI.</td></tr>
+          <tr><td><strong>DS</strong></td><td>Document Signer — short-lived cert that signs each individual passport's SOD.</td></tr>
+          <tr><td><strong>ICAO PKD</strong></td><td>Public Key Directory maintained by the UN ICAO agency — the global list of CSCAs.</td></tr>
+          <tr><td><strong>CertificatesSMT</strong></td><td>On-chain Sparse Merkle Tree of registered DS certificate hashes.</td></tr>
+          <tr><td><strong>RegistrationSMT</strong></td><td>On-chain Sparse Merkle Tree of identity commitments.</td></tr>
+          <tr><td><strong>Nullifier</strong></td><td>Anti-replay value, per event. See <a href="zero-knowledge-proofs.html">zero-knowledge proofs</a>.</td></tr>
+        </tbody>
+      </table></div>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="zero-knowledge-proofs.html">← Previous: zero-knowledge proofs</a>
+      <a href="two-gates-identity-and-speech.html">Next: two gates →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>

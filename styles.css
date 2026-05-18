@@ -3,6 +3,43 @@
    Matched to Rarimo.com design system
    ======================================== */
 
+/* Nian — Persian typeface (used on all RTL/FA pages) */
+@font-face {
+  font-family: 'Nian';
+  src: url('fonts/Nian Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nian';
+  src: url('fonts/Nian.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nian';
+  src: url('fonts/Nian SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nian';
+  src: url('fonts/Nian Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nian';
+  src: url('fonts/Nian-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* CSS Variables — Rarimo Dark Theme */
 :root {
   --bg-primary: #111111;
@@ -209,6 +246,39 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+/* Persian / RTL pages use Nian instead of Inter */
+html[dir="rtl"] body {
+  font-family: 'Nian', 'Vazirmatn', system-ui, sans-serif;
+  word-spacing: 0.2em;
+}
+
+/* Persian/RTL typography — reset negative letter-spacing that causes word-joining.
+   Arabic script connects characters within a word; negative tracking
+   collapses the inter-word space and makes adjacent words appear merged. */
+html[dir="rtl"] .nav__logo {
+  letter-spacing: 0;
+}
+html[dir="rtl"] .docs-hero__eyebrow {
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+html[dir="rtl"] .docs-hero__title,
+html[dir="rtl"] .prose h1,
+html[dir="rtl"] .prose h2 {
+  letter-spacing: 0;
+}
+
+/* ASCII diagrams and code blocks must stay LTR regardless of page direction.
+   Also cancel the word-spacing we set on body, which breaks column alignment. */
+html[dir="rtl"] .prose pre,
+html[dir="rtl"] .prose pre code,
+html[dir="rtl"] .prose code {
+  direction: ltr;
+  text-align: left;
+  word-spacing: normal;
+  unicode-bidi: embed;
 }
 
 a {
@@ -2632,4 +2702,213 @@ code {
   .store-badge svg .badge-main {
     fill: #ffffff;
   }
+}
+
+/* ========================================
+   Docs / Explainers
+   ======================================== */
+.docs-hero {
+  padding: 140px 0 60px;
+  border-bottom: 1px solid var(--border-color);
+}
+.docs-hero__eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+.docs-hero__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+.docs-hero__desc {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 720px;
+}
+
+.docs-toc {
+  padding: 60px 0 120px;
+}
+.docs-toc__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.docs-toc__card {
+  display: block;
+  padding: 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+.docs-toc__card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+.docs-toc__num {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--accent-primary);
+  margin-bottom: 10px;
+}
+.docs-toc__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.docs-toc__desc {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+@media (max-width: 768px) {
+  .docs-toc__grid { grid-template-columns: 1fr; }
+}
+
+/* Article prose */
+.prose {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 80px 0 120px;
+  color: var(--text-primary);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.prose > p,
+.prose > ul,
+.prose > ol,
+.prose > blockquote,
+.prose > pre,
+.prose > .table-wrap {
+  margin: 0 0 20px;
+}
+.prose h1 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 32px;
+}
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 56px 0 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+.prose h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 36px 0 12px;
+}
+.prose ul,
+.prose ol {
+  padding-inline-start: 1.5em;
+}
+.prose li { margin: 6px 0; }
+.prose li > p { margin: 0 0 8px; }
+.prose strong { color: var(--text-primary); font-weight: 600; }
+.prose em { font-style: italic; color: var(--text-primary); }
+.prose a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(91, 157, 245, 0.35);
+  text-underline-offset: 3px;
+}
+.prose a:hover { text-decoration-color: var(--accent-primary); }
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  padding: 2px 6px;
+  background: var(--component-primary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+.prose pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+.prose pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.prose blockquote {
+  margin: 0 0 20px;
+  padding: 16px 22px;
+  border-inline-start: 3px solid var(--accent-primary);
+  background: var(--accent-gradient-soft);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--text-primary);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+.prose .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.prose th,
+.prose td {
+  padding: 12px 14px;
+  text-align: start;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-color);
+}
+.prose th {
+  background: var(--bg-card);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.prose tr:last-child td { border-bottom: 0; }
+
+.docs-bottom-nav {
+  max-width: 760px;
+  margin: 0 auto 80px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+.docs-bottom-nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.docs-bottom-nav a:hover { color: var(--accent-primary); }
+
+/* RTL: flip border on blockquote */
+html[dir="rtl"] .prose blockquote {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }

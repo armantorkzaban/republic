@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docs — Jomhoor Explainers</title>
+  <meta name="description" content="Seven explainers covering the architecture, cryptography, and governance of the Jomhoor platform." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="docs-hero">
+    <div class="container">
+      <span class="docs-hero__eyebrow">Explainers</span>
+      <h1 class="docs-hero__title">How Jomhoor actually works</h1>
+      <p class="docs-hero__desc">
+        Seven short pieces, in order. They cover what a blockchain is, what a zero-knowledge
+        proof proves, how we trust an e-passport, what the full registration-and-vote flow
+        looks like, and how identity and speech are governed as two separate gates. No
+        marketing — the source files live in
+        <a href="https://github.com/jomhoor" target="_blank">our repository</a>
+        and these pages are a polished mirror.
+      </p>
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <section class="docs-toc">
+    <div class="container">
+      <div class="docs-toc__grid">
+
+        <a href="blockchain-and-rarimo-l2.html" class="docs-toc__card">
+          <div class="docs-toc__num">01 — Available</div>
+          <div class="docs-toc__title">Blockchain and Rarimo L2</div>
+          <p class="docs-toc__desc">What a blockchain is, what an L2 is, and why Jomhoor lives on Rarimo's L2 instead of Ethereum mainnet.</p>
+        </a>
+
+        <a href="zero-knowledge-proofs.html" class="docs-toc__card">
+          <div class="docs-toc__num">02 — Available</div>
+          <div class="docs-toc__title">Zero-knowledge proofs</div>
+          <p class="docs-toc__desc">What a ZK proof actually proves. Completeness, soundness, zero-knowledge — in plain language.</p>
+        </a>
+
+        <a href="on-chain-verification.html" class="docs-toc__card">
+          <div class="docs-toc__num">03 — Available</div>
+          <div class="docs-toc__title">On-chain verification</div>
+          <p class="docs-toc__desc">What the verifier contract does with a 256-byte proof, and why that matters for trust.</p>
+        </a>
+
+        <a href="passport-trust-chain.html" class="docs-toc__card">
+          <div class="docs-toc__num">04 — Available</div>
+          <div class="docs-toc__title">Passport trust chain</div>
+          <p class="docs-toc__desc">How we trust the NFC chip in an e-passport — and what this design cannot protect against.</p>
+        </a>
+
+        <a href="the-full-flow.html" class="docs-toc__card">
+          <div class="docs-toc__num">05 — Available</div>
+          <div class="docs-toc__title">The full flow</div>
+          <p class="docs-toc__desc">End-to-end: NFC scan → witness → ZK proof → transaction → vote, with every layer named.</p>
+        </a>
+
+        <a href="sovereign-stack-and-m6.html" class="docs-toc__card">
+          <div class="docs-toc__num">06 — Available</div>
+          <div class="docs-toc__title">Sovereign stack and M6</div>
+          <p class="docs-toc__desc">What our M6 sovereignty milestone changes — and what it deliberately leaves alone.</p>
+        </a>
+
+        <a href="two-gates-identity-and-speech.html" class="docs-toc__card">
+          <div class="docs-toc__num">07 — Available</div>
+          <div class="docs-toc__title">Two gates: identity and speech</div>
+          <p class="docs-toc__desc">Why Jomhoor has two gates — ZK identity against sybils, normative compliance against capture — and who governs each.</p>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="../../fa/docs/">فارسی</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>

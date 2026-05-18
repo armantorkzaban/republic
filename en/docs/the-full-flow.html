@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The full flow — Jomhoor Docs</title>
+  <meta name="description" content="One user, one vote, end to end. Where every piece of data lives, where it dies, and what ends up on chain." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/the-full-flow.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 05</p>
+      <h1>The full flow: from NFC tap to on-chain vote</h1>
+
+      <p>This file traces one user, one vote, end to end. Every other explainer covers a slice in depth; this one walks the whole pipeline and shows <strong>where each piece of data lives and dies</strong>.</p>
+      <p>If you only read one explainer, read this one second (after <a href="blockchain-and-rarimo-l2.html">#01</a>).</p>
+
+      <h2>The three phases</h2>
+      <pre><code>   ┌───────────────────┐    ┌───────────────────┐    ┌───────────────────┐
+   │ 1. Registration   │    │ 2. Wallet sign-in │    │ 3. Voting         │
+   │ (one-time)        │ →  │ (per session)     │ →  │ (per proposal)    │
+   └───────────────────┘    └───────────────────┘    └───────────────────┘</code></pre>
+      <p>Registration is heavy: NFC scan, ZK proof, on-chain write. Done <strong>once per document</strong>. Wallet sign-in is local: PIN / biometric, no chain interaction. Voting is medium-weight: a smaller "query" ZK proof and one on-chain transaction per ballot.</p>
+
+      <h2>Phase 1: Registration</h2>
+
+      <h3>Step 1.1 — User installs Jomhoor wallet</h3>
+      <p>The wallet app is downloaded from the App Store or Play Store. On first launch, it:</p>
+      <ul>
+        <li>Generates a <strong>BabyJubjub private key</strong> locally (random, ~32 bytes).</li>
+        <li>Stores it in the platform secure-storage (iOS Keychain / Android Keystore), encrypted by the OS.</li>
+        <li>Sets up biometric / PIN unlock.</li>
+        <li>Performs <strong>app attestation</strong> (App Attest on iOS, Play Integrity on Android) and registers the wallet with <code>sso-svc</code>. This blocks emulators, rooted devices, and modified app builds in production.</li>
+      </ul>
+      <blockquote>Data created: wallet private key. Lives <strong>only</strong> on this device, ever. Data sent off-device: wallet public key (BabyJubjub <code>{x, y}</code>) + attestation payload.</blockquote>
+
+      <h3>Step 1.2 — User scans the MRZ with the camera</h3>
+      <p>The wallet uses the device camera to OCR the <strong>machine-readable zone</strong> of their passport or INID. This is a one-line text scan; the data is needed to derive the NFC session key.</p>
+      <blockquote>Data created: MRZ string (document number, birth date, expiry). Lifetime: held in app memory, used to derive BAC/PACE keys, then discarded.</blockquote>
+
+      <h3>Step 1.3 — User taps the document on the phone (NFC)</h3>
+      <p>The wallet establishes a secure NFC session with the chip using <strong>BAC</strong> (older passports) or <strong>PACE</strong> (newer passports / INIDs). Over this session it reads:</p>
+      <ul>
+        <li><strong>DG1</strong> — MRZ data</li>
+        <li><strong>DG2</strong> — face image</li>
+        <li><strong>DG13</strong> (INID) — personal data</li>
+        <li><strong>DG15</strong> (passports with active authentication) — auth public key</li>
+        <li><strong>SOD</strong> — signed hash list</li>
+        <li>For INID specifically, <strong>the signing certificate</strong> and <strong>the authentication certificate</strong> are read via the Pardis/Mav4 APDU command sequence.</li>
+      </ul>
+      <blockquote>Data created: the entire chip dump. Lives <strong>only</strong> in app memory; never written to disk, never sent off-device.</blockquote>
+
+      <h3>Step 1.4 — App selects the right ZK circuit</h3>
+      <p>The wallet inspects the <strong>Document Signer certificate</strong> to determine:</p>
+      <ul>
+        <li>signature algorithm (RSA vs. ECDSA)</li>
+        <li>hash algorithm (SHA-1 / SHA-256 / SHA-384)</li>
+        <li>key size (2048 / 3072 / 4096 bits) or curve</li>
+        <li>document type (TD1 for INID/ID cards, TD3 for passports)</li>
+      </ul>
+      <p>Based on that, it picks a circuit ID like <code>passport_rsa_2048_sha256_e65537</code> or <code>inid_rsa_2048</code>.</p>
+
+      <h3>Step 1.5 — Witness generation</h3>
+      <p>The wallet feeds the chip data + the user's secret + the current ICAO root into the chosen circuit's WASM. A native module (<code>witnesscalculator</code>) computes the <strong>witness</strong> — the full list of intermediate values that satisfy the circuit's millions of constraints. This takes 20–60 seconds.</p>
+      <blockquote>Data created: witness (~10–100 MB, in memory). Discarded after proof generation.</blockquote>
+
+      <h3>Step 1.6 — Proof generation</h3>
+      <p>The wallet calls the <strong>Groth16 prover</strong> (<code>rapidsnark-wrp</code>, native module). Input: the witness + the circuit's proving key (~hundreds of MB, pre-bundled in the app). Output: a 256-byte proof and ~24 public signals. 30–90 seconds of phone CPU, fans on, battery drains.</p>
+      <blockquote>Data created: 256-byte proof + public signals (nullifier, ICAO root, citizenship code, dates). These are the <em>only</em> artifacts that will leave the phone.</blockquote>
+
+      <h3>Step 1.7 — Submit to the registration relayer</h3>
+      <p>The wallet POSTs the proof + public signals to:</p>
+      <pre><code>https://api.iranians.vote/integrations/registration-relayer/v1/register</code></pre>
+      <p>The relayer is a thin Go service. It:</p>
+      <ol>
+        <li>Verifies the proof off-chain as a sanity check (cheap).</li>
+        <li>Wraps the proof + signals into a Rarimo L2 transaction.</li>
+        <li>Signs the transaction with its own funded wallet (RMO gas).</li>
+        <li>Broadcasts to Rarimo L2 RPC.</li>
+        <li>Returns the transaction hash to the wallet.</li>
+      </ol>
+      <p>The relayer <strong>does not see</strong> the user's document data — only the public proof + signals. It exists to pay gas, not to gate access.</p>
+      <blockquote>Data created on-chain: an entry in <code>RegistrationSMT</code> (sparse Merkle tree of identity commitments). The user is now registered. The DS certificate hash is also added to <code>CertificatesSMT</code> if it wasn't already.</blockquote>
+
+      <h3>Step 1.8 — App writes a "registered" marker locally</h3>
+      <p>The wallet stores: the wallet's secret-derived <strong>identity commitment</strong>, the transaction hash, and the circuit ID used. Nothing about the document itself.</p>
+      <blockquote>Data destroyed at this step: MRZ, DG1/DG2/DG13/DG15, SOD, certificates, witness. All zeroed in memory.</blockquote>
+
+      <p><strong>Phase 1 complete.</strong> The user can now sign in and vote. They never need to scan the document again, unless they reinstall the app or rotate their wallet.</p>
+
+      <h2>Phase 2: Wallet sign-in</h2>
+      <p>When the user opens the app, they unlock the wallet with Face ID / Touch ID / PIN. The OS decrypts the BabyJubjub private key from secure storage; it lives in memory only for the duration of the session.</p>
+      <p>For "Sign in with Jomhoor" SSO (used by Taraaz, Civic-Compass, future partners), the flow is:</p>
+      <ol>
+        <li>Relying party (e.g. Taraaz) opens <code>/v1/authorize?client_id=…&amp;code_challenge=…</code>.</li>
+        <li><code>sso-svc</code> returns a nonce + redirects to the wallet via Universal Link.</li>
+        <li>The wallet signs <code>{nonce, client_id, app_attestation}</code> with its BabyJubjub key.</li>
+        <li><code>sso-svc</code> verifies the signature + attestation, issues a one-time <code>code</code>.</li>
+        <li>RP exchanges <code>code + code_verifier</code> for an access + refresh JWT.</li>
+        <li>JWT's <code>sub</code> is a <strong>pairwise subject</strong> — <code>HMAC(secret, wallet_id : client_id)</code> — so different RPs see different identifiers for the same user. No correlation across services.</li>
+      </ol>
+      <p>No chain interaction in this phase. The trust is bootstrapped from Phase 1's on-chain registration, but the sign-in protocol itself is purely off-chain.</p>
+
+      <h2>Phase 3: Voting</h2>
+
+      <h3>Step 3.1 — User opens a proposal</h3>
+      <p>The wallet fetches active proposals from the voting contract on Rarimo L2 and displays them. Each proposal carries:</p>
+      <ul>
+        <li>a numeric ID</li>
+        <li>a description (off-chain, IPFS-pinned)</li>
+        <li>accepted-options bitmask (e.g. <code>[7]</code> = three options: Yes / No / Abstain)</li>
+        <li>selector specifying which assertions are required (<code>citizenship == IR</code>, <code>is_18_plus</code>, etc.)</li>
+        <li>whitelist data (country codes + date bounds, see proposal config)</li>
+      </ul>
+
+      <h3>Step 3.2 — User picks an option</h3>
+      <p>The wallet binds the choice to the proposal ID locally. No signature yet.</p>
+
+      <h3>Step 3.3 — Query-proof generation</h3>
+      <p>This is a <strong>smaller, faster ZK proof</strong> than the registration proof. It does NOT re-scan the document; it uses the secret already stored in the wallet.</p>
+      <p>It proves:</p>
+      <ol>
+        <li>"I am registered in the <code>RegistrationSMT</code> at root R."</li>
+        <li>"My identity satisfies the proposal's selector" (citizenship, age, etc.).</li>
+        <li>"My nullifier for <code>event_id = proposal.id</code> is N."</li>
+        <li>"I am voting for option X."</li>
+      </ol>
+      <p>This proof takes ~10–30 seconds on a phone. Output: ~256 bytes + ~23 public signals (INID circuit) or ~24 (passport circuit).</p>
+
+      <h3>Step 3.4 — Submit to the voting relayer</h3>
+      <pre><code>https://api.iranians.vote/integrations/proof-verification-relayer/v3/vote</code></pre>
+      <p>Relayer wraps the proof into a Rarimo L2 transaction, signs with its funded wallet, broadcasts. The voting contract:</p>
+      <ol>
+        <li>Calls the BN254 pairing precompile at address <code>0x08</code>.</li>
+        <li>Checks nullifier-not-used.</li>
+        <li>Increments the vote count for option X.</li>
+        <li>Records the nullifier as used.</li>
+      </ol>
+      <p>If the user tries to vote again: contract returns <code>the key already exists</code> → relayer returns <code>400 Bad Request</code> → wallet shows "Already Voted" screen.</p>
+
+      <h3>Step 3.5 — Result</h3>
+      <p>The transaction is mined within ~2 seconds on Rarimo L2. The user sees their receipt: transaction hash, vote recorded, option chosen.</p>
+      <p><strong>Phase 3 complete for this proposal.</strong> The user can vote on the next proposal independently — same wallet, different nullifier.</p>
+
+      <h2>Where every piece of data lives, in one table</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Data</th><th>Lives on phone?</th><th>Sent off-device?</th><th>On-chain?</th><th>Lifetime</th></tr></thead>
+        <tbody>
+          <tr><td>Wallet private key (BabyJubjub)</td><td>✅ Secure enclave</td><td>❌ Never</td><td>❌ Never</td><td>Permanent until uninstall</td></tr>
+          <tr><td>Wallet public key</td><td>✅</td><td>✅ At registration</td><td>❌</td><td>Permanent in <code>sso-svc</code> DB</td></tr>
+          <tr><td>MRZ string</td><td>✅ In memory</td><td>❌</td><td>❌</td><td>Seconds (NFC session)</td></tr>
+          <tr><td>DG1, DG2, DG13, DG15</td><td>✅ In memory</td><td>❌</td><td>❌</td><td>Until proof generated, then zeroed</td></tr>
+          <tr><td>SOD + DS cert</td><td>✅ In memory</td><td>❌</td><td>❌</td><td>Until proof generated, then zeroed</td></tr>
+          <tr><td>ZK witness</td><td>✅ In memory</td><td>❌</td><td>❌</td><td>Seconds, then zeroed</td></tr>
+          <tr><td>ZK proof (256 bytes)</td><td>✅ Briefly</td><td>✅ To relayer</td><td>✅ Part of tx data</td><td>Permanent on chain</td></tr>
+          <tr><td>Public signals</td><td>✅ Briefly</td><td>✅ To relayer</td><td>✅ Part of tx data</td><td>Permanent on chain</td></tr>
+          <tr><td>Nullifier</td><td>✅ Briefly</td><td>✅ To relayer</td><td>✅ Recorded in contract</td><td>Permanent on chain</td></tr>
+          <tr><td>DS cert hash</td><td>✅ Briefly</td><td>✅ To relayer</td><td>✅ Once per cert in <code>CertificatesSMT</code></td><td>Permanent on chain</td></tr>
+          <tr><td>Identity commitment</td><td>✅ Briefly</td><td>✅ To relayer</td><td>✅ Once in <code>RegistrationSMT</code></td><td>Permanent on chain</td></tr>
+          <tr><td>Vote choice (option X)</td><td>✅ Briefly</td><td>✅ Inside proof</td><td>✅ Counted in contract</td><td>Permanent on chain</td></tr>
+          <tr><td>Pairwise subject (SSO)</td><td>❌</td><td>✅ In JWT to RP</td><td>❌</td><td>Per-session JWT lifetime</td></tr>
+        </tbody>
+      </table></div>
+      <p>The pattern is consistent: <strong>document data never leaves the device</strong>; only the cryptographic proof and its declared public outputs do. Everything on-chain is either a hash, a count, or a randomized commitment.</p>
+
+      <h2>A walk-through narrative (the non-technical version)</h2>
+      <p>For when an Iranian voter abroad asks "what happens when I tap my passport on the app?", here is the same story without jargon:</p>
+      <blockquote>
+        <p>You scan the first page of your passport with the camera. You tap the passport against your phone — the chip inside the passport talks to your phone over short-range radio.</p>
+        <p>Your phone reads the photo, the name, the dates, and a tiny digital signature from the chip — proof from the Iranian Civil Registry that the document is real.</p>
+        <p>Your phone then does something clever: it builds a mathematical receipt that says "I have a real Iranian passport, I am over 18, my name and number do not appear here." This receipt is about as small as a tweet. Your passport data is then <strong>deleted</strong> from your phone.</p>
+        <p>The receipt is uploaded to the blockchain — a public, tamper-proof ledger that runs in dozens of countries. The blockchain checks the math, accepts the receipt, and now you are registered: a real Iranian citizen, eligible to vote, with no name attached.</p>
+        <p>When a vote happens, you produce a smaller receipt: "I'm a registered user, I am voting Yes." The blockchain counts it, marks you as having voted on this question, and you cannot vote on the same question twice.</p>
+        <p>Nobody knows your name. Nobody can take your account away. Nobody can delete your vote.</p>
+      </blockquote>
+      <p>That paragraph is the <em>only</em> version of the system most readers will ever need. Everything in this folder exists to support it being <strong>true</strong>.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="passport-trust-chain.html">← Previous: passport trust chain</a>
+      <a href="two-gates-identity-and-speech.html">Next: two gates →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blockchain, L2, and Rarimo L2 — Jomhoor Docs</title>
+  <meta name="description" content="What a blockchain is, what an L2 is, what Rarimo L2 is, and why Jomhoor lives on it instead of Ethereum mainnet." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/blockchain-and-rarimo-l2.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 01</p>
+      <h1>What is a blockchain, what is an L2, what is Rarimo L2?</h1>
+
+      <h2>What is a blockchain?</h2>
+      <p>A blockchain is a <strong>shared, append-only ledger</strong> that runs on thousands of computers simultaneously. Every computer agrees on every entry; nobody — not even the system's original designers — can rewrite past entries or shut the ledger down by attacking a single point.</p>
+      <p>Two properties make this useful to Jomhoor:</p>
+      <ol>
+        <li><strong>Smart contracts</strong> — small programs that live in the ledger and execute automatically. We use them to count votes, prevent double-voting, and prove identity registrations exist.</li>
+        <li><strong>No central authority</strong> — there is no company or government that can delete records, fake transactions, or refuse to serve specific users.</li>
+      </ol>
+      <p><strong>Ethereum</strong> is the largest and most well-known general-purpose blockchain.</p>
+
+      <h2>Why we don't use Ethereum directly</h2>
+      <p>Ethereum is slow (~12 transactions per second globally) and expensive (a single vote could cost $5–$50 in gas fees during congestion). For civic-scale voting where we expect thousands of participants, that's a deal-breaker.</p>
+
+      <h2>What is "L2"?</h2>
+      <p><strong>Layer 2</strong> ("L2") refers to a separate, faster, cheaper blockchain that <strong>periodically writes a cryptographic summary back to a Layer 1</strong> (almost always Ethereum). The summary anchors the L2's history into the L1, so anyone can independently reconstruct or challenge L2 state using L1 data alone.</p>
+      <p>Two ways to picture it:</p>
+      <ul>
+        <li><strong>Federal vs local court.</strong> Ethereum is the supreme court; an L2 is a fast local court. Local rulings stand on their own day-to-day, but Ethereum is the ultimate appellate authority.</li>
+        <li><strong>Office archive vs working notepad.</strong> Ethereum is the official archive — slow and expensive to write in. An L2 is your team's shared notepad: fast, cheap, and you photocopy a digest of it into the archive every few minutes.</li>
+      </ul>
+      <p>L2s are the standard scaling answer for Ethereum. Major examples include Arbitrum, Optimism, Base, Polygon zkEVM, and <strong>Rarimo L2</strong>.</p>
+
+      <h2>What is Rarimo L2?</h2>
+      <p>Rarimo is a project that built an L2 specialized for <strong>identity and zero-knowledge proofs</strong> instead of general finance. Its key properties:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Chain ID (production)</td><td><code>7368</code></td></tr>
+          <tr><td>Gas token</td><td><strong>RMO</strong> (not ETH) — costs about $0.001 per transaction</td></tr>
+          <tr><td>RPC endpoint</td><td><code>https://l2.rarimo.com</code></td></tr>
+          <tr><td>Block explorer</td><td><code>https://scan.rarimo.com</code></td></tr>
+          <tr><td>EVM-compatible?</td><td>Yes — Solidity smart contracts and MetaMask work</td></tr>
+          <tr><td>Specialized for</td><td>ZK precompiles, passport identity circuits</td></tr>
+        </tbody>
+      </table></div>
+      <p>Rarimo also publishes <strong>open-source ZK circuits</strong> (<code>passport-zk-circuits</code>) used across the field for ICAO-compliant passport verification. Jomhoor uses those circuits, and currently uses Rarimo's deployed contracts on Rarimo L2 for identity registration.</p>
+      <blockquote>The relationship between Jomhoor and Rarimo is a topic of its own. The forthcoming sovereign-stack milestone explains why we are about to stop using Rarimo's contracts while continuing to use the chain.</blockquote>
+
+      <h2>Is Rarimo L2 "a part of" Ethereum?</h2>
+      <p><strong>Technically yes, in two specific ways:</strong></p>
+      <ol>
+        <li>Rarimo L2 periodically posts data back to Ethereum, anchoring its history there.</li>
+        <li>It is EVM-compatible: the same smart-contract language, the same tooling, the same wallet standards.</li>
+      </ol>
+      <p><strong>Practically no, in two other ways:</strong></p>
+      <ol>
+        <li>It has <strong>its own validators</strong>, operated by Rarimo's network of node operators.</li>
+        <li>It has <strong>its own governance</strong> — Rarimo (the company / network) decides protocol upgrades, not Ethereum's community.</li>
+      </ol>
+      <p>So: Rarimo L2 is an <em>Ethereum-anchored</em> L2, but a <em>separate operational network</em> run by separate people.</p>
+
+      <h2>Can Rarimo L2 fail or shut down?</h2>
+      <p>Yes. Honest answers per scenario:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Scenario</th><th>What happens to <strong>the chain</strong></th><th>What happens to <strong>our data</strong></th></tr></thead>
+        <tbody>
+          <tr><td>Rarimo validators go offline / company folds</td><td>New blocks stop. Registration and voting pause until validators return.</td><td>Past data is <strong>not erased</strong> — it remains anchored to Ethereum and could be re-launched by a different validator set.</td></tr>
+          <tr><td>Rarimo is legally or politically pressured</td><td>They could censor specific addresses or transactions.</td><td>Past data is safe; new writes for targeted users could be blocked.</td></tr>
+          <tr><td>Critical bug in the L2 software</td><td>Chain halts, requires a coordinated upgrade.</td><td>Past data safe; new writes paused.</td></tr>
+          <tr><td>Rarimo goes hostile and tries to rewrite history</td><td><strong>Cannot succeed.</strong> Ethereum's anchor commits to past roots. They could fork forward, but old proofs remain valid evidence.</td><td>Safe historically; future writes uncertain.</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>The realistic worst case is chain halt</strong> — temporary or permanent pause. If that happens, we would need to migrate to another EVM L2 (Polygon, Base, Arbitrum, or our own). That migration is expensive but possible: the user identities and ZK circuits are portable; only contract addresses and gas configuration change.</p>
+      <p>This is one of the reasons the Sovereign Stack migration (M6) matters: by owning our identity contracts, we can re-deploy them anywhere if Rarimo L2 dies. We would still lose the existing on-chain registrations — different chain means different SMT — but we would not need anyone's permission to rebuild.</p>
+
+      <h2>Why we chose Rarimo L2 in the first place</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>If we built our own chain</th><th>Using Rarimo L2</th></tr></thead>
+        <tbody>
+          <tr><td>Months to years of work, expensive validators</td><td>Already exists, ~$0.001 per transaction</td></tr>
+          <tr><td>We'd need to convince people it's secure</td><td>Inherits Ethereum security</td></tr>
+          <tr><td>No identity contracts or precompiles</td><td>ICAO trees, ZK verifiers, SMT contracts — all pre-built</td></tr>
+          <tr><td>Tiny initial validator set → easy to attack</td><td>Established node operator network</td></tr>
+        </tbody>
+      </table></div>
+      <p>The trade-off is the dependence relationship described above. Switching chains is expensive, but staying on Rarimo L2 means accepting their operational risk. We accept it for now, and M6 reduces that risk significantly by removing the <em>governance</em> dependency on Rarimo even while we stay on the <em>chain</em>.</p>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>L1 (Layer 1)</strong></td><td>A base blockchain like Ethereum. The "supreme court".</td></tr>
+          <tr><td><strong>L2 (Layer 2)</strong></td><td>A faster, cheaper chain anchored to an L1. The "local court".</td></tr>
+          <tr><td><strong>EVM</strong></td><td>Ethereum Virtual Machine — the standard smart-contract execution environment.</td></tr>
+          <tr><td><strong>Gas</strong></td><td>The fee paid in the chain's native token to run a transaction. On Rarimo L2: RMO.</td></tr>
+          <tr><td><strong>RPC endpoint</strong></td><td>The HTTP URL your wallet calls to read or write to the chain.</td></tr>
+          <tr><td><strong>Smart contract</strong></td><td>A program deployed on the blockchain at a specific address.</td></tr>
+          <tr><td><strong>Validator</strong></td><td>A computer that processes transactions and produces new blocks.</td></tr>
+          <tr><td><strong>Anchor</strong></td><td>Periodic checkpoint a child chain writes to its parent for security inheritance.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Next</h2>
+      <p><a href="zero-knowledge-proofs.html">Zero-knowledge proofs</a> — what we actually put <em>on</em> the chain, and why it doesn't reveal identities.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="./">← All docs</a>
+      <a href="zero-knowledge-proofs.html">Next: zero-knowledge proofs →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js"></script>
+</body>
+</html>
