@@ -1,0 +1,16 @@
+{
+  "ios": {
+    "latest": "0.5.1",
+    "minSupported": "0.4.0",
+    "url": "https://apps.apple.com/app/id6770843571"
+  },
+  "android": {
+    "latest": "0.5.1",
+    "minSupported": "0.4.0",
+    "url": "https://play.google.com/store/apps/details?id=org.jomhoor.app"
+  },
+  "releaseNotes": {
+    "en": "",
+    "fa": ""
+  }
+}
