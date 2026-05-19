@@ -93,7 +93,7 @@
       </div>
 
       <p>For Iran specifically, the issuer is <strong>National Organization for Civil Registration</strong>; CSCAs are operated by the state, DS certificates rotate, and both passports and INIDs participate in the same ICAO PKI scheme.</p>
-      <p>For INIDs specifically, the chip is built and software-managed by <strong>Matiran Co.</strong> The chip exposes two certificates (signing + authentication), uses PACE-CAM rather than BAC, and proves it is not a clone via a challenge-response with a private key held inside the chip's secure element. There is no DG15 file, but the anti-clone property is preserved by the auth-certificate mechanism.</p>
+      <p>For INIDs specifically, the chip is built and software-managed by <strong>Matiran Co.</strong> The chip exposes two certificates (signing + authentication), uses PACE-CAM rather than BAC, and proves it is not a clone via a challenge-response with a private key held inside the chip's secure element. There is no DG15 file, but the anti-clone property is preserved by the auth-certificate mechanism. (Source: our reverse-engineering work in <a href="https://github.com/Iranians-Vote-Digital-Democracy/INIDOSDK">INIDOSDK</a>.)</p>
 
       <h2>What the ZK circuit actually checks</h2>
       <p>Inside the circuit (≈5 million constraints), the user's phone proves that all of the following hold simultaneously:</p>

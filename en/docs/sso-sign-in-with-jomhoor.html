@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in with Jomhoor — Jomhoor Docs</title>
+  <meta name="description" content="What Sign in with Jomhoor is, what it gives users and partner platforms, and what it deliberately does not carry." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/sso-sign-in-with-jomhoor.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 08</p>
+      <h1>Sign in with Jomhoor</h1>
+
+      <p>The first time you open Taraaz, Civic Compass, or any other platform that integrates with Jomhoor, you do not type an email. You do not pick a password. You do not hand over a phone number. You scan a QR code with your Jomhoor wallet, approve a consent screen, and you are signed in.</p>
+
+      <p>"Sign in with Jomhoor" is an OAuth2 SSO system — like "Sign in with Google" in shape — but with three deliberate differences: the credential is a wallet that lives on your phone (optionally backed by a passport-based ZK identity), the partner platform never sees who you are across other partners, and there is no central account database to subpoena.</p>
+
+      <h2>Two tiers of Jomhoor user</h2>
+      <p>Not every Jomhoor partner needs to know you are an Iranian citizen. So the wallet has two states, and the SSO flow handles both:</p>
+
+      <div class="doc-diagram doc-diagram--split">
+        <div class="doc-diagram__card doc-diagram__top">
+          <h3>Install the Jomhoor app</h3>
+          <span class="doc-diagram__eyebrow">creates a BabyJubjub wallet + device attestation</span>
+          <ul>
+            <li>Local key generated on-device</li>
+            <li>App Attest / Play Integrity verified</li>
+            <li>No passport yet, no on-chain identity yet</li>
+          </ul>
+        </div>
+        <div class="doc-diagram__fork">
+          <div class="doc-diagram__fork-line"></div>
+          <div class="doc-diagram__fork-arrow">↓</div>
+          <div class="doc-diagram__fork-line"></div>
+        </div>
+        <div class="doc-diagram__branches">
+          <div class="doc-diagram__card">
+            <h3>Attested wallet user</h3>
+            <span class="doc-diagram__eyebrow">default after install</span>
+            <ul>
+              <li>Can sign in to partners that do not require citizenship</li>
+              <li>Gets a pairwise <code>ps_…</code> subject per partner</li>
+              <li>Device-bound, sybil-resistant against bot farms</li>
+              <li>Cannot sign in to partners with <code>zk_required = true</code></li>
+            </ul>
+          </div>
+          <div class="doc-diagram__card">
+            <h3>ZK-verified wallet user</h3>
+            <span class="doc-diagram__eyebrow">after scanning a passport or INID</span>
+            <ul>
+              <li>Can sign in to all partners, including <code>zk_required = true</code></li>
+              <li>Same pairwise subject as before — the upgrade is invisible to existing partners</li>
+              <li>Unlocks on-chain voting and citizenship-gated features</li>
+              <li>Live <code>zk_verified</code> assertion served by <code>/v1/tokens/validate</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p>This matters because most partners do not actually need nationality. A neighbourhood-association forum, a tenants' union, a software-developers' guild, a fan community, an event ticket-holder chat — none of these need to know you are Iranian. They need to know that the same human keeps coming back, and that account creation is expensive enough that bot farms cannot drown them. An attested wallet alone gives them that. The ZK passport gate sits on top, available when the partner genuinely needs it.</p>
+
+      <p>From the partner's point of view, the toggle is a single boolean on their registered client: <code>zk_required = true</code> or <code>false</code>. The wallet enforces it; partners do not have to write any verification code.</p>
+
+      <h2>Why a Jomhoor-specific SSO exists at all</h2>
+      <p>Login is one of the largest surveillance surfaces on the modern internet. Every "Sign in with X" button silently links an account to a phone number, an email, a device, and a behavioural fingerprint that the identity provider then sells, leaks, or hands over on request. For an Iranian civic platform that is the wrong threat model on every axis: legal (which jurisdiction stores it), commercial (who profits from it), and political (who can compel its disclosure).</p>
+      <p>So Jomhoor builds login the same way it builds voting:</p>
+      <ul>
+        <li>The credential is generated <strong>on the user's phone</strong> — a BabyJubjub wallet at install, optionally upgraded with a ZK proof of an Iranian biometric passport or INID when a partner requires citizenship.</li>
+        <li>The identifier given to each partner is <strong>pairwise</strong> — same user, different partners, mathematically unlinkable identifiers.</li>
+        <li>The login service (<code>sso-svc</code>) <strong>does not store passport data, wallet addresses, or PII</strong> — and the JWT it issues carries none either.</li>
+      </ul>
+
+      <h2>The handshake, end-to-end</h2>
+
+      <div class="doc-diagram doc-diagram--gates">
+        <div class="doc-diagram__row">
+          <div class="doc-diagram__terminal">USER</div>
+          <div class="doc-diagram__card">
+            <h3>Partner site</h3>
+            <ul>
+              <li>"Sign in with Jomhoor"</li>
+              <li>Opens <code>/v1/authorize</code></li>
+              <li>PKCE <code>code_challenge</code></li>
+            </ul>
+          </div>
+          <div class="doc-diagram__flow-arrow">→</div>
+          <div class="doc-diagram__card">
+            <h3>Jomhoor wallet</h3>
+            <ul>
+              <li>Signs the nonce (BabyJubjub)</li>
+              <li>App Attest / Play Integrity</li>
+              <li>Consent screen</li>
+            </ul>
+          </div>
+          <div class="doc-diagram__flow-arrow">→</div>
+          <div class="doc-diagram__terminal">SIGNED IN</div>
+        </div>
+        <div class="doc-diagram__outcomes">
+          <div class="doc-diagram__outcome">
+            <div class="doc-diagram__connector-arrow">↓</div>
+            <p>Partner gets a JWT with<br /><code>sub = pairwise subject</code></p>
+          </div>
+          <div class="doc-diagram__outcome">
+            <div class="doc-diagram__connector-arrow">↓</div>
+            <p>Partner does not learn<br />wallet address, passport, or PII</p>
+          </div>
+        </div>
+      </div>
+
+      <p>Concretely, six steps happen behind that one tap:</p>
+      <ol>
+        <li><strong>Partner site → <code>/v1/authorize</code></strong>. The partner's web app redirects (or opens a Universal Link on mobile) to <code>sso.jomhoor.org/v1/authorize</code> carrying its <code>client_id</code>, <code>redirect_uri</code>, and a PKCE <code>code_challenge</code>.</li>
+        <li><strong><code>sso-svc</code> issues a nonce</strong> and bounces the user into the Jomhoor wallet via a deep link.</li>
+        <li><strong>Wallet attests the device</strong>. The wallet calls Apple App Attest (on iOS) or Google Play Integrity (on Android) to prove the request is coming from an unmodified Jomhoor app on a non-rooted device. This is mandatory in production.</li>
+        <li><strong>User sees the consent screen</strong> — partner name, partner logo, and what is being shared (nothing but a pairwise identifier).</li>
+        <li><strong>Wallet signs the nonce</strong> with the user's BabyJubjub key and POSTs to <code>/v1/authorize/verify</code>. <code>sso-svc</code> returns a one-time <code>code</code>.</li>
+        <li><strong>Partner exchanges the code</strong> at <code>/v1/tokens/exchange</code> (with its <code>client_secret</code> and the PKCE <code>code_verifier</code>) and receives a signed JWT.</li>
+      </ol>
+
+      <h2>What the JWT actually carries</h2>
+
+      <div class="doc-diagram doc-diagram--split">
+        <div class="doc-diagram__card doc-diagram__top">
+          <h3>JWT issued to the partner</h3>
+          <span class="doc-diagram__eyebrow">signed by <code>sso-svc</code>, ES256</span>
+          <ul>
+            <li><code>sub</code> — pairwise subject (<code>ps_…</code>)</li>
+            <li><code>client_id</code> — which partner this is for</li>
+            <li><code>token_type</code> — <code>access</code> or <code>refresh</code></li>
+            <li><code>iat</code>, <code>exp</code></li>
+          </ul>
+        </div>
+        <div class="doc-diagram__fork">
+          <div class="doc-diagram__fork-line"></div>
+          <div class="doc-diagram__fork-arrow">↓</div>
+          <div class="doc-diagram__fork-line"></div>
+        </div>
+        <div class="doc-diagram__branches">
+          <div class="doc-diagram__card">
+            <h3>Inside the token</h3>
+            <ul>
+              <li>Pairwise subject</li>
+              <li>Partner ID</li>
+              <li>Token type, validity window</li>
+            </ul>
+          </div>
+          <div class="doc-diagram__card">
+            <h3>Not inside the token</h3>
+            <ul>
+              <li>Wallet address</li>
+              <li>Public key</li>
+              <li>Passport / INID data</li>
+              <li>Email, phone, name</li>
+              <li><code>zk_verified</code> flag</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p>The pairwise subject is derived as <code>HMAC-SHA256(server_secret, walletID:clientID)</code>. The same wallet across two different partners produces two unrelated <code>ps_…</code> strings; the partners cannot collude to merge user profiles even if they wanted to.</p>
+
+      <p>The <code>zk_verified</code> flag is deliberately <em>not</em> baked into the token. If a partner wants live trust state, it calls <code>/v1/tokens/validate</code> at the moment it matters — which returns a fresh <code>{valid, subject, client_id, assertions}</code> view. We chose this so that revocations and assertion changes take effect immediately rather than waiting for the token to expire.</p>
+
+      <h2>Why app attestation is mandatory</h2>
+      <p>A wallet on a rooted phone is a wallet that can be silently exfiltrated. A wallet running in a tampered build is a wallet whose attestation logic can be skipped. We refuse both. In production, <code>sso-svc</code> will not even start unless attestation is enabled.</p>
+      <ul>
+        <li><strong>iOS:</strong> Apple App Attest. Verifies the app binary against Apple's signed bundle ID and refuses jailbroken devices.</li>
+        <li><strong>Android:</strong> Google Play Integrity. Verifies the APK signature, bootloader state, and that the device passes Play Protect.</li>
+        <li><strong>Failure mode:</strong> The wallet shows a "Device not supported" screen and refuses to onboard. This is the right answer; it is not a bug.</li>
+      </ul>
+      <p>This means Jomhoor cannot currently onboard users on Huawei devices without Google Mobile Services, custom ROMs, or jailbroken phones. We acknowledge this is a real exclusion. The trade-off is that the trust we extend to partners is grounded in something stronger than "the wallet says so."</p>
+
+      <h2>For partners — what becoming a relying party gives you</h2>
+      <p>Pick your gate. Most partners run with the default attested-wallet gate; civic platforms that need citizenship flip <code>zk_required = true</code>. Either way, Jomhoor SSO gives you:</p>
+      <ul>
+        <li><strong>One account per device, not per email.</strong> The wallet's pairwise subject means a single user cannot silently create two accounts on your platform. With <code>zk_required = true</code> the uniqueness is stronger still: one passport, one account.</li>
+        <li><strong>No user PII to store, leak, or be subpoenaed for.</strong> Your database holds <code>ps_…</code> strings. Even if you are seized, the strings cannot be traced back to wallets or passports.</li>
+        <li><strong>No cross-partner linkability.</strong> Even if two partner platforms both integrate Jomhoor, the same user gets two unrelated subjects — useful for privacy, and a hard cap on data-broker schemes.</li>
+        <li><strong>A clear choice of trust level.</strong> Set <code>zk_required = false</code> for general communities that just want sybil resistance from device attestation; set <code>zk_required = true</code> for referenda, citizen assemblies, deliberation platforms, or anything that legally requires verified Iranian nationality.</li>
+        <li><strong>Fine-grained ZK escalation</strong> (Milestone 5). For partners that need <em>more</em> than "verified Iranian" — for example "verified Iranian, female, between 18 and 35, never voted in this referendum" — the wallet can produce a fresh ZK proof at sign-in time.</li>
+      </ul>
+
+      <h3>How to integrate</h3>
+      <ol>
+        <li>Register your platform as an <code>sso_client</code>. We bcrypt your <code>client_secret</code>, store your redirect URIs, your display name, your logo URL, and your <code>zk_required</code> flag in a small public client registry. Reachable at <code>GET /v1/clients/{id}</code> — the consent screen renders from this.</li>
+        <li>Add a "Sign in with Jomhoor" button on your login page. It hits <code>/v1/authorize</code> with your <code>client_id</code>, <code>redirect_uri</code>, and a PKCE <code>code_challenge</code> (base64url, no padding, S256).</li>
+        <li>On the callback, exchange the <code>code</code> at <code>/v1/tokens/exchange</code> with your <code>client_secret</code> and the matching <code>code_verifier</code>. You receive an access token and a refresh token.</li>
+        <li>When you need to check live trust state, call <code>/v1/tokens/validate</code>.</li>
+      </ol>
+      <p>The reference integrations are open source: <a href="https://github.com/jomhoor/Taraaz-Deliberation/tree/feat/sso-jomhoor-login" target="_blank">Taraaz</a> (Agora-based deliberation fork) and Civic Compass. The protocol is standard OAuth2 auth-code + PKCE; if you can integrate "Sign in with Google", you can integrate this.</p>
+
+      <h2>What this is <strong>not</strong></h2>
+      <ul>
+        <li><strong>Not a profile service.</strong> There is no <code>/userinfo</code> endpoint that returns a name, an email, or an avatar. We do not have those.</li>
+        <li><strong>Not a single-sign-out service.</strong> Signing out of one partner does not sign you out of others. Each session is local to its partner.</li>
+        <li><strong>Not a custodial wallet service.</strong> <code>sso-svc</code> never sees your wallet key. If you reinstall the wallet, you re-scan your passport and recovery rebinds your prior per-partner pairwise subjects by proving the same nullifier &mdash; the passport itself is never revealed.</li>
+        <li><strong>Not federated.</strong> Other identity providers cannot "Sign in to Jomhoor" on your behalf. The chain of trust terminates at your passport and your device's attestation.</li>
+      </ul>
+
+      <h2>What we have not solved yet</h2>
+      <p>One honest gap remains:</p>
+      <ol>
+        <li><strong>Trust-root sovereignty.</strong> The ICAO root our passport proofs are checked against still lives in Rarimo's <code>StateKeeper</code>. M6 (covered in <a href="./sovereign-stack-and-m6.html">explainer 06</a>) brings that under Jomhoor's admin keys. Until M6 lands, the deepest layer of trust below SSO is governed by someone else.</li>
+      </ol>
+
+      <p>ZK escalation at sign-in and ZK-nullifier-based recovery (M5) shipped on 18 May 2026: partners with <code>zk_required=true</code> get a fresh INID query-proof gate before consent, and a user who reinstalls the wallet can rebind their prior pairwise subjects by proving the same nullifier &mdash; so per-partner identifiers survive a wipe without ever revealing the underlying passport.</p>
+
+      <p>Until trust-root sovereignty closes, "Sign in with Jomhoor" is already the most private way to log in to a civic platform on the open internet: no passwords, no emails, no phone numbers, no cross-site identifier, and no central database to seize. Everything beyond that is iteration.</p>
+
+      <h2>End of series</h2>
+      <p>This is the last file in the explainers series. If you have read 01 through 08, you now know substantially more about how Jomhoor actually works than most people who have written about it.</p>
+      <p>If something in here is wrong, unclear, or oversold, please open an issue or PR against the source repository. Honesty about limits is the precondition for trust about strengths.</p>
+
+      <hr />
+      <p><a href="./">← Back to docs</a> · <a href="./sovereign-stack-and-m6.html">Previous: Sovereign stack and M6 →</a></p>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="../../fa/docs/sso-sign-in-with-jomhoor.html">فارسی</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js?v=20260518"></script>
+</body>
+</html>

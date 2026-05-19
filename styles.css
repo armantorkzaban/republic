@@ -2873,6 +2873,51 @@ code {
   white-space: inherit;
   font-variant-ligatures: none;
 }
+.prose pre.rtl-snippet {
+  direction: rtl;
+  unicode-bidi: isolate;
+  text-align: right;
+}
+.prose pre.rtl-snippet code {
+  display: block;
+  direction: rtl;
+  unicode-bidi: isolate;
+  text-align: right;
+}
+.prose .rtl-logic-block {
+  margin: 0 0 24px;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  direction: rtl;
+  text-align: right;
+}
+.prose .rtl-logic-block p,
+.prose .rtl-logic-block ol,
+.prose .rtl-logic-block li {
+  margin-bottom: 0;
+}
+.prose .rtl-logic-block p + ol {
+  margin-top: 12px;
+}
+.prose .rtl-logic-block ol {
+  padding-inline-start: 0;
+  padding-inline-end: 24px;
+}
+.prose .rtl-logic-block li + li {
+  margin-top: 10px;
+}
+.prose .rtl-logic-block code,
+.prose .rtl-logic-block .latin-token {
+  direction: ltr;
+  unicode-bidi: isolate;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
 .prose .doc-diagram {
   margin: 0 0 28px;
   padding: 24px;
