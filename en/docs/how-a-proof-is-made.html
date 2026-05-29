@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How a proof is made — and checked — Jomhoor Docs</title>
+  <meta name="description" content="The mechanical walk-through: how your phone turns the rules into a circuit, solves it, and compresses the answer into a tiny proof — and how the contract checks it with a single pairing equation." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/how-a-proof-is-made.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 03</p>
+      <h1>How a proof is made — and checked</h1>
+
+      <p>The previous explainer answered <em>what</em> a zero-knowledge proof is and what it guarantees. This one answers the mechanical question people ask next:</p>
+      <blockquote>"OK, but <strong>how</strong> does my phone produce that little proof, and <strong>how</strong> does the blockchain decide it's valid — without ever seeing my passport?"</blockquote>
+      <p>No heavy math is required to follow this. We build the intuition with an analogy first, then walk the real pipeline on the phone and on-chain.</p>
+
+      <h2>The core idea: proving you know a secret without revealing it</h2>
+      <p>Imagine a ring-shaped cave with a magic door at the back that only opens with a secret password. You want to prove to a friend that you know the password — <strong>without telling them the password</strong>.</p>
+      <p>You walk in and take either the left or right tunnel. Your friend waits at the entrance and cannot see which way you went. They shout "come out the left side!". If you really know the password you can open the door and emerge from whichever side they call, every single time. If you were bluffing, you only have a 50% chance per round. Repeat 40 rounds and the odds of faking it are about one in a trillion. Your friend becomes convinced you know the password — yet never learns what it is.</p>
+      <p>A zero-knowledge proof is the mathematical version of that cave. The "secret" is your passport data and your private key. Instead of walking left or right, the math forces you to answer unpredictable challenges that you could only answer correctly if your secret genuinely satisfies every rule.</p>
+
+      <h2>Step 1 — Turn the rules into arithmetic (the circuit)</h2>
+      <p>Before any proof can exist, the rules you want to prove are converted into a giant system of arithmetic equations. Each rule becomes a set of equations:</p>
+      <ul>
+        <li><em>"My passport is signed by a real government certificate"</em> → equations that check the RSA / ECDSA signature math.</li>
+        <li><em>"My citizenship is IR"</em> → equations that check specific bytes of the data.</li>
+        <li><em>"I have not voted before"</em> → equations that compute a unique <strong>nullifier</strong>.</li>
+      </ul>
+      <p>That whole collection of equations is the <strong>circuit</strong>. A single passport circuit has hundreds of thousands of them. The key property: the equations are written so they <strong>all balance to zero at the same time</strong> only if you plugged in genuine, valid data.</p>
+      <p>Think of it as a giant sudoku. There is exactly one consistent way to fill in every blank, and it only works if the starting numbers — your real passport bytes, your real key — are legitimate.</p>
+
+      <h2>Step 2 — Fill in the blanks (the witness)</h2>
+      <p>Your phone takes your actual private data (the bytes from the NFC scan, your secret key) and computes <strong>every intermediate value</strong> in those hundreds of thousands of equations — every multiplication, every hash step, every bit.</p>
+      <p>This complete set of filled-in values is the <strong>witness</strong>. It is the full solution to the sudoku. Because it contains your secrets, the witness <strong>never leaves your phone</strong>.</p>
+
+      <h2>Step 3 — Compress the witness into a tiny proof</h2>
+      <p>This is the clever part. The phone must convince the verifier it holds a valid witness — <strong>without sending the witness</strong>.</p>
+      <p>The trick is <strong>polynomials</strong>. All the equations get bundled into a small number of mathematical curves (polynomials). A deep theorem makes this work:</p>
+      <blockquote>If two polynomials are different, they can only agree at a handful of points. So if you check that they match at <strong>one single random point</strong> and they do, they are almost certainly the same polynomial everywhere.</blockquote>
+      <p>So the proving process is:</p>
+      <ol>
+        <li>The phone encodes the entire witness into a few polynomials.</li>
+        <li>It <strong>commits</strong> to them — producing a few cryptographic fingerprints (points on an elliptic curve). A commitment is like sealing a value in an envelope: you cannot change it later, but it does not reveal what is inside.</li>
+        <li>A random <strong>challenge point</strong> is needed to test the polynomials. There is no live verifier standing by, so the phone derives the "random" challenge by hashing its own commitments. This is the <strong>Fiat–Shamir trick</strong>: a hash of unpredictable data acts as an unriggable coin-flip the prover cannot game.</li>
+        <li>The phone evaluates the polynomials at that challenge point and packages the answers plus a small "opening proof".</li>
+      </ol>
+      <p>The result is a <strong>tiny blob</strong> — a few hundred bytes to a couple of kilobytes — no matter how huge the original computation was. That blob is the proof.</p>
+      <p>The two systems Jomhoor uses do this slightly differently:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>System</th><th>Used for</th><th>Proof size</th><th>Setup</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Groth16</strong></td><td>RSA passports</td><td>~192 bytes (3 elliptic-curve points)</td><td>One ceremony per circuit</td></tr>
+          <tr><td><strong>UltraPlonk</strong></td><td>INID cards, ECDSA documents</td><td>~2 KB</td><td>One universal setup for all circuits</td></tr>
+        </tbody>
+      </table></div>
+      <p>The native code doing the heavy lifting is <code>rapidsnark</code> (Groth16) or Barretenberg / <code>Swoirenberg</code> (UltraPlonk). This is the step that takes a few seconds on the phone — it is performing thousands of elliptic-curve multiplications.</p>
+
+      <h2>Step 4 — What actually gets sent</h2>
+      <p>Out of the phone comes only:</p>
+      <ul>
+        <li>the <strong>proof blob</strong> (opaque numbers), and</li>
+        <li>the <strong>public signals</strong> — the handful of values the proof is <em>about</em>: your nullifier, your country code, some hashes, the proposal ID. Never your raw personal data.</li>
+      </ul>
+      <p>Your passport bytes, your secret key, and the full witness all <strong>stay on the device</strong>.</p>
+
+      <h2>How the proof is verified</h2>
+      <p>The verifier is the smart contract on the blockchain (for INID voting, that is <code>IDCardVoting.sol</code>). It does <strong>not</strong> re-run your computation — that is the whole point. Re-running would be impossibly expensive and it doesn't have your data. Instead it does two things.</p>
+
+      <h3>1. Re-build the expected public signals</h3>
+      <p>The contract independently assembles what the public signals <em>should</em> be. It takes the values you claimed (citizenship, nullifier, …) plus the values it already knows (the proposal's rules, the current date, the on-chain Merkle root) and lays them out into the fixed slots the proof must match. Why claiming a fake value here doesn't help you is covered in <a href="on-chain-verification.html">on-chain verification</a>.</p>
+
+      <h3>2. Run the pairing check</h3>
+      <p>The contract feeds the proof blob and those public signals into a short cryptographic test built on a special operation on the BN254 elliptic curve called a <strong>pairing</strong>, written <code>e(·, ·)</code>.</p>
+      <p>A pairing has a near-magical property: it lets you verify a <em>multiplicative relationship between hidden values</em> while only seeing their sealed-envelope commitments. It is like being able to confirm that "the number in envelope A times the number in envelope B equals the number in envelope C" — without ever opening the envelopes.</p>
+      <p>For Groth16 the entire validity of your proof comes down to checking that <strong>one equation balances</strong>:</p>
+      <pre><code>e(A, B) = e(α, β) · e(public signals, γ) · e(C, δ)</code></pre>
+      <ul>
+        <li><code>A, B, C</code> are the three points from your proof.</li>
+        <li><code>α, β, γ, δ</code> are fixed constants baked into the contract — the <strong>verification key</strong>, the public residue of the trusted-setup ceremony.</li>
+        <li>The "public signals" term folds in the values from step 1.</li>
+      </ul>
+      <p>If both sides come out equal, the proof is valid: your witness existed and satisfied every one of those hundreds of thousands of equations. If even one equation in the circuit didn't balance — you lied about citizenship, forged a signature, reused a nullifier — the two sides <strong>won't match</strong> and the contract reverts.</p>
+      <p>The Rarimo L2 (like Ethereum) even has built-in <strong>precompiles</strong> — special cheap operations at addresses <code>0x07</code> and <code>0x08</code> — specifically for these BN254 pairings, because they are expensive to compute but essential.</p>
+      <p>UltraPlonk verification is structurally similar: it also ends in a couple of pairing checks, but instead of one fixed equation it confirms that the committed polynomials genuinely open to the claimed values at the random challenge point.</p>
+
+      <h2>The whole thing in one breath</h2>
+      <ol>
+        <li>Rules → a giant system of equations (the <strong>circuit</strong>).</li>
+        <li>The phone plugs in your real secret data and solves every equation (the <strong>witness</strong>).</li>
+        <li>The witness is compressed into a tiny <strong>proof</strong> via polynomial commitments + a self-generated random challenge — secrets are never included.</li>
+        <li>The phone sends the <strong>proof + public signals</strong> only.</li>
+        <li>The contract rebuilds the expected public signals and runs a <strong>pairing equation</strong>. Balances → valid. Doesn't balance → rejected.</li>
+      </ol>
+      <p>The deep guarantee: <strong>the math only works out if you actually possessed valid data</strong> — and the verifier learns <em>that fact</em> and nothing else.</p>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Circuit</strong></td><td>The fixed system of arithmetic equations that encodes the rules being proved.</td></tr>
+          <tr><td><strong>Witness</strong></td><td>Every intermediate value computed while solving the circuit on your real inputs. Stays on-device.</td></tr>
+          <tr><td><strong>Commitment</strong></td><td>A cryptographic "sealed envelope": binds a value without revealing it.</td></tr>
+          <tr><td><strong>Fiat–Shamir</strong></td><td>Replacing a live verifier's random challenge with a hash of the prover's own commitments, so the proof is non-interactive.</td></tr>
+          <tr><td><strong>Pairing</strong></td><td>A special elliptic-curve operation that lets a verifier check a relationship between hidden values from their commitments alone.</td></tr>
+          <tr><td><strong>Verification key</strong></td><td>The small set of constants the contract holds to run the pairing check. The public residue of the trusted setup.</td></tr>
+          <tr><td><strong>Public signals</strong></td><td>The handful of values the proof is about (nullifier, country code, hashes, proposal ID). Never raw personal data.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Next</h2>
+      <p>Up next: <a href="on-chain-verification.html">on-chain verification</a> — what the smart contract actually does with those bytes, why it is fast and cheap, and why a fake claim in the public signals cannot pass.</p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="./">← All docs</a>
+      <a href="on-chain-verification.html">Next: on-chain verification →</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js?v=20260518"></script>
+</body>
+</html>

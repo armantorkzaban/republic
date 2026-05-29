@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docs — Jomhoor Explainers</title>
-  <meta name="description" content="Seven explainers covering the architecture, cryptography, and governance of the Jomhoor platform." />
+  <meta name="description" content="Nine explainers covering the architecture, cryptography, and governance of the Jomhoor platform." />
   <link rel="stylesheet" href="../../styles.css" />
 </head>
 <body>
@@ -34,7 +34,7 @@
       <span class="docs-hero__eyebrow">Explainers</span>
       <h1 class="docs-hero__title">How Jomhoor actually works</h1>
       <p class="docs-hero__desc">
-        Eight short pieces, in order. They cover what a blockchain is, what a zero-knowledge
+        Nine short pieces, in order. They cover what a blockchain is, what a zero-knowledge
         proof proves, how we trust an e-passport, what the full registration-and-vote flow
         looks like, how identity and speech are governed as two separate gates, and how
         partner platforms log users in with Jomhoor. No marketing — the source files live in
@@ -61,38 +61,44 @@
           <p class="docs-toc__desc">What a ZK proof actually proves. Completeness, soundness, zero-knowledge — in plain language.</p>
         </a>
 
-        <a href="on-chain-verification.html" class="docs-toc__card">
+        <a href="how-a-proof-is-made.html" class="docs-toc__card">
           <div class="docs-toc__num">03 — Available</div>
+          <div class="docs-toc__title">How a proof is made</div>
+          <p class="docs-toc__desc">How your phone turns the rules into a circuit, solves it, and compresses the answer into a tiny proof — and how the contract checks it with one pairing equation.</p>
+        </a>
+
+        <a href="on-chain-verification.html" class="docs-toc__card">
+          <div class="docs-toc__num">04 — Available</div>
           <div class="docs-toc__title">On-chain verification</div>
           <p class="docs-toc__desc">What the verifier contract does with a 256-byte proof, and why that matters for trust.</p>
         </a>
 
         <a href="passport-trust-chain.html" class="docs-toc__card">
-          <div class="docs-toc__num">04 — Available</div>
+          <div class="docs-toc__num">05 — Available</div>
           <div class="docs-toc__title">Passport trust chain</div>
           <p class="docs-toc__desc">How we trust the NFC chip in an e-passport — and what this design cannot protect against.</p>
         </a>
 
         <a href="the-full-flow.html" class="docs-toc__card">
-          <div class="docs-toc__num">05 — Available</div>
+          <div class="docs-toc__num">06 — Available</div>
           <div class="docs-toc__title">The full flow</div>
           <p class="docs-toc__desc">End-to-end: NFC scan → witness → ZK proof → transaction → vote, with every layer named.</p>
         </a>
 
         <a href="sovereign-stack-and-m6.html" class="docs-toc__card">
-          <div class="docs-toc__num">06 — Available</div>
+          <div class="docs-toc__num">07 — Available</div>
           <div class="docs-toc__title">Sovereign stack and M6</div>
           <p class="docs-toc__desc">What our M6 sovereignty milestone changes — and what it deliberately leaves alone.</p>
         </a>
 
         <a href="two-gates-identity-and-speech.html" class="docs-toc__card">
-          <div class="docs-toc__num">07 — Available</div>
+          <div class="docs-toc__num">08 — Available</div>
           <div class="docs-toc__title">Two gates: identity and speech</div>
           <p class="docs-toc__desc">Why Jomhoor has two gates — ZK identity against sybils, normative compliance against capture — and who governs each.</p>
         </a>
 
         <a href="sso-sign-in-with-jomhoor.html" class="docs-toc__card">
-          <div class="docs-toc__num">08 — Available</div>
+          <div class="docs-toc__num">09 — Available</div>
           <div class="docs-toc__title">Sign in with Jomhoor</div>
           <p class="docs-toc__desc">What Sign in with Jomhoor is, what partner platforms get, and what the JWT deliberately does not carry.</p>
         </a>
