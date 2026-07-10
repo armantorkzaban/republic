@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platform Capabilities — Jomhoor Docs</title>
+  <meta name="description" content="Everything the Jomhoor platform can actually do today — voting, deliberation, polling, matchmaking, DAO governance, SSO — with honest status labels for each." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/platform-capabilities.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Explainer 10</p>
+      <h1>Platform Capabilities</h1>
+
+      <p><a href="./">Explainers 01–09</a> cover the machinery: the chain, the proofs, the trust roots, the gates, the SSO. This one answers the question people actually arrive with: <em>what can Jomhoor do?</em> Every capability, in one place, with an honest status label on each.</p>
+
+      <blockquote>
+        <p><strong>Jomhoor is not a voting app with extras. It is the digital and procedural form of a common democratic field — a place where citizens can deliberate, vote, coordinate, and contribute to structured democratic processes at any scale, from a neighborhood consultation to a national dialogue.</strong></p>
+      </blockquote>
+
+      <p>One design commitment runs through everything below: privacy and democratic integrity are not competing values. They are co-equal design requirements, and the cryptography exists to make that true rather than aspirational.</p>
+
+      <h2>The democratic sequence</h2>
+
+      <p>Every process on Jomhoor follows the same recommended sequence. Deliberation always precedes decision — opinions are the input to democracy, not its output.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Step</th><th>What happens</th><th>Covered in</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Verify</strong></td><td>One-time identity verification → a reusable, self-sovereign DID. No personal data stored, ever.</td><td><a href="./zero-knowledge-proofs.html">Explainer 02</a> through <a href="./the-full-flow.html">06</a></td></tr>
+          <tr><td><strong>2. Onboard</strong></td><td>Join the relevant democratic space or working group. Different entry routes, identical standing inside.</td><td>This page</td></tr>
+          <tr><td><strong>3. Deliberate</strong></td><td>Structured discussion, opinion clustering, consensus mapping.</td><td>This page</td></tr>
+          <tr><td><strong>4. Refine</strong></td><td>Collaborative review; iterative drafting of proposals and positions.</td><td>This page</td></tr>
+          <tr><td><strong>5. Decide</strong></td><td>Vote, referendum, or ratification with full cryptographic integrity.</td><td>This page</td></tr>
+          <tr><td><strong>6. Report</strong></td><td>Transparent, auditable results — with no individual ever deanonymized.</td><td><a href="./on-chain-verification.html">Explainer 04</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Voting and referenda</h2>
+      <p>Binding and consultative votes with cryptographic integrity. Each verified human contributes exactly one vote, which makes large-scale synthetic interference structurally impossible rather than merely against the rules.</p>
+      <ul>
+        <li>Single-choice and multi-choice votes</li>
+        <li>Ranked-choice and preferential voting</li>
+        <li>Referendum-style binary decisions</li>
+        <li>Anonymous but verified participation — ballot secrecy with eligibility proof</li>
+        <li>Auditable results without exposing individual choices</li>
+      </ul>
+
+      <h2>Structured deliberation</h2>
+      <p>Deliberation is the core of the sequence, not a comment section bolted onto a poll.</p>
+      <ul>
+        <li>Threaded discussion spaces organised by topic and scope</li>
+        <li>Opinion clustering: surfacing patterns of agreement across large groups</li>
+        <li>Polarisation reduction through consensus-discovery framing (inspired by the Pol.is model)</li>
+        <li>Subsidiarity enforcement: issues begin in the smallest relevant community before escalation</li>
+        <li>Collaborative policy review and iterative drafting</li>
+        <li>Multilingual deliberation support</li>
+      </ul>
+
+      <h2>Polling and public sensing</h2>
+      <p>Measuring opinion honestly means publishing uncertainty instead of overclaiming reach.</p>
+      <ul>
+        <li>Structured polling on policy questions, institutional options, and process design</li>
+        <li>Transparent, data-driven reporting on participation and outcomes</li>
+        <li>Attitudinal mapping across geographic and demographic segments</li>
+        <li>Integration with research-grade survey methodologies</li>
+      </ul>
+
+      <h2>Self-assessment and matchmaking</h2>
+      <p>The Civic Compass side of the platform turns a concerned individual into a participating citizen.</p>
+      <ul>
+        <li>Self-assessment against structured frameworks; democratic-literacy measurement</li>
+        <li>Skill-based and interest-based matchmaking between participants and initiatives</li>
+        <li>Team formation for civic projects, working groups, and task forces</li>
+        <li>Recruitment pathways linking individuals to organisations and roles</li>
+      </ul>
+
+      <h2>Collective action: DAOs and multi-sig</h2>
+      <ul>
+        <li>DAO governance modules: proposal submission, deliberation, and ratification flows</li>
+        <li>Role-based permissions and membership tiers within DAOs</li>
+        <li>Multi-signature wallets for collective asset control, with threshold approvals (e.g. 3-of-5) and DID-verified signatories</li>
+      </ul>
+
+      <h2>One wallet, one field: SSO</h2>
+      <p>The Jomhoor Wallet is the identity and access layer for the whole ecosystem: single sign-on across platform features and partner portals, verifiable credential storage, and a participation history accessible only to its holder. Partner platforms receive proofs of uniqueness — never wallet addresses, never raw identity data. Details in <a href="./sso-sign-in-with-jomhoor.html">explainer 09</a>.</p>
+
+      <h2>Organisational tools</h2>
+      <p>Around the citizen-facing core sits an ecosystem for civil-society organisations and institutions: onboarding portals, profile management and verification, membership and internal-governance tools, and a modular ERP environment for coordination, training pathways, and knowledge management.</p>
+
+      <h2>Hybrid participation</h2>
+      <p>Democratic processes are neither one-off nor purely virtual: fully online participation from anywhere, hybrid events combining in-person and verified digital attendance, anonymous-but-verified mechanisms for high-risk contexts, and both synchronous and asynchronous deliberation modes.</p>
+
+      <h2>The identity foundation, in one paragraph</h2>
+      <p>Everything above sits on the identity layer covered in <a href="./zero-knowledge-proofs.html">explainers 02</a> through <a href="./the-full-flow.html">06</a>: a self-sovereign DID generated on the user's device, backed by zero-knowledge proofs from government-issued documents. Noir and Circom circuits, audited by Halborn. All four biometric passport types relevant to the target population; multiple national ID card series; NFC where the document supports it, and an on-device ZKML liveness and face-likeness check (86% match threshold) where it does not. Because democratic accessibility and censorship resilience are inseparable, integration with circumvention tools such as Psiphon is part of the core implementation architecture — not an afterthought.</p>
+
+      <h2>Status register</h2>
+      <p>Honesty register. "Implemented" means working code in the repositories, not a roadmap slide.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Capability</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>ZKP identity verification (passports)</td><td>Implemented — audited circuits (Halborn)</td></tr>
+          <tr><td>ZKP identity verification (ID cards, NFC)</td><td>Implemented — NFC + ZKML fallback</td></tr>
+          <tr><td>ZKML liveness &amp; face-likeness</td><td>Implemented — 86% threshold</td></tr>
+          <tr><td>Reusable DID issuance</td><td>Implemented</td></tr>
+          <tr><td>Voting &amp; referenda</td><td>Implemented</td></tr>
+          <tr><td>Structured deliberation &amp; discussion</td><td>Implemented</td></tr>
+          <tr><td>Opinion clustering &amp; consensus mapping</td><td>Implemented</td></tr>
+          <tr><td>Polling &amp; attitudinal reporting</td><td>Implemented</td></tr>
+          <tr><td>Self-assessment tools</td><td>Implemented</td></tr>
+          <tr><td>Matchmaking &amp; team formation</td><td>Implemented</td></tr>
+          <tr><td>DAO governance modules</td><td>Implemented</td></tr>
+          <tr><td>Multi-signature wallets</td><td>Implemented</td></tr>
+          <tr><td>Jomhoor Wallet / SSO layer</td><td>Implemented</td></tr>
+          <tr><td>Normative content moderation</td><td>Implemented — see <a href="./two-gates-identity-and-speech.html">explainer 08</a></td></tr>
+          <tr><td>Civic Compass / organisational portals</td><td>Implemented (prototyped)</td></tr>
+          <tr><td>ERP ecosystem for civic actors</td><td>In development</td></tr>
+          <tr><td>Circumvention-tool integration</td><td>Part of implementation architecture</td></tr>
+          <tr><td>Hybrid online / in-person events</td><td>Supported</td></tr>
+          <tr><td>Multilingual deliberation</td><td>Supported</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>What the platform cannot do</h2>
+      <p>Known limits we have to own.</p>
+      <ol>
+        <li><strong>It cannot run a binding national referendum under unfree conditions.</strong> A real referendum requires universal suffrage, voter safety, free media, independent election authorities, and observation. Jomhoor is referendum-<em>readiness</em> infrastructure: it educates voters, tests ballot formats, runs transparent trial votes, and compares deliberative outcomes — so a genuine referendum can be executed the moment conditions allow.</li>
+        <li><strong>It cannot force adoption.</strong> We can build the field; we cannot make factions enter it.</li>
+        <li><strong>It cannot conjure connectivity.</strong> Inside a whitelisted, throttled internet, participation depends on circumvention. The stack is low-bandwidth by design and diaspora participation is unconstrained, but we do not pretend the domestic access problem is solved.</li>
+      </ol>
+
+      <h2>The press-kit-safe summary</h2>
+      <p>If you are quoting Jomhoor to a journalist, an NGO, a UN agency, or a funder, this is what is true:</p>
+      <ul>
+        <li><strong>One verified human, one reusable identity, zero stored personal data.</strong> Trust comes from cryptographic proof, not data custody. This is not KYC.</li>
+        <li><strong>Deliberation precedes decision.</strong> The platform's sequence is deliberate: discuss, cluster, refine — then vote.</li>
+        <li><strong>The capability set is broad and mostly implemented:</strong> voting, deliberation, polling, self-assessment, matchmaking, DAO governance, multi-sig, SSO — with two items honestly labelled as prototyped or in development.</li>
+        <li><strong>Equal standing is architectural.</strong> Entry routes differ; once inside, every participant has identical democratic standing, and the system cannot tell a famous exile from a provincial teacher.</li>
+        <li><strong>The limits are named.</strong> No binding referenda under unfree conditions, no forced adoption, no magical connectivity.</li>
+      </ul>
+
+      <h2>Glossary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>DID</strong></td><td>Decentralised Identifier — a self-sovereign identity generated on-device, verified once, reused everywhere.</td></tr>
+          <tr><td><strong>ZKML</strong></td><td>Machine learning running inside a zero-knowledge context on the user's device — here, liveness and face-likeness checks whose inputs never leave the phone.</td></tr>
+          <tr><td><strong>Subsidiarity</strong></td><td>The principle that issues are deliberated in the smallest relevant community first, escalating only when needed.</td></tr>
+          <tr><td><strong>Consensus discovery</strong></td><td>Deliberation framing that surfaces what large, disagreeing groups actually share — instead of amplifying division.</td></tr>
+          <tr><td><strong>Multi-sig</strong></td><td>A wallet requiring multiple verified signatories to approve any transaction (e.g. 3-of-5).</td></tr>
+          <tr><td><strong>Referendum readiness</strong></td><td>Building the voter education, ballot formats, trial votes, and verified baselines a real referendum will need — before it is possible.</td></tr>
+        </tbody>
+      </table></div>
+
+      <hr />
+      <p><a href="./sso-sign-in-with-jomhoor.html">&larr; Previous: Sign in with Jomhoor</a></p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="./">← All docs</a>
+      <a href="../../fa/docs/platform-capabilities.html">فارسی →</a>
+    </nav>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js?v=20260518"></script>
+</body>
+</html>
