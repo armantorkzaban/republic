@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Republic — Referendum-Readiness Infrastructure for Iran</title>
+  <meta name="description" content="The July 2026 Jomhoor proposal for referendum-readiness infrastructure, updated after the 2026 war and repositioned around democratic capacity-building." />
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__container container">
+      <a href="../" class="nav__logo">
+        <span class="nav__logo-dot" id="themeToggle" role="button" aria-label="Toggle light/dark">●</span>
+        Republic
+      </a>
+      <div class="nav__links">
+        <a href="../#gaps" class="nav__link">Architecture</a>
+        <a href="../#how-it-works" class="nav__link">How It Works</a>
+        <a href="../#identity" class="nav__link">Identity</a>
+        <a href="../#deliberation" class="nav__link">Deliberation</a>
+        <a href="./" class="nav__link nav__link--active">Docs</a>
+        <a href="mailto:admin@jomhoor.org" class="nav__link">Contact</a>
+        <a href="../../fa/docs/digital-republic-referendum-readiness.html" class="nav__lang">فا</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="prose">
+
+      <p style="color:var(--text-muted);font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Proposal — 10 July 2026</p>
+      <h1>Digital Republic — Referendum-Readiness Infrastructure for Iran</h1>
+      <p><strong>Prepared by <a href="https://jomhoor.org" target="_blank">Jomhoor.org</a> — July 2026</strong> <em>(updated edition; supersedes the March 2026 draft)</em></p>
+      <p><em>“Republic is the act of people governing together — without a leader, without a center, and without fear.”</em></p>
+      <h2>Executive Summary</h2>
+      <p><strong>CONTEXT — 10 JULY 2026:</strong> The war that began on 28 February 2026 with the US–Israeli strikes and the assassination of Ali Khamenei did not end the Islamic Republic. Mojtaba Khamenei was installed as the third ‘Supreme Leader’ on 9 March. Ali Larijani, the system’s de-facto wartime leader, was assassinated on 17 March. The mass uprising that Washington and Tel Aviv predicted never came. A Pakistan-mediated ceasefire took hold on 8 April and was formalized on 17 June, when the presidents of the United States and Iran signed a memorandum of understanding to end the war. It did not hold: after an Iranian drone strike on a commercial vessel in the Strait of Hormuz, US forces struck some ninety Iranian targets, and on 8 July President Trump declared the ceasefire “over.” Strikes are being traded as this document goes out, while Pakistan and Qatar work to bring both sides back to the table. Ali Khamenei’s state funeral was held on 6–7 July. Inside Iran, the internet has been only partially restored since 25 May — roughly 40% of pre-war traffic, under a whitelist system with tiered, IRGC-linked “Internet Pro” access.</p>
+      <p>The March 2026 draft of this document was written in the first week of the war, when a rapid collapse of the system appeared possible and this project positioned itself as “day-after” constitutional infrastructure. That moment did not arrive. This edition is repositioned accordingly — and honestly.</p>
+      <p><strong>What the war proved is our founding argument.</strong> Iranians possess immense political energy, expertise, and desire for change — yet when the most violent shock in the regime’s history decapitated its leadership, society had no mechanism to convert that energy into coordinated action. Loud but unrepresentative social media, easily manipulated polls, a fragmented diaspora, intense surveillance, and an opposition waiting for a “final call” that never came. Energy without mechanisms leads to stagnation. Democracies do not fail because people stop wanting freedom; they fail because, when the moment of change arrives, society lacks the plumbing — verified participation, structured deliberation, trusted coordination, institutional emergence.</p>
+      <p><strong>Digital Republic (Jomhoor)</strong> is that plumbing: <strong>organisation &amp; referendum-readiness infrastructure</strong>, built before the next moment arrives. It does not claim to run a binding national referendum under unfree conditions. It moves citizens through a progressive pipeline — self-understanding &amp; organizing in groups and coalitions (Civic Compass), deliberating (Taraaz), public sensing (transparent opinion measurement), and deciding (referendum readiness) via Jomhoor wallet— so that when a democratic moment arrives, society is well organized and actually knows what it is voting on.</p>
+      <p>Since March, the platform has moved from prototype to a working, partly audited stack:</p>
+      <ol>
+        <li><strong>Verified, private identity</strong> — zero-knowledge proofs from Iranian national ID cards and biometric passports; circuits audited by Halborn; ZKML likeness &amp; liveness; one person = one reusable DID; no personal data ever leaves the device.</li>
+        <li><strong>Live civic tools</strong> — Taraaz (deliberation, built on Agora &amp; <a href="https://pol.is" target="_blank">Pol.is</a>) and Civic Compass are deployed in production; the INID Assistant is published on Google Play and the Apple App Store; the <strong>Jomhoor Wallet</strong> provides single sign-on across the ecosystem.</li>
+        <li><strong>Structural safeguards</strong> — a “<a href="./two-gates-identity-and-speech.html">Two Gates</a>” model separating identity verification from deliberation, a normative compliance layer aligned with UN human-rights instruments, and a Jomhoor-owned sovereign trust root (the <a href="./sovereign-stack-and-m6.html">M6 stack</a>) on <a href="./blockchain-and-rarimo-l2.html">Rarimo L2</a>.</li>
+      </ol>
+      <p><strong>We are seeking ~$1.6 million for Year 1</strong> to fund a 10-person core team in two phases: a 3-month initialization phase (~$309,000) with 7 key hires, scaling to full operations. At steady state, the Civic Sponsorship model targets <strong>9,000 recurring donors at $10/month — $1.08M/year</strong>, covering roughly two-thirds of the ~$1.8M steady-state budget without any state sponsor. The remainder is designed to come from Web3 public-goods grants, European funds, and the hybrid revenue model (“Login with Jomhoor” identity services and the Movement Bank). Full donor coverage would require ~14,000 donors — a target we work toward, not the base case we plan on.</p>
+      <h2>What Happened: February–July 2026</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Date</th><th>Event</th></tr></thead>
+        <tbody>
+          <tr><td>28 Feb</td><td>US–Israeli strikes begin; Ali Khamenei assassinated; near-total internet blackout (1–4% connectivity)</td></tr>
+          <tr><td>1 Mar</td><td>Interim leadership council announced (Arafi, Pezeshkian, Mohseni-Ejei); Ali Larijani oversees operations; von der Leyen calls for a “credible transition”</td></tr>
+          <tr><td>3–9 Mar</td><td>Assembly of Experts convenes in wartime; Mojtaba Khamenei announced as third ‘Supreme Leader’ (9 March)</td></tr>
+          <tr><td>17 Mar</td><td>Israel assassinates Ali Larijani, widely described as Iran’s de facto leader</td></tr>
+          <tr><td>Mar</td><td>No mass uprising materializes; Reza Pahlavi urges Iranians to stay home and await his “final call”; NYT reports US intelligence had judged the regime-change plan “farcical”</td></tr>
+          <tr><td>8 Apr</td><td>Two-week ceasefire agreed, mediated by Pakistan</td></tr>
+          <tr><td>21 Apr</td><td>Ceasefire extended indefinitely</td></tr>
+          <tr><td>25 May</td><td>Pezeshkian orders the end of the internet blackout — the longest nationwide shutdown ever recorded; restoration is partial (~40% of pre-war traffic) under a whitelist regime with tiered “Internet Pro” access sold through IRGC-linked operators</td></tr>
+          <tr><td>12–17 Jun</td><td>New 60-day ceasefire terms agreed; on 17 June the US and Iranian presidents sign a memorandum of understanding to end the war and negotiate final terms</td></tr>
+          <tr><td>Late Jun</td><td>Mojtaba Khamenei — reportedly injured on 28 February and communicating only through statements — says he holds a “different view” of the memorandum but permits its signing</td></tr>
+          <tr><td>6–7 Jul</td><td>State funeral for Ali Khamenei in Tehran</td></tr>
+          <tr><td>Early Jul</td><td>Iran launches a drone strike on a commercial vessel in the Strait of Hormuz — the strait’s status was the MOU’s key ambiguity; the US responds with strikes on ~90 targets</td></tr>
+          <tr><td>7–9 Jul</td><td>Trump declares the ceasefire “over”; the two sides trade strikes for consecutive days; Pakistan and Qatar attempt renewed mediation</td></tr>
+        </tbody>
+      </table></div>
+      <h2>What the War Proved</h2>
+      <p><strong>The regime survived decapitation.</strong> The regime absorbed the assassination of its Supreme Leader, dozens of senior commanders, and its de facto wartime leader — and consolidated. Succession was settled inside the system, in wartime, by the Assembly of Experts. “Regime change from the air” failed exactly as US intelligence predicted it would.</p>
+      <p><strong>The uprising never came — and not because Iranians accept the system.</strong> The December 2025–January 2026 protests, and the mass killings that followed, demonstrated overwhelming demand for change. What was missing was not courage but mechanism: no verified way to know what the population actually wants, no structured way to deliberate alternatives, no coordination layer the fragmented opposition could trust, and no leadership that could credibly claim a mandate. The opposition’s most prominent figure who had once asked people to come to the streets and said help is underway, asked them to wait at home.</p>
+      <p><strong>Connectivity is now an instrument of rule.</strong> The regime emerged from the war’s main phase with a two-tier internet: a whitelist for the population, privileged “Internet Pro” access for those who can pay operators tied to the IRGC. Digital participation tools that assume an open internet are naive; tools designed for repression — offline verification, circumvention integration, low bandwidth — are not.</p>
+      <p><strong>The window will reopen.</strong> The ceasefire’s collapse on 8 July — three weeks after it was signed — proves it was a pause, not a peace. The new Supreme Leader is injured, governs by statement, and inherits a shattered command structure, a collapsed currency, and a population that has twice in six months shown its readiness to move. The question is not whether another moment of change arrives. The question is whether, next time, the mechanisms exist.</p>
+      <p>The five structural gaps identified in the original manifesto remain, and remain unfilled by anyone else:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Gap</th><th>Technology</th><th>Status (July 2026)</th></tr></thead>
+        <tbody>
+          <tr><td>01</td><td><strong>Identity</strong></td><td>Zero-knowledge proofs from national ID cards and passports</td><td>Implemented, audited</td></tr>
+          <tr><td>02</td><td><strong>Trust</strong></td><td>Multi-signature wallets for citizen groups</td><td>Implemented</td></tr>
+          <tr><td>03</td><td><strong>Decision</strong></td><td>Taraaz deliberation + anonymous verified voting</td><td>Implemented, live</td></tr>
+          <tr><td>04</td><td><strong>Money</strong></td><td>Movement Bank: participatory funding with anti-plutocratic guardrails</td><td>Designed — Horizon 2</td></tr>
+          <tr><td>05</td><td><strong>Scale</strong></td><td>Subsidiarity: decisions at the lowest possible level</td><td>Architecture principle</td></tr>
+        </tbody>
+      </table></div>
+      <h2>The Repositioning: Referendum-Readiness Infrastructure</h2>
+      <h2>What we are not</h2>
+      <ul>
+        <li><strong>We are not a crisis-management tool.</strong> The war confirmed this: during bombardment and blackout, security actors dominate. We do not operate in that phase and never claimed to.</li>
+        <li><strong>We do not claim to run binding referenda under unfree conditions.</strong> A real referendum requires universal suffrage, voter safety, free media, independent election authorities, and observation. None of these exist in Iran today. Pretending otherwise would destroy the platform’s credibility — honest limits create more legitimacy than exaggerated claims.</li>
+        <li><strong>We are not a political faction.</strong> We do not endorse any exile organization, or any foreign power’s vision for Iran. The platform’s legitimacy comes from verified Iranian citizens, not from Washington, Tel Aviv, Riyadh, or any self-appointed council.</li>
+      </ul>
+      <h2>What we are</h2>
+      <p><strong>Referendum-readiness infrastructure</strong> — the connective tissue that moves citizens through a progressive democratic pipeline, so that democratic capacity exists before it is needed:</p>
+      <ol>
+        <li><strong>Self-understanding</strong> — Civic Compass: citizens map their priorities and values across policy dimensions and achieve civic self-understanding.</li>
+        <li><strong>Organizing</strong> — matchmaking connects complementary profiles into groups and coalitions via compass-vector similarity rather than social-media popularity, with mutual-consent E2E-encrypted contact.</li>
+        <li><strong>Deliberating</strong> — Taraaz: structured debate turns vague slogans into comparable, defined policy programs; disagreement is not the enemy of democracy — the absence of mechanisms to manage it is.</li>
+        <li><strong>Public sensing</strong> — transparent opinion measurement that publishes its uncertainty instead of overclaiming.</li>
+        <li><strong>Deciding</strong> — referendum readiness: educating voters, testing ballot formats, running transparent trial votes, and comparing deliberative outcomes — so a genuine referendum can be executed the moment conditions allow.</li>
+      </ol>
+      <h2>Design principles</h2>
+      <p>The platform operationalizes seven theoretical commitments (set out fully in the June 2026 framework paper):</p>
+      <ol>
+        <li><strong>Infrastructure before events</strong> — build the pipes before the crisis; pre-transition democratic engineering, not political opposition.</li>
+        <li><strong>Privacy as democratic design</strong> — verified without being visible, unique without being known; in an authoritarian context privacy is a safety condition, not a luxury.</li>
+        <li><strong>Deliberation precedes decision</strong> — opinions are the input to deliberation, not the output of democracy.</li>
+        <li><strong>Differentiated access, equal standing</strong> — the route into the democratic field never determines standing within it; the DID carries no trace of how a citizen arrived.</li>
+        <li><strong>Democracy as rehearsal</strong> — authoritarian societies atrophy democratic capacity; every structured deliberation rebuilds democratic muscle memory.</li>
+        <li><strong>Proof of personhood as legitimacy</strong> — before asking what people think, prove a unique, real human is doing the thinking.</li>
+        <li><strong>Political community without territory</strong> — a verified, deliberating, decision-capable demos assembled across Iran and its diaspora simultaneously, without any government’s permission.</li>
+      </ol>
+      <h2>The Platform Today (July 2026)</h2>
+      <h2>Live deployments</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Component</th><th>Where</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Campaign &amp; information hub</td><td><a href="https://jomhoor.org" target="_blank">jomhoor.org</a> (Persian/English)</td><td>Live</td></tr>
+          <tr><td>Civic Compass</td><td><a href="https://compass.jomhoor.org" target="_blank">compass.jomhoor.org</a></td><td>Live</td></tr>
+          <tr><td>Taraaz deliberation</td><td><a href="https://taraaz.jomhoor.org" target="_blank">taraaz.jomhoor.org</a> (built on Agora)</td><td>Live</td></tr>
+          <tr><td>INID Assistant</td><td>Google Play + Apple App Store</td><td>Published</td></tr>
+          <tr><td>Jomhoor Wallet (mobile) &amp; SSO</td><td><a href="https://github.com/jomhoor/Jomhoor-wallet" target="_blank">github.com/jomhoor/Jomhoor-wallet</a></td><td>v0.2.x, feature-complete &amp; tested, actively developed</td></tr>
+          <tr><td>Backend &amp; smart contracts</td><td><a href="https://github.com/jomhoor/Platform" target="_blank">github.com/jomhoor/Platform</a> (<a href="./blockchain-and-rarimo-l2.html">Rarimo L2</a>)</td><td>Active</td></tr>
+          <tr><td>Atlas of civil and political entities</td><td><a href="https://atlasiran.org" target="_blank">atlasiran.org</a></td><td>Live</td></tr>
+          <tr><td>Open-source organization</td><td><a href="https://github.com/jomhoor" target="_blank">github.com/jomhoor</a> — 8 public repositories</td><td>Commits through June 2026</td></tr>
+        </tbody>
+      </table></div>
+      <h2>The unified stack</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Layer</th><th>Components</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Civic tools</strong></td><td>Civic Compass (education/matching) · Taraaz (deliberation)</td></tr>
+          <tr><td><strong>Integration</strong></td><td>Jomhoor SSO &amp; API — “<a href="./sso-sign-in-with-jomhoor.html">Sign in with Jomhoor</a>” via OAuth2 + PKCE; relying partners receive verified proofs of uniqueness, never wallet addresses or raw identity data</td></tr>
+          <tr><td><strong>Trust &amp; identity</strong></td><td>Jomhoor Wallet · ZK proofs · governance safeguards (<a href="./two-gates-identity-and-speech.html">Two Gates</a> + <a href="./sovereign-stack-and-m6.html">M6 sovereign stack</a>)</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Identity &amp; privacy architecture</h2>
+      <ul>
+        <li><strong>Self-sovereign DID</strong> — generated locally on the user’s device, never on a server; one DID per verified human; reused across all features; only cryptographic proofs are stored — no PII.</li>
+        <li><strong>Zero-knowledge verification</strong> — Noir and Circom circuit implementations, <strong>audited by Halborn</strong>; supports all four biometric passport types relevant to the target population and multiple national ID card series.</li>
+        <li><strong>ZKML liveness &amp; likeness check</strong> — on-device machine learning verifies liveness and face-likeness against the document (86% match threshold); biometric data never leaves the device. Published false-accept and false-reject rates will accompany this threshold in the security documentation.</li>
+        <li><strong>Censorship resilience</strong> — integration with circumvention tools (such as Psiphon) is part of the core implementation architecture, a direct answer to the whitelist internet.</li>
+        <li><strong>Sovereign trust root (M6)</strong> — Jomhoor uses the speed and security of the <a href="./blockchain-and-rarimo-l2.html">Rarimo L2</a> chain while owning its identity contracts (RegistrationSMT, CertificatesSMT), governed multisig admin keys, ICAO root snapshots, and dispatcher support for Iranian documents. Sovereignty without running a proprietary blockchain.</li>
+      </ul>
+      <h2>Feature status (from the <a href="./platform-capabilities.html">Technical Capabilities Reference</a>, v1.0, 2026)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Feature</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>ZKP identity verification (passports)</td><td>Implemented — audited circuits (Halborn)</td></tr>
+          <tr><td>ZKP identity verification (ID cards, NFC)</td><td>Implemented — NFC + ZKML liveness &amp; likeness check</td></tr>
+          <tr><td>ZKML liveness &amp; face-likeness</td><td>Implemented — 86% threshold</td></tr>
+          <tr><td>Reusable DID issuance</td><td>Implemented</td></tr>
+          <tr><td>Voting &amp; referenda (approval, ranked-choice)</td><td>Implemented</td></tr>
+          <tr><td>Structured deliberation &amp; opinion clustering</td><td>Implemented</td></tr>
+          <tr><td>Polling &amp; attitudinal reporting</td><td>Implemented</td></tr>
+          <tr><td>Self-assessment tools</td><td>Implemented</td></tr>
+          <tr><td>Matchmaking &amp; team formation</td><td>Implemented</td></tr>
+          <tr><td>DAO governance modules</td><td>Implemented</td></tr>
+          <tr><td>Multi-signature wallets</td><td>Implemented</td></tr>
+          <tr><td>Jomhoor Wallet / SSO layer</td><td>Implemented</td></tr>
+          <tr><td>Normative content moderation (UN instruments, Yogyakarta Principles)</td><td>Implemented</td></tr>
+          <tr><td>Civic Compass / organisational portals</td><td>Implemented (prototyped)</td></tr>
+          <tr><td>ERP ecosystem for civic actors</td><td>In development</td></tr>
+          <tr><td>Hybrid online / in-person participation</td><td>Supported</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Defending against bots and platform capture: the <a href="./two-gates-identity-and-speech.html">Two Gates</a></h2>
+      <p>Identity proves uniqueness, not democratic intent. The platform therefore maintains two structural defenses:</p>
+      <ul>
+        <li><strong>The Identity Gate</strong> — ZK proofs and nullifiers stop bots, Sybils, and low-cost foreign interference; ensures unique Iranians (it cannot stop a real citizen acting in bad faith — no honest system can).</li>
+        <li><strong>The Speech &amp; Process Gate</strong> — human-rights frameworks, appeals, and independent oversight stop platform capture, incitement, and atrocity denial while protecting lawful political disagreement. Token-weighted voting and “pay-to-play” are explicitly banned.</li>
+      </ul>
+      <h2>Measuring Public Opinion Honestly</h2>
+      <p>In a landscape of internet filtering and repression, honest limits create more legitimacy than exaggerated claims. Jomhoor publishes uncertainty, compares open participation with weighted estimates, and builds diverse baselines:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Method</th><th>Target population</th><th>Uncertainty</th><th>Jomhoor’s capability</th></tr></thead>
+        <tbody>
+          <tr><td>Open polls</td><td>Self-selected internet users</td><td>High (distorted access)</td><td>Publishes uncertainty limits</td></tr>
+          <tr><td>Weighted surveys</td><td>Demographically defined baseline</td><td>Moderate (corrects imbalance, cannot invent voices)</td><td>Applies transparent statistical weights</td></tr>
+          <tr><td>Representative panels</td><td>Deliberative civic advisory groups</td><td>Low (structured deep debate)</td><td>Builds balanced qualitative samples</td></tr>
+          <tr><td>Binding referenda</td><td>Universal national suffrage</td><td>None (requires physical safety &amp; free press)</td><td><strong>Outside current scope (unfree conditions)</strong></td></tr>
+        </tbody>
+      </table></div>
+      <h2>What Jomhoor Can Do Today — and What a Real Referendum Requires</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>What Jomhoor can do today</th><th>What a real referendum requires</th></tr></thead>
+        <tbody>
+          <tr><td>Educate voters and train civil society</td><td>Universal suffrage and voter safety</td></tr>
+          <tr><td>Test ballot formats and run transparent trial votes</td><td>Free media and open campaigning</td></tr>
+          <tr><td>Compare deliberative outcomes across populations</td><td>Independent election authorities</td></tr>
+          <tr><td>Build verified, Sybil-resistant participation baselines</td><td>Domestic and international observation</td></tr>
+        </tbody>
+      </table></div>
+      <p>The bridge between the two columns is exactly what this proposal funds: referendum-readiness infrastructure, ensuring society is prepared when the transition arrives.</p>
+      <h2>Roadmap — Year 1 (from July 2026)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Stage</th><th>Workstream</th><th>Timeline</th></tr></thead>
+        <tbody>
+          <tr><td>1. Civic entry</td><td>Civic Compass live; user growth and onboarding flows</td><td>Now — ongoing</td></tr>
+          <tr><td>2. Civil society &amp; deliberation</td><td>Taraaz active; onboard organizations; first structured national-dialogue cycles</td><td>Months 1–4</td></tr>
+          <tr><td>3. Trust layer</td><td>Wallet, ZK circuits, SSO hardening; external security audits; “<a href="./sso-sign-in-with-jomhoor.html">Sign in with Jomhoor</a>” partner integrations</td><td>Months 2–6</td></tr>
+          <tr><td>4. Public sensing</td><td>Sampling methodologies, weighting frameworks, representative panels, first baseline reports</td><td>Months 4–9</td></tr>
+          <tr><td>5. Referendum readiness</td><td>Trial votes, ballot-format testing, comparison of deliberative outcomes</td><td>Months 6–12</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Parallel Europe track:</strong> the same codebase serves a municipal digital-democracy pilot in Germany, qualifying for EU innovation and German federal research funding. Application-to-award cycles for such funding typically run 12–24 months; the Year-1 goal is submitted applications and an operating pilot, not awards in hand. ZK circuits natively cover the Personalausweis and other ICAO documents. The Europe track provides sustainability, credibility, and continuous improvement regardless of Iran’s timeline; every improvement to the European pilot directly upgrades the Iranian platform.</p>
+      <h2>Organization &amp; Team</h2>
+      <h2>Function 1: Leadership (1 FTE)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Focus</th></tr></thead>
+        <tbody>
+          <tr><td>Executive Director</td><td>Strategic direction, fundraising, coalition-building, conceptual coherence (identity and privacy, collective will and individual rights). Joins at initialization.</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Function 2: Technical (3 FTE)</h2>
+      <p>Security-first engineering — every line of code may protect someone’s life.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Focus</th><th>Joins</th></tr></thead>
+        <tbody>
+          <tr><td>Lead Cryptographer / ZKP Engineer</td><td>Noir/Circom circuits, ZKML pipeline, Rarimo integration, M6 identity contracts, security boundary design. Most critical hire.</td><td>Initialization</td></tr>
+          <tr><td>Full-Stack Engineer</td><td>Jomhoor Wallet (Android + iOS), smart contracts, Taraaz integration, SSO/API, backend services. Low-bandwidth, surveillance-resistant.</td><td>Month 4</td></tr>
+          <tr><td>DevOps &amp; Security Engineer</td><td>Deployment, CI/CD, monitoring, infrastructure hardening, circumvention integration. A production identity system requires this from day one.</td><td>Initialization</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Function 3: Design (1 FTE)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Focus</th><th>Joins</th></tr></thead>
+        <tbody>
+          <tr><td>UX / Product Designer</td><td>User flows, accessibility, ZKP onboarding UX. If a voter in Tehran can’t complete the ZKP flow on their phone in under 3 minutes, the architecture has failed.</td><td>Initialization</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Function 4: Think Tank (3 FTE)</h2>
+      <p>The strategic brain — analysis, alternatives, futures. Converts diaspora academic capital (110,000+ academics) into democratic capacity.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Focus</th><th>Joins</th></tr></thead>
+        <tbody>
+          <tr><td>Political Scientist</td><td>Comparative democratization, electoral system design, referendum-readiness methodology, coalition theory, legitimacy strategy.</td><td>Initialization</td></tr>
+          <tr><td>Economist</td><td>Sanctions impact, Movement Bank design, participatory budgeting, sampling and weighting methodology.</td><td>Month 4</td></tr>
+          <tr><td>Historian-Thought Leader</td><td>Constitutional Revolution to the present; precedent analysis for transition design; real-time documentation; deliberation grounding.</td><td>Initialization</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Function 5: Operations &amp; Engagement (2 FTE)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Focus</th><th>Joins</th></tr></thead>
+        <tbody>
+          <tr><td>Community &amp; Engagement Lead</td><td>Diaspora outreach, organizational onboarding, media relations, Persian media, narrative strategy, campaign coordination.</td><td>Initialization</td></tr>
+          <tr><td>European Operations Coordinator</td><td>Municipal pilot registration, local partnerships, EU grant coordination.</td><td>Month 4</td></tr>
+        </tbody>
+      </table></div>
+      <h2>External Expert Network (retainer/project)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Area</th><th>Scope</th></tr></thead>
+        <tbody>
+          <tr><td>Legal Counsel</td><td>German NGO compliance, GDPR, international human-rights law, crypto regulation</td></tr>
+          <tr><td>Security Auditors</td><td>Quarterly code audits, penetration testing, threat modeling, OpSec review</td></tr>
+          <tr><td>Regional Experts</td><td>Iran specialists, Middle East geopolitics, EU policy analysts</td></tr>
+          <tr><td>Translation</td><td>Persian, German, Kurdish, Arabic, Turkish, English</td></tr>
+          <tr><td>Academic Advisors</td><td>Constitutional law, computational social choice, deliberative democracy, survey methodology</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Budget</h2>
+      <p>All figures in USD. Salaries are benchmarked to the global market for zero-knowledge cryptography and security engineering — the talent pool this system cannot be built without. Staffing a life-critical identity system below market is a false economy, and we say so openly.</p>
+      <h2>Initialization Phase (Months 1–3) — 7 People</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Annual Rate</th><th>3-Month Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Executive Director</td><td>$120,000</td><td>$30,000</td></tr>
+          <tr><td>Community &amp; Engagement Lead</td><td>$120,000</td><td>$30,000</td></tr>
+          <tr><td>Political Scientist</td><td>$115,000</td><td>$28,750</td></tr>
+          <tr><td>Historian-Thought Leader</td><td>$105,000</td><td>$26,250</td></tr>
+          <tr><td>Lead Cryptographer / ZKP Engineer</td><td>$240,000</td><td>$60,000</td></tr>
+          <tr><td>UX / Product Designer</td><td>$180,000</td><td>$45,000</td></tr>
+          <tr><td>DevOps &amp; Security Engineer</td><td>$175,000</td><td>$43,750</td></tr>
+          <tr><td>Retainers (legal, security audit)</td><td>—</td><td>$25,000</td></tr>
+          <tr><td>Operations (infra, hosting, travel)</td><td>—</td><td>$20,000</td></tr>
+          <tr><td><strong>Initialization Total</strong></td><td></td><td><strong>$308,750</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Deliverables by end of Month 3:</strong> hardened SSO and partner-integration layer, first structured Taraaz national-dialogue cycles, external security audit commissioned, public-sensing methodology framework, referendum-readiness research baseline, EU grant applications submitted, UX-tested onboarding flow.</p>
+      <h2>Full Operations (Months 4–12) — Scale to 10 People</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Function</th><th>Role</th><th>Annual Rate</th><th>9-Month Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Leadership</td><td>Executive Director</td><td>$120,000</td><td>$90,000</td></tr>
+          <tr><td>Technical</td><td>Lead Cryptographer / ZKP Engineer</td><td>$240,000</td><td>$180,000</td></tr>
+          <tr><td>Technical</td><td>Full-Stack Engineer</td><td>$185,000</td><td>$138,750</td></tr>
+          <tr><td>Technical</td><td>DevOps &amp; Security Engineer</td><td>$175,000</td><td>$131,250</td></tr>
+          <tr><td>Design</td><td>UX / Product Designer</td><td>$180,000</td><td>$135,000</td></tr>
+          <tr><td>Think Tank</td><td>Political Scientist</td><td>$115,000</td><td>$86,250</td></tr>
+          <tr><td>Think Tank</td><td>Economist</td><td>$140,000</td><td>$105,000</td></tr>
+          <tr><td>Think Tank</td><td>Historian-Thought Leader</td><td>$105,000</td><td>$78,750</td></tr>
+          <tr><td>Engagement</td><td>Community &amp; Engagement Lead</td><td>$120,000</td><td>$90,000</td></tr>
+          <tr><td>Engagement</td><td>European Operations Coordinator</td><td>$80,000</td><td>$60,000</td></tr>
+          <tr><td></td><td>Retainers (legal, security audits, regional experts)</td><td>—</td><td>$131,250</td></tr>
+          <tr><td></td><td>Operations (infra, office, travel, equipment)</td><td>—</td><td>$97,500</td></tr>
+          <tr><td><strong>Full Operations Total</strong></td><td></td><td></td><td><strong>$1,323,750</strong></td></tr>
+        </tbody>
+      </table></div>
+      <h2>Year 1 Summary</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Phase</th><th>Duration</th><th>People</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Initialization</td><td>Months 1–3</td><td>7</td><td>$308,750</td></tr>
+          <tr><td>Full Operations</td><td>Months 4–12</td><td>10</td><td>$1,323,750</td></tr>
+          <tr><td><strong>Year 1 Total</strong></td><td><strong>12 months</strong></td><td><strong>10</strong></td><td><strong>$1,632,500</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Rounded: ~$1.6 million</strong> for Year 1. Annualized steady state (full team, 12 months): <strong>~$1.8 million/year.</strong></p>
+      <p><strong>A note on audit costs:</strong> the retainer line covers continuous review, threat modeling, and OpSec. Major independent audits of circuits, contracts, and wallet — typically $50,000–150,000 each — are milestone-linked costs, funded separately or grant-matched, and are not hidden inside the retainer figure.</p>
+      <h2>Sustainability: Funding Model</h2>
+      <h2>Pillar 1 — The Citizen Tax (recurring micro-payments)</h2>
+      <p>The Iranian diaspora holds enormous economic capital; its political impotence is a failure of capital conversion, not resources.</p>
+      <ul>
+        <li><strong>The ask:</strong> $10/month — the price of one lunch.</li>
+        <li><strong>The math:</strong> <strong>9,000 recurring donors × $10/month = $1.08M/year</strong> — roughly two-thirds of steady-state operations; full donor coverage would require ~14,000.</li>
+        <li><strong>The realism:</strong> recurring-donation conversion typically runs 5–10% of an engaged audience, so 9,000 donors implies 100,000+ engaged supporters. We treat the Citizen Tax as a target, not the base case — sustainability is designed across all three pillars plus Horizon-2 revenue, so no single pillar failing is fatal.</li>
+        <li><strong>The principle:</strong> One person, one vote. Diaspora sponsors earn one governance credit and social badges; residents inside Iran claim credits free from the Solidarity Pool with equal rights. Donors get badges, not extra votes — the rich cannot buy the Republic.</li>
+        <li><strong>Channels:</strong> crypto (ETH/Polygon/Rarimo, BTC, Solana), PayPal, Patreon.</li>
+      </ul>
+      <h2>Pillar 2 — Web3 public-goods funding</h2>
+      <p>ZK identity, privacy-preserving voting, and censorship-resistant deliberation are public goods for the entire open internet. Targets: Gitcoin Grants, Optimism RetroPGF, Ethereum Foundation. Non-political capital supporting the codebase without political strings.</p>
+      <h2>Pillar 3 — The European municipal track</h2>
+      <p>The German sister-city pilot qualifies for EU innovation grants and German federal research funds. Shared codebase: European funds for European digital democracy directly upgrade the Iranian platform — fully legal and compliant.</p>
+      <h2>Horizon 2 — Hybrid revenue model</h2>
+      <ul>
+        <li><strong>“Login with Jomhoor” (B2B identity-as-a-service):</strong> privacy-preserving SSO and API for relying parties (NGOs, research panels, civic apps). Jomhoor acts as a privacy buffer — partners receive verified proofs of uniqueness (nullifiers, ZK-verified assertions, pairwise pseudonymous subjects via OAuth2/PKCE), never raw identity data. Monetized through tiered verification credits.</li>
+        <li><strong>The Movement Bank:</strong> participation-linked contributions — proposal sponsorship, civic bounties, verified crowdfunding for audited civic projects. Money executes mandates but grants no political weight; token-weighted voting is banned.</li>
+        <li><strong>Growth phases:</strong> Pilot (grants and partner-funded SSO), then Scale (Movement Bank, sponsorship and bounty modules), then Resilience (self-sustaining via verification credits and transaction fees).</li>
+      </ul>
+      <h2>Success Metrics</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Track</th><th>Milestone</th><th>KPI</th><th>Timeline</th></tr></thead>
+        <tbody>
+          <tr><td>Identity</td><td>Verified citizens</td><td>5,000 verified unique DIDs (DAO activation threshold)</td><td>6–12 months</td></tr>
+          <tr><td>Deliberation</td><td>National dialogue</td><td>First Taraaz cycles with ≥1,000 verified participants</td><td>3–6 months</td></tr>
+          <tr><td>Public sensing</td><td>Honest measurement</td><td>First baseline opinion report with published uncertainty</td><td>6–9 months</td></tr>
+          <tr><td>Security</td><td>External assurance</td><td>Full-stack audit (wallet, contracts, circuits) beyond the existing Halborn circuit audit</td><td>6 months</td></tr>
+          <tr><td>Ecosystem</td><td>SSO adoption</td><td>3+ civil-society relying parties on “<a href="./sso-sign-in-with-jomhoor.html">Sign in with Jomhoor</a>”</td><td>12 months</td></tr>
+          <tr><td>Europe</td><td>Municipal pilot + funding</td><td>1 operational municipality; EU grant applications submitted</td><td>12 months (awards realistically 12–24 months)</td></tr>
+          <tr><td>Sustainability</td><td>Financing</td><td>Trajectory to 9,000 recurring donors ($90K MRR)</td><td>12–18 months</td></tr>
+          <tr><td>Open source</td><td>Adoption</td><td>External contributors across the <a href="https://github.com/jomhoor" target="_blank">github.com/jomhoor</a> repositories</td><td>Ongoing</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Why these thresholds:</strong> ≥1,000 verified participants is the smallest cohort at which opinion-cluster mapping stabilizes statistically; 5,000 verified DIDs is the minimum constituency at which platform-wide collective decisions carry demonstrable weight rather than sampling noise. Both are working thresholds, published so they can be challenged.</p>
+      <h2>Risks — Honest Assessment</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Risk</th><th>Threat</th><th>Mitigation / honest assessment</th></tr></thead>
+        <tbody>
+          <tr><td>Regime consolidation</td><td>The Mojtaba Khamenei era brings intensified repression and surveillance</td><td>The platform is designed for repression: ZK anonymity, no central database to seize, on-device verification, no data trail. Verification can happen offline; participation is unlinkable.</td></tr>
+          <tr><td>Whitelist internet</td><td>Most Iranians can reach only pre-approved sites; “Internet Pro” is tiered and IRGC-linked</td><td>Circumvention integration (Psiphon) is part of the core architecture; the stack is low-bandwidth by design; diaspora participation is unaffected.</td></tr>
+          <tr><td>Renewed war</td><td>The 17 June MOU collapsed on 8 July; strikes have resumed and may escalate to full-scale war</td><td>This risk has already materialized, and the platform’s scope holds: preparation, not crisis operation. Diaspora functions and the Europe track continue regardless.</td></tr>
+          <tr><td>Diaspora fatigue</td><td>Post-war disillusionment after the transition that wasn’t</td><td>Consensus mapping surfaces common ground across factions; matchmaking builds durable small groups rather than broadcast audiences; rehearsal framing sets honest expectations.</td></tr>
+          <tr><td>Platform capture</td><td>A faction or hostile actor tries to seize the deliberative space</td><td><a href="./two-gates-identity-and-speech.html">Two Gates</a>: identity gate (ZK + nullifiers) and speech &amp; process gate (published rules, human-rights frameworks, appeals, independent oversight). Token-weighted voting banned.</td></tr>
+          <tr><td>Plutocracy</td><td>Wealthy donors buying influence</td><td>One person, one vote, cryptographically enforced. Money buys badges, not ballots.</td></tr>
+          <tr><td>Legal</td><td>Staff targeted by lawfare</td><td>German legal shield: registered e.V. (TCF, VR725308 Stuttgart), GDPR compliance, multi-sig treasury.</td></tr>
+          <tr><td>Engineering capacity</td><td>A 3-engineer team maintains a broad, security-critical surface: wallet, circuits, contracts, SSO, and two civic platforms</td><td>Named openly. Year-1 scope is hardening and integration, not feature expansion; Year 2 adds engineering headcount; major audits are milestone-funded; the open-source model recruits outside capacity.</td></tr>
+          <tr><td>Founder risk</td><td>Single point of failure</td><td>Open-source codebase, multi-sig project governance, deliberate recruitment of co-stewards.</td></tr>
+          <tr><td>Irrelevance</td><td>The next transition happens without the platform</td><td>The biggest real risk — as this war showed, transitions can pass infrastructure by. Mitigation: the Europe deployment gives the project value independent of Iran’s timeline, and the technology is an open-source public good either way.</td></tr>
+        </tbody>
+      </table></div>
+      <h2>How to Plug In</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Actor</th><th>Action</th><th>Leverage gained</th></tr></thead>
+        <tbody>
+          <tr><td>Funders &amp; grantors</td><td>Fund the initialization ($309K) or full Year 1 (~$1.6M)</td><td>Support infrastructure, external security audits, user research, and public pilots for 85+ million people — before the next moment arrives</td></tr>
+          <tr><td>Civil society</td><td>Partner to test real participation flows, publish programs, run consultations</td><td>Demonstrate policy support with verified data, not claims</td></tr>
+          <tr><td>Researchers</td><td>Design sampling methodologies, weighting frameworks, panels, baseline reports</td><td>Research-grade, manipulation-resistant opinion data on Iran</td></tr>
+          <tr><td>Auditors</td><td>Security review of wallet, contracts, and ZK circuits; legal review of process gates</td><td>Harden a system where every line of code may protect a life</td></tr>
+          <tr><td>Donors</td><td>Join the Citizen Tax ($10/month)</td><td>Convert diaspora wealth into political capacity independent of state sponsors</td></tr>
+          <tr><td>Technologists</td><td>Contribute at <a href="https://github.com/jomhoor" target="_blank">github.com/jomhoor</a></td><td>Build the tools that will govern tomorrow</td></tr>
+          <tr><td>EU &amp; international institutions</td><td>Fund democratic-transition readiness as part of any “credible transition” policy</td><td>Back the only operational, non-aligned citizen verification and deliberation platform for Iran</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Assumptions &amp; Transparency</h2>
+      <h2>What we know:</h2>
+      <ul>
+        <li>The Islamic Republic survived the 2026 war and is consolidating under Mojtaba Khamenei. The 17 June memorandum collapsed on 8 July; strikes have resumed, and mediation efforts continue. The war is not over.</li>
+        <li>The internet inside Iran is partially restored, censored, and tiered. Open participation from inside Iran is constrained but not impossible; diaspora participation is unconstrained.</li>
+        <li>The platform’s core components are built, live, and audited: identity circuits (Halborn), Taraaz, Civic Compass, wallet/SSO, published mobile apps.</li>
+      </ul>
+      <h2>What we assume:</h2>
+      <ul>
+        <li>Another window of change will open. Succession fragility, economic collapse, and demonstrated mass demand for change make this an assumption of timing, not possibility.</li>
+        <li>Democratic capacity can be built in advance — through diaspora participation, circumvention-enabled participation inside Iran, and structured rehearsal.</li>
+        <li>Civil-society organizations will adopt shared infrastructure rather than fragmenting across incompatible tools.</li>
+      </ul>
+      <h2>What we cannot control:</h2>
+      <ul>
+        <li>Whether and when a transition comes, or what triggers it.</li>
+        <li>Whether any faction adopts the platform. We can build the best tools; we cannot force adoption.</li>
+        <li>Whether the renewed fighting escalates into full-scale war or returns to negotiation.</li>
+      </ul>
+      <p><strong>What this means for sponsors:</strong> your funding builds infrastructure with value in every scenario: if a democratic opening comes, this is the only operational readiness layer; if it does not, the technology serves as an open-source public good — deployed in Europe, available to any population that needs it — and Iranian civil society gains verified deliberation, honest opinion measurement, and democratic rehearsal in the meantime.</p>
+      <h2>Contact &amp; Verification</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Channel</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Organization</strong></td><td>Transnational Community Federation e.V. (TCF)</td></tr>
+          <tr><td><strong>Registration</strong></td><td>VR725308, District Court of Stuttgart, Germany</td></tr>
+          <tr><td><strong>Website</strong></td><td><a href="https://jomhoor.org" target="_blank">jomhoor.org</a> · <a href="https://jomhoor.org/en" target="_blank">jomhoor.org/en</a></td></tr>
+          <tr><td><strong>Platforms</strong></td><td><a href="https://compass.jomhoor.org" target="_blank">compass.jomhoor.org</a> · <a href="https://taraaz.jomhoor.org" target="_blank">taraaz.jomhoor.org</a> · <a href="https://atlasiran.org" target="_blank">atlasiran.org</a></td></tr>
+          <tr><td><strong>Email</strong></td><td><a href="mailto:info@transcf.org">info@transcf.org</a> · <a href="mailto:admin@jomhoor.org">admin@jomhoor.org</a></td></tr>
+          <tr><td><strong>Matrix</strong></td><td>#idcdn:matrix.org</td></tr>
+          <tr><td><strong>GitHub</strong></td><td><a href="https://github.com/jomhoor" target="_blank">github.com/jomhoor</a></td></tr>
+          <tr><td><strong>X</strong></td><td>@JomhoorOrg</td></tr>
+          <tr><td><strong>ENS</strong></td><td><a href="https://Cyberdemocracy.ETH" target="_blank">Cyberdemocracy.ETH</a></td></tr>
+          <tr><td><strong>Donations</strong></td><td>ETH/Polygon/Rarimo: 0x7DCFcCd0f80C3eED4dBcac1B597E667E0D0F731c</td></tr>
+          <tr><td></td><td>BTC: bc1qp3j6hf46506qve7py45mxdde7uz5aagt8y0u8h</td></tr>
+          <tr><td></td><td>Solana: 3Eg6gRfRkU2wm4pZfTMWGTUYgyiveuRthJrD4tYyZnYT</td></tr>
+          <tr><td></td><td>PayPal and Patreon links at <a href="https://jomhoor.org/en/support" target="_blank">jomhoor.org/en/support</a></td></tr>
+        </tbody>
+      </table></div>
+      <h2>References</h2>
+      <h2>Project</h2>
+      <ol>
+        <li>Republic (Jomhoor) — <a href="https://jomhoor.org/en" target="_blank">jomhoor.org/en</a></li>
+        <li>Republic — The Manifesto: <a href="https://armantorkzaban.com/posts/republic/" target="_blank">armantorkzaban.com/posts/republic/</a></li>
+        <li>Theoretical Frameworks and Narratives for Digital Democratic Infrastructure (29 June 2026): <a href="https://armantorkzaban.com/posts/jomhoor-theoretical-framework/" target="_blank">armantorkzaban.com/posts/jomhoor-theoretical-framework/</a></li>
+        <li>Jomhoor Technical Capabilities &amp; Features Reference, v1.0 (2026)</li>
+        <li>Jomhoor open-source repositories: <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">github.com/orgs/jomhoor/repositories</a></li>
+        <li>INID SDK — Open SDK for the Iranian National ID Card: <a href="https://github.com/jomhoor/INIDOSDK" target="_blank">github.com/jomhoor/INIDOSDK</a></li>
+        <li>Taraaz deliberation: <a href="https://taraaz.jomhoor.org" target="_blank">taraaz.jomhoor.org</a> (built on Agora — <a href="https://github.com/zkorum/agora" target="_blank">github.com/zkorum/agora</a>)</li>
+        <li>Civic Compass: <a href="https://compass.jomhoor.org" target="_blank">compass.jomhoor.org</a></li>
+        <li>Rarimo Freedom Tool: <a href="https://docs.rarimo.com/freedom-tool/" target="_blank">docs.rarimo.com/freedom-tool/</a></li>
+        <li>ZK Passport: <a href="https://docs.rarimo.com/zk-passport/" target="_blank">docs.rarimo.com/zk-passport/</a></li>
+        <li>ERC-7812 — ZK Identity Registry Standard: <a href="https://eips.ethereum.org/EIPS/eip-7812" target="_blank">eips.ethereum.org/EIPS/eip-7812</a></li>
+        <li>Agora Citizen Network: <a href="https://agoracitizen.network" target="_blank">agoracitizen.network</a></li>
+        <li>Polis Whitepaper: <a href="https://arxiv.org/pdf/2306.11932" target="_blank">arxiv.org/pdf/2306.11932</a></li>
+        <li>TCF — Transnational Community Federation e.V.: <a href="https://transcf.org/about-us/" target="_blank">transcf.org/about-us/</a></li>
+      </ol>
+      <h2>The 2026 war and its aftermath — key sources</h2>
+      <ol>
+        <li>“2026 Iran war” — Wikipedia</li>
+        <li>“2026 Iran war ceasefire” — Wikipedia</li>
+        <li>“2026 Iranian supreme leader election” — Wikipedia</li>
+        <li>“Regime change efforts in the 2026 Iran war” — Wikipedia</li>
+        <li>“2026 Internet blackout in Iran” — Wikipedia</li>
+        <li>“Iran forms interim council to oversee transition after Khamenei’s killing” — Al Jazeera, 1 March 2026</li>
+        <li>“Israel Thought It Could Spur Rebellion Inside Iran. That Hasn’t Happened” — The New York Times, 22 March 2026</li>
+        <li>“Number one target: How Israel assassinated Iran’s ‘de-facto leader’ Larijani” — The Jerusalem Post, 17 March 2026</li>
+        <li>“How Trump Took the U.S. to War With Iran” — The New York Times, 7 April 2026</li>
+        <li>“US–Iran ceasefire and nuclear talks in 2026” — House of Commons Library, 2026</li>
+        <li>“Iran: Internet Shutdown Violates Rights, Escalates Risks to Civilians” — Human Rights Watch, 6 March 2026</li>
+        <li>“Iran’s two-tier internet access fuels anger and exposes cracks in the regime” — CNN, 10 May 2026</li>
+        <li>“Iran Wields Wartime Internet Access as a Political Tool” — Carnegie Endowment, March 2026</li>
+        <li>“Funeral ceremonies for Iran’s slain supreme leader” — CNN live coverage, 6–7 July 2026</li>
+        <li>“Trump says ceasefire ‘over’, re-ups threats after US and Iran trade attacks” — Al Jazeera, 8 July 2026</li>
+        <li>“U.S., Iran trade dozens more strikes for a second straight day” — The Washington Post, 8 July 2026</li>
+        <li>“US–Iran ceasefire crumbles as fresh strikes rock Middle East” — CNN live coverage, 9 July 2026</li>
+      </ol>
+      <p><em>This document is open-source, like the infrastructure it describes. Distribute freely.</em></p>
+
+      <hr />
+      <p><a href="./platform-capabilities.html">&larr; Previous: Platform capabilities</a></p>
+
+    </article>
+
+    <nav class="docs-bottom-nav">
+      <a href="./">← All docs</a>
+      <a href="../../fa/docs/digital-republic-referendum-readiness.html">فارسی →</a>
+    </nav>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Republic. Open source. Censorship resistant.</p>
+        <div class="footer__bottom-links">
+          <a href="../">Home</a>
+          <a href="./">Docs</a>
+          <a href="https://github.com/orgs/jomhoor/repositories" target="_blank">GitHub</a>
+          <a href="mailto:admin@jomhoor.org">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/script.js?v=20260518"></script>
+</body>
+</html>
